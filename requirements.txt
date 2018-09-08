@@ -1,0 +1,8 @@
+numpy<=1.14.5,>=1.13.3  # When Tensorflow 1.11 is out, we can remove this
+scipy
+scikit-learn
+pandas
+tensorflow
+fastFM
+pywFM
+surprise
