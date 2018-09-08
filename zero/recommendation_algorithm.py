@@ -1,10 +1,11 @@
-import logging
 from zero.side import SideInformation
 from zero.chrono import Chrono
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from collections import defaultdict
 import numpy as np
 import pickle
 import os.path
+import logging
 
 
 class RecommendationAlgorithmFactory:
@@ -44,6 +45,7 @@ class RecommendationAlgorithm:
         self.nb_users = None
         self.nb_works = None
         self.size = 0  # For backup files
+        self.metrics = defaultdict(lambda: defaultdict(list))
 
     def get_backup_path(self, filename):
         if filename is None:
@@ -127,11 +129,15 @@ class RecommendationAlgorithm:
             return 0.
         return self.dcg_at_k(r, k) / idcg
 
-    def compute_all_errors(self, X_train, y_train, X_test, y_test):
-        y_train_pred = self.predict(X_train)
-        logging.info('Train RMSE=%f', self.compute_rmse(y_train, y_train_pred))
-        y_test_pred = self.predict(X_test)
-        logging.info('Test RMSE=%f', self.compute_rmse(y_test, y_test_pred))
+    def compute_metrics(self):
+        y_train_pred = self.predict(self.X_train)
+        train_rmse = self.compute_rmse(self.y_train, y_train_pred)
+        y_test_pred = self.predict(self.X_test)
+        test_rmse = self.compute_rmse(self.y_test, y_test_pred)
+        self.metrics['train']['rmse'].append(train_rmse)
+        self.metrics['test']['rmse'].append(test_rmse)
+        logging.warning('Train RMSE=%f', train_rmse)
+        logging.warning('Test RMSE=%f', test_rmse)
 
     @staticmethod
     def available_evaluation_metrics():

@@ -101,6 +101,7 @@ class MangakiALS2(RecommendationAlgorithm):
                 self.fit_user(user, matrix)
             for work in matrixT:
                 self.fit_work(work, matrixT)
+            self.compute_metrics()
 
     def fit(self, X, y):
         if self.verbose_level:

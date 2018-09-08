@@ -38,6 +38,7 @@ class MangakiALS3(RecommendationAlgorithm):
                 self.fit_user(user_id)
             for work_id in works:
                 self.fit_work(work_id)
+            self.compute_metrics()
 
     def to_dict(self, X, y):
         matrix = defaultdict(dict)

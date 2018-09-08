@@ -28,11 +28,6 @@ class MangakiSGD(RecommendationAlgorithm):
         for epoch in range(self.nb_iterations):
             step = 0
             for (i, j), rating in zip(X, y):
-                if step % 100000 == 0:  # Pour afficher l'erreur de train
-                    y_pred = self.predict(X)
-                    logging.info('Train RMSE (epoch=%d, step=%d): %f',
-                                 epoch, step,
-                                 mean_squared_error(y, y_pred) ** 0.5)
                 predicted_rating = self.predict_one(i, j)
                 error = predicted_rating - rating
                 self.bias -= self.gamma * error
@@ -45,6 +40,7 @@ class MangakiSGD(RecommendationAlgorithm):
                 self.V[j] -= self.gamma * (error * self.U[i] +
                                            self.lambda_ * self.V[j])
                 step += 1
+            self.compute_metrics()
 
     def predict_one(self, i, j):
         return (self.bias + self.bias_u[i] + self.bias_v[j] +

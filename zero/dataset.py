@@ -4,6 +4,7 @@ import random
 from collections import Counter, namedtuple
 from zero.values import rating_values
 import numpy as np
+import pandas as pd
 from datetime import datetime
 import csv
 
@@ -69,18 +70,18 @@ class Dataset:
                         data.writerow(line)
 
     def load_csv(self, filename, convert=float, title_filename=None):
-        with open(filename) as f:
-            triplets = [[int(user_id), int(work_id), rating]
-                        for user_id, work_id, rating in csv.reader(f)]
-        triplets = np.array(triplets, dtype=np.object)
+        df = pd.read_csv(filename)
+        # df['user'] = df['user'].astype(np.int32)
+        # df['item'] = df['item'].astype(np.int32)
+        triplets = np.array(df[['user', 'item', 'rating']], dtype=np.float32)
         # noinspection PyTypeChecker
         vectorized_convert = np.vectorize(convert, otypes=[np.float64])
         self.anonymized = AnonymizedData(
-            X=triplets[:, 0:2],
+            X=triplets[:, 0:2].astype(np.int32),
             y=vectorized_convert(triplets[:, 2]),
             y_text=triplets[:, 2],
-            nb_users=max(triplets[:, 0]) + 1,
-            nb_works=max(triplets[:, 1]) + 1
+            nb_users=int(max(triplets[:, 0]) + 1),
+            nb_works=int(max(triplets[:, 1]) + 1)
         )
         if title_filename is not None:
             with open(title_filename) as f:

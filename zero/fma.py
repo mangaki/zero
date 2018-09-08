@@ -1,14 +1,15 @@
-import numpy as np
-import os
 from scipy.sparse import coo_matrix, hstack
+import numpy as np
+import pywFM
+import os
 
 from zero.recommendation_algorithm import (RecommendationAlgorithm,
                                            register_algorithm)
 
 
-@register_algorithm('fma', {'rank': 20})
+@register_algorithm('fma', {'rank': 20, 'nb_iterations': 20})
 class MangakiFMA(RecommendationAlgorithm):
-    def __init__(self, rank=20, nb_iterations=10):
+    def __init__(self, rank=20, nb_iterations=20):
         super().__init__()
         self.rank = rank
         self.nb_iterations = nb_iterations
@@ -40,22 +41,24 @@ class MangakiFMA(RecommendationAlgorithm):
         X_fm = coo_matrix(([1] * (2 * nb_samples), (rows, cols)),
                           shape=(nb_samples, self.nb_users + self.nb_works)
                           ).tocsr()
+        if self.T.nnz == 0:
+            return X_fm
         X_tags = self.T[work_ids].round()
-        return hstack((X_fm, X_tags))
+        X_full = hstack((X_fm, X_tags))
+        return X_full
 
     def fit(self, X, y):
         # Should not be done in production :)
         # Otherwise you should also install libFM:
         # https://github.com/srendle/libfm
-        import pywFM
         X_fm = self.prepare_fm(X)
         self.chrono.save('prepare data in sparse FM format')
 
         os.environ['LIBFM_PATH'] = 'XXX'  # If applicable
         fm = pywFM.FM(task='regression', num_iter=self.nb_iterations,
-                      k2=self.rank, rlog=False)  # MCMC method
+                      k2=self.rank, rlog=True)  # MCMC method
         # rlog contains the RMSE at each epoch, we do not need it here
-        model = fm.run(X_fm, y, X_fm, y)
+        model = fm.run(X_fm, y, self.prepare_fm(self.X_test), self.y_test)
         self.chrono.save('train FM')
 
         nb_agents = self.nb_users + self.nb_works + self.nb_tags
@@ -75,14 +78,17 @@ class MangakiFMA(RecommendationAlgorithm):
                             [(0, nb_agents - current), (0, 0)],
                             mode='constant')
         self.V2 = np.power(self.V, 2)
+        self.metrics['test']['rmse'] = list(model.rlog['rmse'])
 
     def predict(self, X):
         X_fm = self.prepare_fm(X)
         X2_fm = X_fm.copy()
         X2_fm.data **= 2
-        return (self.mu + X_fm.dot(self.W) +
-                0.5 * (np.linalg.norm(X_fm.dot(self.V), axis=1) ** 2
-                       - X2_fm.dot(self.V2).sum(axis=1)))
+
+        y_pred = (self.mu + X_fm.dot(self.W) +
+                  0.5 * (np.power(X_fm.dot(self.V), 2).sum(axis=1)
+                         - X2_fm.dot(self.V2).sum(axis=1)))
+        return y_pred
 
     def get_shortname(self):
         return 'fma-%d' % self.rank
