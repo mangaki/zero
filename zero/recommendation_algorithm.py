@@ -1,6 +1,5 @@
 from zero.side import SideInformation
 from zero.chrono import Chrono
-from sklearn.metrics import mean_squared_error, mean_absolute_error
 from collections import defaultdict
 import numpy as np
 import pickle
@@ -101,11 +100,11 @@ class RecommendationAlgorithm:
 
     @staticmethod
     def compute_rmse(y_pred, y_true):
-        return mean_squared_error(y_true, y_pred) ** 0.5
+        return np.power(y_true - y_pred, 2).mean() ** 0.5
 
     @staticmethod
     def compute_mae(y_pred, y_true):
-        return mean_absolute_error(y_true, y_pred)
+        return np.abs(y_true - y_pred).mean()
 
     def get_ranked_gains(self, y_pred, y_true):
         return y_true[np.argsort(y_pred)[::-1]]

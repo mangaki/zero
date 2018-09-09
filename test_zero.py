@@ -1,7 +1,10 @@
 from zero.recommendation_algorithm import RecommendationAlgorithm
+from zero.knn import normalize
+from scipy.sparse import csr_matrix, diags
+from scipy.sparse.linalg import norm
+import numpy as np
 import unittest
 import logging
-import numpy as np
 import os
 
 
@@ -29,6 +32,13 @@ class AlgoTest(unittest.TestCase):
         if not os.path.exists(ML_SNAPSHOT_ROOT_TEST):
             os.makedirs(ML_SNAPSHOT_ROOT_TEST)
 
+    def test_normalize(self):
+        X = csr_matrix(np.random.random((5, 2)))
+        X_normalized = normalize(X)
+        norms_normalized = norm(X_normalized, axis=1)
+        for entry in norms_normalized:
+            self.assertLessEqual(abs(entry - 1), 1e-6)
+
     def test_fit_predict(self):
         for algo_name in RecommendationAlgorithm.list_available_algorithms():
             algo = RecommendationAlgorithm.instantiate_algorithm(algo_name)
@@ -36,16 +46,23 @@ class AlgoTest(unittest.TestCase):
             if algo_name in {'balse', 'fma', 'gbr', 'lasso', 'xals'}:
                 algo.nb_tags = self.nb_tags
                 algo.T = self.T
+            if algo_name == 'svd':
+                algo.U = self.U
+                algo.sigma = np.ones(2)
+                algo.VT = self.VT
+                algo.means = np.zeros(self.nb_users)
             algo.X_train = self.X_train
             algo.y_train = self.y_train
             algo.X_test = self.X_test
             algo.y_test = self.y_test
-            algo.fit(self.X_train, self.y_train)
+            if algo_name != 'svd':  # To avoid loading sklearn just for that
+                algo.fit(self.X_train, self.y_train)
             if algo.is_serializable:
                 algo.save(ML_SNAPSHOT_ROOT_TEST)
                 algo.load(ML_SNAPSHOT_ROOT_TEST)
-                algo.delete_snapshot()
             y_pred = algo.predict(self.X_test)
+            if algo.is_serializable:
+                algo.delete_snapshot()
             logging.debug('rmse=%.3f algo=%s',
                           algo.compute_rmse(y_pred, self.y_test), algo_name)
 

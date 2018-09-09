@@ -1,11 +1,26 @@
 from collections import Counter, defaultdict
 
 import numpy as np
-from scipy.sparse import coo_matrix
-from sklearn.metrics.pairwise import cosine_similarity
+from scipy.sparse import coo_matrix, diags
+from scipy.sparse.linalg import norm
 
 from zero.recommendation_algorithm import (RecommendationAlgorithm,
                                            register_algorithm)
+
+
+def normalize(X):
+    norms = norm(X, axis=1)
+    norms[norms == 0] = 1.
+    return diags(1 / norms) @ X
+
+
+def cosine_similarity(X, Y=None):
+    X = normalize(X)
+    if Y is None:
+        Y = X
+    else:
+        Y = normalize(Y)
+    return X @ Y.T
 
 
 @register_algorithm('knn')
@@ -48,7 +63,7 @@ class MangakiKNN(RecommendationAlgorithm):
                     [-self.nb_neighbors - 1:-1]
                 )
             else:
-                neighbor_ids = list(range(len(score[i])))
+                neighbor_ids = list(range(self.nb_users))
                 neighbor_ids.remove(user_id)
             neighbors.append(neighbor_ids)
             self.closest[user_id] = {}

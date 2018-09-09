@@ -1,5 +1,4 @@
 from scipy.sparse import load_npz, issparse, identity
-from sklearn.preprocessing import scale
 import numpy as np
 import os.path
 
@@ -11,8 +10,6 @@ class SideInformation:
         self.perform_scaling = perform_scaling
         self.with_mean = with_mean
         self.load()
-        if self.T.nnz > 0:
-            self.preprocess(self.perform_scaling, self.with_mean)
 
     def load(self):
         # Load in CSC format if no matrix provided.
@@ -23,18 +20,3 @@ class SideInformation:
             else:
                 self.T = identity(0)
         _, self.nb_tags = self.T.shape
-
-    def preprocess(self, perform_scaling, with_mean):
-        if perform_scaling:
-            # Densify T to prevent sparsity destruction
-            # (which will anyway result in an exception).
-            if with_mean and issparse(self.T):
-                self.T = self.T.toarray()
-
-            self.T = scale(self.T, with_mean=with_mean, copy=False)
-
-            # If it's still sparse, let's get a dense version.
-            if issparse(self.T):
-                self.T = self.T.toarray()
-        else:
-            self.T = self.T.toarray() if issparse(self.T) else self.T

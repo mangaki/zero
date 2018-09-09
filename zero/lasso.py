@@ -4,7 +4,6 @@ from zero import RecommendationAlgorithm, register_algorithm
 from scipy.sparse import coo_matrix
 from sklearn.linear_model import Lasso
 from collections import Counter, defaultdict
-# from mangaki.utils.stats import avgstd
 import os.path
 import numpy as np
 
@@ -48,7 +47,6 @@ class MangakiLASSO(RecommendationAlgorithm):
         # (i.e. remove the default factory).
         self.reg.default_factory = None
         self.user_sparsities = self.compute_user_sparsities()
-        # self.logger.info('Sparsity: {}'.format(avgstd(self.user_sparsities)))
 
     def predict(self, X):
         y_pred = np.zeros(X.shape[0])

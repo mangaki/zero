@@ -1,5 +1,4 @@
 import numpy as np
-from sklearn.utils.extmath import randomized_svd
 
 from zero.recommendation_algorithm import (RecommendationAlgorithm,
                                            register_algorithm)
@@ -33,6 +32,8 @@ class MangakiSVD(RecommendationAlgorithm):
         return matrix, means
 
     def fit(self, X, y):
+        from sklearn.utils.extmath import randomized_svd
+
         if self.verbose_level:
             print("Computing M: (%i × %i)" % (self.nb_users, self.nb_works))
         matrix, self.means = self.make_matrix(X, y)
