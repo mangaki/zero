@@ -63,7 +63,7 @@ class MangakiKNN(RecommendationAlgorithm):
                     [-self.nb_neighbors - 1:-1]
                 )
             else:
-                neighbor_ids = list(range(self.nb_users))
+                neighbor_ids = list(range(score[i].getnnz()))
                 neighbor_ids.remove(user_id)
             neighbors.append(neighbor_ids)
             self.closest[user_id] = {}
