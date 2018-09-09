@@ -5,7 +5,7 @@ import numpy as np
 import os
 
 
-SNAPSHOT_DIR_TEST = '/tmp/test_algo'
+ML_SNAPSHOT_ROOT_TEST = '/tmp/test_algo'
 
 
 class AlgoTest(unittest.TestCase):
@@ -25,8 +25,9 @@ class AlgoTest(unittest.TestCase):
         test_work_ids = [1, 0]
         self.X_test = np.column_stack((test_user_ids, test_work_ids))
         self.y_test = self.M[test_user_ids, test_work_ids]
-        if not os.path.exists(SNAPSHOT_DIR_TEST):
-            os.makedirs(SNAPSHOT_DIR_TEST)
+
+        if not os.path.exists(ML_SNAPSHOT_ROOT_TEST):
+            os.makedirs(ML_SNAPSHOT_ROOT_TEST)
 
     def test_fit_predict(self):
         for algo_name in RecommendationAlgorithm.list_available_algorithms():
@@ -35,11 +36,18 @@ class AlgoTest(unittest.TestCase):
             if algo_name in {'balse', 'fma', 'gbr', 'lasso', 'xals'}:
                 algo.nb_tags = self.nb_tags
                 algo.T = self.T
+            algo.X_train = self.X_train
+            algo.y_train = self.y_train
+            algo.X_test = self.X_test
+            algo.y_test = self.y_test
             algo.fit(self.X_train, self.y_train)
             if algo.is_serializable:
-                algo.save('qqpart.pickle')
-                algo.load('qqpart.pickle')
-                os.remove('qqpart.pickle')
+                algo.save(ML_SNAPSHOT_ROOT_TEST)
+                algo.load(ML_SNAPSHOT_ROOT_TEST)
+                algo.delete_snapshot()
             y_pred = algo.predict(self.X_test)
             logging.debug('rmse=%.3f algo=%s',
                           algo.compute_rmse(y_pred, self.y_test), algo_name)
+
+    def tearDown(self):
+        os.removedirs(ML_SNAPSHOT_ROOT_TEST)

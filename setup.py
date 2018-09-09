@@ -12,12 +12,7 @@ setup(
     install_requires=[
         'numpy>=1.13.3,<=1.14.5',
         'scipy>=1',
-        'scikit-learn',
         'pandas',
-        'tensorflow',
-        'fastFM',
-        'pywFM',
-        'surprise'
     ],
     packages=['zero']
 )

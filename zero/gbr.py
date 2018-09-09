@@ -16,10 +16,6 @@ class MangakiGBR(RecommendationAlgorithm):
         self.nb_estimators = nb_estimators
         self.T = None
 
-    def load(self, filename):
-        backup = super().load(filename)
-        # What should be saved for this model? Depends on gbr.get_params
-
     def prepare_features(self, X, U, V):
         X_full = []
         for (user_id, work_id) in X:

@@ -16,13 +16,6 @@ class MangakiFMA(RecommendationAlgorithm):
         self.fm = None
         self.T = None
 
-    def load(self, filename):
-        backup = super().load(filename)
-        self.mu = backup.mu
-        self.W = backup.W
-        self.V = backup.V
-        self.V2 = backup.V2
-
     @property
     def is_serializable(self):
         return True

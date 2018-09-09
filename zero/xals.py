@@ -20,13 +20,6 @@ class MangakiXALS(RecommendationAlgorithm):
     def is_serializable(self):
         return True
 
-    def load(self, filename):
-        backup = super().load(filename)
-        self.M = backup.M
-        self.U = backup.U
-        self.VT = backup.VT
-        self.means = backup.means
-
     def make_matrix(self, X, y):
         matrix = defaultdict(dict)
         means = np.zeros((self.nb_users,))

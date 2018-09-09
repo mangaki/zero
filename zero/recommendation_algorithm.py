@@ -45,38 +45,47 @@ class RecommendationAlgorithm:
         self.nb_users = None
         self.nb_works = None
         self.size = 0  # For backup files
-        self.metrics = defaultdict(lambda: defaultdict(list))
+        self.metrics = {category: defaultdict(list)
+                        for category in {'train', 'test'}}
+        self.dataset = None
+        self.X_train = None
+        self.y_train = None
+        self.X_test = None
+        self.y_test = None
 
-    def get_backup_path(self, filename):
+    def get_backup_path(self, folder, filename):
+        if not self.is_serializable:
+            raise NotImplementedError
         if filename is None:
-            filename = self.get_backup_filename()
-        return filename
+            filename = '%s.pickle' % self.get_shortname()
+        return os.path.join(folder, filename)
 
-    def has_backup(self, filename=None):
-        if filename is None:
-            filename = self.get_backup_filename()
-        return os.path.isfile(self.get_backup_path(filename))
+    # def has_backup(self, filename=None):
+    #     if filename is None:
+    #         filename = self.get_backup_filename()
+    #     return os.path.isfile(self.get_backup_path(filename))
 
     @property
     def is_serializable(self):
         return False
 
-    def save(self, filename):
-        if not self.is_serializable:
-            raise NotImplementedError
-        with open(self.get_backup_path(filename), 'wb') as f:
-            pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
-        self.size = os.path.getsize(self.get_backup_path(filename))  # In bytes
+    def save(self, folder, filename=None):
+        self.backup_path = self.get_backup_path(folder, filename)
+        with open(self.backup_path, 'wb') as f:
+            pickle.dump(self.__dict__, f, pickle.HIGHEST_PROTOCOL)
+        self.size = os.path.getsize(self.backup_path)  # In bytes
 
-    def load(self, filename):
+    def load(self, folder, filename=None):
         """
         This function raises FileNotFoundException if no backup exists.
         """
-        if not self.is_serializable:
-            raise NotImplementedError
-        with open(self.get_backup_path(filename), 'rb') as f:
+        self.backup_path = self.get_backup_path(folder, filename)
+        with open(self.backup_path, 'rb') as f:
             backup = pickle.load(f)
-        return backup
+        self.__dict__.update(backup)
+
+    def delete_snapshot(self):
+        os.remove(self.backup_path)
 
     def load_tags(self, T=None, perform_scaling=True, with_mean=False):
         side = SideInformation(T, perform_scaling, with_mean)
@@ -89,9 +98,6 @@ class RecommendationAlgorithm:
 
     def get_shortname(self):
         return 'algo'
-
-    def get_backup_filename(self):
-        return '%s.pickle' % self.get_shortname()
 
     @staticmethod
     def compute_rmse(y_pred, y_true):
@@ -130,14 +136,16 @@ class RecommendationAlgorithm:
         return self.dcg_at_k(r, k) / idcg
 
     def compute_metrics(self):
-        y_train_pred = self.predict(self.X_train)
-        train_rmse = self.compute_rmse(self.y_train, y_train_pred)
-        y_test_pred = self.predict(self.X_test)
-        test_rmse = self.compute_rmse(self.y_test, y_test_pred)
-        self.metrics['train']['rmse'].append(train_rmse)
-        self.metrics['test']['rmse'].append(test_rmse)
-        logging.warning('Train RMSE=%f', train_rmse)
-        logging.warning('Test RMSE=%f', test_rmse)
+        if self.X_train is not None:
+            y_train_pred = self.predict(self.X_train)
+            train_rmse = self.compute_rmse(self.y_train, y_train_pred)
+            self.metrics['train']['rmse'].append(train_rmse)
+            logging.warning('Train RMSE=%f', train_rmse)
+        if self.X_test is not None:
+            y_test_pred = self.predict(self.X_test)
+            test_rmse = self.compute_rmse(self.y_test, y_test_pred)
+            self.metrics['test']['rmse'].append(test_rmse)
+            logging.warning('Test RMSE=%f', test_rmse)
 
     @staticmethod
     def available_evaluation_metrics():

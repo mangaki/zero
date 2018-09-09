@@ -14,10 +14,6 @@ class MangakiCFM(RecommendationAlgorithm):
         self.nb_iterations = nb_iterations
         self.fm = None
 
-    def load(self, filename):
-        backup = super().load(filename)
-        # Would need to use als.set_params, fed with als.get_params
-
     @property
     def is_serializable(self):
         return False  # Not yet

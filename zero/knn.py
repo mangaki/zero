@@ -25,19 +25,6 @@ class MangakiKNN(RecommendationAlgorithm):
         self.sum_ratings = {}
         self.nb_ratings = {}
 
-    def load(self, filename):
-        backup = super().load(filename)
-        self.nb_neighbors = backup.nb_neighbors
-        self.closest = backup.closest
-        self.rated_works = backup.rated_works
-        self.mean_score = backup.mean_score
-        self.ratings = backup.ratings
-        self.sum_ratings = backup.sum_ratings
-        self.nb_ratings = backup.nb_ratings
-        self.M = backup.M
-        self.nb_works = backup.nb_works
-        self.nb_users = backup.nb_users
-
     @property
     def is_serializable(self):
         return True

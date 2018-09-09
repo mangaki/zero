@@ -37,13 +37,6 @@ class MangakiWALS(RecommendationAlgorithm):
         super().__init__()
         self.nb_components = nb_components
 
-    def load(self, filename):
-        backup = super().load(filename)
-        self.M = backup.M
-        self.U = backup.U
-        self.V = backup.V
-        self.means = backup.means
-
     @property
     def is_serializable(self):
         return True

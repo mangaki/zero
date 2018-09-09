@@ -1,0 +1,6 @@
+scikit-learn
+tensorflow
+fastFM
+pywFM
+surprise
+matplotlib

@@ -27,25 +27,9 @@ class Dataset:
         self.interesting_works = None
         self.datetime = datetime.now()
 
-    def save(self, filename):
-        with open(filename, 'wb') as f:
-            pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
-
-    def load(self, filename):
-        with open(filename, 'rb') as f:
-            backup = pickle.load(f)
-        self.anonymized = backup.anonymized
-        self.titles = backup.titles
-        self.categories = backup.categories
-        self.encode_user = backup.encode_user
-        self.decode_user = backup.decode_user
-        self.encode_work = backup.encode_work
-        self.decode_work = backup.decode_work
-        self.interesting_works = backup.interesting_works
-
-    def save_csv(self, suffix=''):
-        ratings_path = 'ratings{}.csv'.format(suffix)
-        works_path = 'works{}.csv'.format(suffix)
+    def save_csv(self, folder, suffix=''):
+        ratings_path = os.path.join(folder, 'ratings{}.csv'.format(suffix))
+        works_path = os.path.join('works{}.csv'.format(suffix))
         confirm = True
         if os.path.isfile(ratings_path) or os.path.isfile(works_path):
             confirm = input('`{}` or `{}` already exists. Overwrite? [y/n] '
@@ -71,8 +55,6 @@ class Dataset:
 
     def load_csv(self, filename, convert=float, title_filename=None):
         df = pd.read_csv(filename)
-        # df['user'] = df['user'].astype(np.int32)
-        # df['item'] = df['item'].astype(np.int32)
         triplets = np.array(df[['user', 'item', 'rating']], dtype=np.float32)
         # noinspection PyTypeChecker
         vectorized_convert = np.vectorize(convert, otypes=[np.float64])
