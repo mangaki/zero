@@ -49,6 +49,16 @@ class MangakiSVD(RecommendationAlgorithm):
 
         self.chrono.save('factor matrix')
 
+    def fit_single_user(self, rated_works, ratings):
+        nb_components = min(self.nb_components, self.sigma.shape[0])
+        mean_user = np.mean(ratings)
+        ratings -= mean_user
+        Ru = np.array(ratings, ndmin=2).T
+        Vu = np.diag(self.sigma).dot(self.VT[:, rated_works])
+        Gu = 0.1 * len(rated_works) * np.eye(nb_components)
+        feat_user = np.linalg.solve(Vu.dot(Vu.T) + Gu, Vu.dot(Ru)).reshape(-1)
+        return mean_user, feat_user
+
     def unzip(self):
         self.chrono.save('begin of fit')
         self.M = self.U.dot(np.diag(self.sigma)).dot(self.VT)
@@ -61,6 +71,10 @@ class MangakiSVD(RecommendationAlgorithm):
             M = self.U.dot(np.diag(self.sigma)).dot(self.VT)
         return (M[X[:, 0].astype(np.int64), X[:, 1].astype(np.int64)] +
                 self.means[X[:, 0].astype(np.int64)])
+
+    def predict_single_user(self, work_ids, user_parameters):
+        mean, U = user_parameters
+        return mean + U.dot(self.VT[:, work_ids])
 
     def get_shortname(self):
         return 'svd-%d' % self.nb_components

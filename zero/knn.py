@@ -20,7 +20,15 @@ def cosine_similarity(X, Y=None):
         Y = X
     else:
         Y = normalize(Y)
-    return X @ Y.T
+    return (X @ Y.T).toarray()
+
+
+def mean_of_nonzero(X, cols):
+    X_csc = X.tocsc()
+    sums = X_csc[:, cols].sum(axis=0).A1
+    counts = np.diff(X_csc.indptr)[cols]
+    counts[counts == 0] = 1.
+    return sums / counts
 
 
 @register_algorithm('knn')
@@ -63,7 +71,7 @@ class MangakiKNN(RecommendationAlgorithm):
                     [-self.nb_neighbors - 1:-1]
                 )
             else:
-                neighbor_ids = list(range(score[i].getnnz()))
+                neighbor_ids = list(range(self.nb_users))
                 neighbor_ids.remove(user_id)
             neighbors.append(neighbor_ids)
             self.closest[user_id] = {}
@@ -89,6 +97,14 @@ class MangakiKNN(RecommendationAlgorithm):
         for work_id in self.nb_ratings:
             self.mean_score[work_id] = (self.sum_ratings[work_id] /
                                         self.nb_ratings[work_id])
+
+    def fit_single_user(self, rated_works, ratings):
+        nb_rated = len(rated_works)
+        nb_neighbors = min(self.nb_neighbors, self.nb_users)
+        user_ratings = coo_matrix((ratings, ([0.] * nb_rated, rated_works)),
+                                  shape=(1, self.nb_works)).tocsr()
+        score = cosine_similarity(user_ratings, self.M).reshape(-1)
+        return np.argpartition(score, -nb_neighbors)[-nb_neighbors:]
 
     def predict(self, X):
         # Compute only relevant neighbors
@@ -123,6 +139,9 @@ class MangakiKNN(RecommendationAlgorithm):
                 predicted_rating /= weight
             y.append(predicted_rating)
         return np.array(y)
+
+    def predict_single_user(self, work_ids, neighbor_ids):
+        return mean_of_nonzero(self.M[neighbor_ids], work_ids)
 
     def __str__(self):
         return '[KNN] NB_NEIGHBORS = %d' % self.nb_neighbors

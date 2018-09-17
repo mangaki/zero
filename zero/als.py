@@ -89,6 +89,15 @@ class MangakiALS(RecommendationAlgorithm):
 
         self.chrono.save('factor matrix')
 
+    def fit_single_user(self, rated_works, ratings):
+        mean_user = np.mean(ratings)
+        ratings -= mean_user
+        Ru = np.array(ratings, ndmin=2).T
+        Vu = self.VT[:, rated_works]
+        Gu = self.lambda_ * len(rated_works) * np.eye(self.nb_components)
+        feat_user = np.linalg.solve(Vu.dot(Vu.T) + Gu, Vu.dot(Ru)).reshape(-1)
+        return mean_user, feat_user
+
     def unzip(self):
         self.chrono.save('begin of fit')
         self.M = self.U.dot(self.VT)
@@ -101,6 +110,10 @@ class MangakiALS(RecommendationAlgorithm):
             M = self.U.dot(self.VT)
         return (M[X[:, 0].astype(np.int64), X[:, 1].astype(np.int64)] +
                 self.means[X[:, 0].astype(np.int64)])
+
+    def predict_single_user(self, work_ids, user_parameters):
+        mean, U = user_parameters
+        return mean + U.dot(self.VT[:, work_ids])
 
     def get_shortname(self):
         return 'als-%d' % self.nb_components

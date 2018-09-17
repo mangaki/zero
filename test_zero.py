@@ -57,6 +57,11 @@ class AlgoTest(unittest.TestCase):
             algo.y_test = self.y_test
             if algo_name != 'svd':  # To avoid loading sklearn just for that
                 algo.fit(self.X_train, self.y_train)
+            if algo_name in {'als', 'knn', 'svd'}:
+                user_parameters = algo.fit_single_user([1], [2])
+                y_pred = algo.predict_single_user(list(range(self.nb_works)),
+                                                  user_parameters)
+                self.assertEqual(len(y_pred.shape), 1)
             if algo.is_serializable:
                 algo.save(ML_SNAPSHOT_ROOT_TEST)
                 algo.load(ML_SNAPSHOT_ROOT_TEST)
