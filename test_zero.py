@@ -41,6 +41,7 @@ class AlgoTest(unittest.TestCase):
 
     def test_fit_predict(self):
         for algo_name in RecommendationAlgorithm.list_available_algorithms():
+            print(algo_name)
             algo = RecommendationAlgorithm.instantiate_algorithm(algo_name)
             algo.set_parameters(self.nb_users, self.nb_works)
             if algo_name in {'balse', 'fma', 'gbr', 'lasso', 'xals'}:
@@ -57,7 +58,7 @@ class AlgoTest(unittest.TestCase):
             algo.y_test = self.y_test
             if algo_name != 'svd':  # To avoid loading sklearn just for that
                 algo.fit(self.X_train, self.y_train)
-            if algo_name in {'als', 'knn', 'svd'}:
+            if algo_name in {'als', 'knn', 'sgd', 'svd'}:
                 user_parameters = algo.fit_single_user([1], [2])
                 y_pred = algo.predict_single_user(list(range(self.nb_works)),
                                                   user_parameters)

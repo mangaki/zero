@@ -1,9 +1,8 @@
 import numpy as np
 from scipy.sparse import coo_matrix
-from sklearn.metrics import mean_squared_error
-from sklearn.metrics.pairwise import cosine_similarity
 import random
 import logging
+import time
 
 from zero.recommendation_algorithm import (RecommendationAlgorithm,
                                            register_algorithm)
@@ -27,6 +26,7 @@ class MangakiSGD(RecommendationAlgorithm):
         self.V = np.random.random((self.nb_works, self.nb_components))
         for epoch in range(self.nb_iterations):
             step = 0
+            dt = time.time()
             for (i, j), rating in zip(X, y):
                 predicted_rating = self.predict_one(i, j)
                 error = predicted_rating - rating
@@ -40,7 +40,19 @@ class MangakiSGD(RecommendationAlgorithm):
                 self.V[j] -= self.gamma * (error * self.U[i] +
                                            self.lambda_ * self.V[j])
                 step += 1
+            print('elapsed', time.time() - dt)
             self.compute_metrics()
+
+    def fit_single_user(self, rated_works, ratings):
+        bias_user = np.mean(ratings)
+        feat_user = np.random.random(self.nb_components)
+        for epoch in range(self.nb_iterations):
+            for j, rating in zip(rated_works, ratings):
+                pred = self.bias + bias_user + self.bias_v[j] + feat_user.dot(self.V[j])
+                error = pred - rating
+                bias_user -= self.gamma * (error + self.lambda_ * bias_user)
+                feat_user -= self.gamma * (error * self.V[j] + self.lambda_ * feat_user)
+        return bias_user, feat_user
 
     def predict_one(self, i, j):
         return (self.bias + self.bias_u[i] + self.bias_v[j] +
@@ -51,6 +63,10 @@ class MangakiSGD(RecommendationAlgorithm):
         for user_id, work_id in X:
             y.append(self.predict_one(user_id, work_id))
         return np.array(y)
+
+    def predict_single_user(self, work_ids, user_parameters):
+        bias_user, feat_user = user_parameters
+        return self.bias + bias_user + self.bias_v[work_ids] + self.V[work_ids].dot(feat_user)
 
     @property
     def is_serializable(self):
