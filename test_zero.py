@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from zero.recommendation_algorithm import RecommendationAlgorithm
 from zero.knn import normalize
 from scipy.sparse import csr_matrix, diags
