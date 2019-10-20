@@ -2,7 +2,7 @@ from distutils.core import setup
 
 
 setup(
-    name='Mangaki Zero',
+    name='mangaki-zero',
     version='1.0',
     description='Recommendation algorithms',
     author='Jill-Jênn Vie',
