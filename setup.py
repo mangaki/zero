@@ -10,7 +10,7 @@ setup(
     url='http://research.mangaki.fr',
     python_requires='>=3.4',
     install_requires=[
-        'numpy>=1.13.3,<=1.14.5',
+        'numpy>=1.13.3,<=1.18.2',
         'scipy>=1',
         'pandas',
     ],
