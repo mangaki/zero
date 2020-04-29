@@ -41,7 +41,7 @@ class AlgoTest(unittest.TestCase):
 
     def test_fit_predict(self):
         for algo_name in RecommendationAlgorithm.list_available_algorithms():
-            print(algo_name)
+            print('Testing algorithm', algo_name)
             algo = RecommendationAlgorithm.instantiate_algorithm(algo_name)
             algo.set_parameters(self.nb_users, self.nb_works)
             if algo_name in {'balse', 'fma', 'gbr', 'lasso', 'xals'}:

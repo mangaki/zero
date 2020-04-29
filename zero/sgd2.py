@@ -30,7 +30,7 @@ class MangakiSGD2(RecommendationAlgorithm):
         X_users = onehotize(X[:, 0], self.nb_users)
         X_works = onehotize(X[:, 1], self.nb_works)
         X_fm = hstack([X_users, X_works]).tocsr()
-        batch_size = len(X) // self.batches
+        batch_size = max(1, len(X) // self.batches)
         for epoch in range(self.nb_iterations):
             step = 0
             dt = time.time()
