@@ -6,9 +6,8 @@ authors = ["Jill-Jênn Vie <vie@jill-jenn.net>"]
 license = "GPL-3.0"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 numpy = "^1.13"
-scipy = "^1"
 pandas = "^0.25.2"
 
 scikit-learn = { version="*", optional = true }
@@ -16,6 +15,7 @@ tensorflow = { version="*", optional = true }
 fastFM = { version="*", optional = true }
 pywFM = { version="*", optional = true }
 surprise = { version="*", optional = true }
+scipy = "^1.4.1"
 
 [tool.poetry.extras]
 deep = ["tensorflow"]
