@@ -7,7 +7,7 @@ license = "GPL-3.0"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-numpy = "^1.13"
+numpy = "^1.18"
 pandas = "^0.25.2"
 
 scikit-learn = { version="*", optional = true }

@@ -584,7 +584,7 @@ external = ["scikit-learn", "surprise"]
 fm = ["fastFM", "pywFM"]
 
 [metadata]
-content-hash = "3f8dd61431b83f631058e1a183429255abd2de2adf4e4c1cc7e8297fa222b0cd"
+content-hash = "1f63984934e625fd6093c97d0680bae95d7538ad2c7d8a77d3d44277191ccad3"
 python-versions = "^3.7"
 
 [metadata.files]
