@@ -4,6 +4,15 @@ version = "1.0"
 description = "Mangaki's recommandation algorithms"
 authors = ["Jill-Jênn Vie <vie@jill-jenn.net>"]
 license = "GPL-3.0"
+readme = "README.md"
+homepage = "http://research.mangaki.fr"
+documentation = "https//github.com/mangaki/zero"
+keywords = ["machine learning", "recommandation", "mangaki", "recommender systems", "algorithms"]
+
+packages = [
+  { include = "zero" }
+]
+
 
 [tool.poetry.dependencies]
 python = "^3.7"
