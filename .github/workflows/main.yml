@@ -34,7 +34,7 @@ jobs:
         signingKey: "$CACHIX_SIGNING_KEY"
         
     - name: Run tests
-      run: nix-shell -f shell.nix --run "py.test -n 2 --cov-report=xml --cov=zero"
+      run: nix-shell shell.nix --command "py.test -n 2 --cov-report=xml --cov=zero"
     
     - name: Report coverage results to CodeCov
       run: bash <(curl -s https://codecov.io/bash)
