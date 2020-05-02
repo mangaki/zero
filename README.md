@@ -1,6 +1,9 @@
 # Zero
 
-![Mangaki Zero's CI status](https://github.com/mangaki/zero/workflows/CI/badge.svg)
+[![Mangaki Zero's CI status](https://github.com/mangaki/zero/workflows/CI/badge.svg)](https://mangaki/zero/actions)
+[![Mangaki Zero's code coverage](https://codecov.io/gh/mangaki/zero/branch/master/graph/badge.svg)](https://codecov.io/gh/mangaki/zero)
+
+
 
 Mangaki's recommendation algorithms.
 
