@@ -1,4 +1,17 @@
-{ pkgs ? import <nixpkgs> {}, python ? pkgs.python3, useMKL ? true }:
+{ blasProvider ? "openblasCompat"
+, pkgs ? import <nixpkgs> {
+  config.allowUnfree = blasProvider == "mkl";
+  overlays = [
+    (self: super: {
+        lapack = super.lapack.override {
+          lapackProvider = super.${blasProvider};
+        };
+        blas = super.blas.override {
+          blasProvider = super.${blasProvider};
+        };
+      })]; }
+, pythonPackageName ? "python3"
+, python ? pkgs.${pythonPackageName}}:
 
 rec {
   pythonDependencies = (python.withPackages
