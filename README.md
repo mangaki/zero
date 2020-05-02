@@ -7,6 +7,8 @@
 
 Mangaki's recommendation algorithms.
 
+It is tested on Python 3.6, 3.7 and 3.8 over OpenBLAS LP64 & MKL.
+
 ## Usage
 
 Most models have the following routines:

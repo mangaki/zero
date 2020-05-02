@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         blasProvider: [ "openblasCompat", "mkl" ]
-        pythonVersion: [ "python37", "python38" ]
+        pythonVersion: [ "python36", "python37", "python38" ]
 
     env:
       PYTHON_PACKAGE_NAME: ${{ matrix.pythonVersion }}
@@ -46,7 +46,7 @@ jobs:
         -A shell \
         --argstr blasProvider "$BLAS_PROVIDER" \
         --argstr pythonPackageName "$PYTHON_PACKAGE_NAME" \
-        --command "python -c 'import numpy; numpy.show_config()' && py.test -n 2 --cov-report=xml --cov=zero"
+        --command "python -c 'py.test --cov-report=xml --cov=zero"
     
     - name: Report coverage results to CodeCov
       run: bash <(curl -s https://codecov.io/bash)
