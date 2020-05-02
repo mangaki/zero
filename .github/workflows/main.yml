@@ -46,7 +46,7 @@ jobs:
         -A shell \
         --argstr blasProvider "$BLAS_PROVIDER" \
         --argstr pythonPackageName "$PYTHON_PACKAGE_NAME" \
-        --command "python -c 'py.test --cov-report=xml --cov=zero"
+        --command "py.test --cov-report=xml --cov=zero"
     
     - name: Report coverage results to CodeCov
       run: bash <(curl -s https://codecov.io/bash)
