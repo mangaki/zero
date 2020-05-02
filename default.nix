@@ -6,6 +6,9 @@ rec {
     ps.numpy
     ps.scipy
     ps.pandas
+    ps.pytest
+    ps.pytest_xdist
+    ps.pytestcov
   ]));
 
   shell = pkgs.mkShell {

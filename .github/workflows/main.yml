@@ -1,0 +1,40 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build-and-test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+      
+    - name: Install Nix
+      uses: cachix/install-nix-action@v8
+      
+    - name: Get the magic cache (Cachix)
+      uses: cachix/cachix-action@v6
+      with:
+        # Name of a cachix cache to push and pull/substitute
+        name: mangaki
+        # Signing key secret retrieved after creating binary cache on https://cachix.org
+        signingKey: "$CACHIX_SIGNING_KEY"
+        
+    - name: Run tests
+      run: nix-shell -f shell.nix --run "py.test -n 2 --cov-report=xml --cov=zero"
+    
+    - name: Report coverage results to CodeCov
+      run: bash <(curl -s https://codecov.io/bash)
