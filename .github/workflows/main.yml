@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        blasProvider: [openblasCompat mkl lapack-reference]
-        pythonVersion: [ python37 python38 ]
+        blasProvider: [ "openblasCompat", "mkl", "lapack-reference" ]
+        pythonVersion: [ "python37", "python38" ]
 
     env:
       pythonVersion: ${{ matrix.pythonVersion }}
