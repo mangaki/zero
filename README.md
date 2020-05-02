@@ -1,5 +1,7 @@
 # Zero
 
+![Mangaki Zero's CI status](https://github.com/mangaki/zero/workflows/CI/badge.svg)
+
 Mangaki's recommendation algorithms.
 
 ## Usage
