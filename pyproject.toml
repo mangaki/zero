@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mangaki-zero"
-version = "1.0"
+version = "1.0.1"
 description = "Mangaki's recommandation algorithms"
 authors = ["Jill-Jênn Vie <vie@jill-jenn.net>"]
 license = "GPL-3.0"
