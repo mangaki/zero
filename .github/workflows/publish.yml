@@ -29,4 +29,4 @@ jobs:
           run: poetry config pypi-token.pypi '${{ secrets.PYPI_API_TOKEN }}'
 
         - name: Publish to PyPI
-          run: poetry --build publish
+          run: poetry publish --build
