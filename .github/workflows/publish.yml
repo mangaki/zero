@@ -1,0 +1,26 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v2
+          
+        - name: Install Nix
+          uses: cachix/install-nix-action@v8
+          
+        - name: Get the magic cache (Cachix)
+          uses: cachix/cachix-action@v6
+          with:
+            name: mangaki
+            signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+
+        - name: Configure Poetry to publish
+          run: poetry config pypi-token.pypi '${{ secrets.PYPI_API_TOKEN }}'
+
+        - name: Publish to PyPI
+          run: poetry publish

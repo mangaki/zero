@@ -1,7 +1,12 @@
 .DS_Store
 build
 venv
+.venv
 *.csv
 *.json
 *.pdf
 *.pyc
+dist/
+mangaki_zero.egg-info/
+.coverage
+coverage.xml
