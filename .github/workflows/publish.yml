@@ -20,7 +20,10 @@ jobs:
             signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
 
         - name: Install Poetry
-          run: nix-env -iA poetry
+          run: nix-env -iA nixpkgs.poetry
+
+        - name: Install dependencies using Poetry
+          run: poetry install
 
         - name: Configure Poetry to publish
           run: poetry config pypi-token.pypi '${{ secrets.PYPI_API_TOKEN }}'
