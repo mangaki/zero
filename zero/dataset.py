@@ -55,7 +55,7 @@ class Dataset:
 
     def load_csv(self, filename, convert=float, title_filename=None):
         df = pd.read_csv(filename)
-        triplets = np.array(df[['user', 'item', 'rating']], dtype=np.float32)
+        triplets = np.array(df[['user', 'item', 'rating']])
         # noinspection PyTypeChecker
         vectorized_convert = np.vectorize(convert, otypes=[np.float64])
         self.anonymized = AnonymizedData(
