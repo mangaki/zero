@@ -1,5 +1,5 @@
 {
-	"experiments": [
+	"configurations": [
 		["als", 20],
 		["zero"]
 	]
