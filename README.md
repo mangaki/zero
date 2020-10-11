@@ -7,6 +7,12 @@ Mangaki's recommendation algorithms.
 
 They are tested on Python 3.6, 3.7, 3.8 over OpenBLAS LP64 & MKL.
 
+## Install
+
+    python -m venv venv
+	source venv/bin/activate
+	pip install -r requirements.txt
+
 ## Usage
 
 To run cross-validation:
@@ -55,4 +61,4 @@ See [zero.py](zero/zero.py) as an example of dumb baseline (only predicts zeroes
 
 ![Comparing on Movielens](results/movielens.png)
 
-Feel free to use. Under GPLv3 license.
+Feel free to use. Under MIT license.

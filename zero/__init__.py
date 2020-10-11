@@ -9,3 +9,4 @@ from .sgd import MangakiSGD
 from .sgd2 import MangakiSGD2
 from .svd import MangakiSVD
 from .zero import MangakiZero
+from .lasso import MangakiLASSO
