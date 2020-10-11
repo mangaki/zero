@@ -30,6 +30,7 @@ rec {
     ps.numpy
     ps.scipy
     ps.pandas
+	ps.scikitlearn
     ps.pytest
     ps.pytest_xdist
     ps.pytestcov
