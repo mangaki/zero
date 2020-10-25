@@ -55,7 +55,6 @@ class MangakiSVD2(RecommendationAlgorithm):
         self.chrono.save('factor matrix')
 
     def fit_single_user(self, rated_works, ratings):
-        # To double check; we don't have tests for that
         nb_components = min(self.nb_components, self.sigma.shape[0])
         mean_user = np.mean(ratings)
         ratings -= mean_user
@@ -71,7 +70,6 @@ class MangakiSVD2(RecommendationAlgorithm):
                  self.means[X[:, 0]])
 
     def predict_single_user(self, work_ids, user_parameters):
-        # To double check; we don't have tests for that
         mean, U = user_parameters
         return mean + U.dot(self.VT[:, work_ids])
 
