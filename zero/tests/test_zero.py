@@ -58,7 +58,7 @@ def test_fit_predict(
     algo.X_test = X_test
     algo.y_test = y_test
     algo.fit(X_train, y_train)
-    if algo_name in {'als', 'knn', 'sgd', 'svd'}:
+    if algo_name in {'als', 'knn', 'sgd', 'svd', 'svd2'}:
         user_parameters = algo.fit_single_user([1], [2])
         y_pred = algo.predict_single_user(list(range(nb_works)),
                                           user_parameters)
