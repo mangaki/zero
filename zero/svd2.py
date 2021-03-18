@@ -51,6 +51,8 @@ class MangakiSVD2(RecommendationAlgorithm):
     def make_matrix(self, X, y):
         """
         Make a sparse matrix out of X and y.
+        X is a matrix of pairs (user_id, item_id),
+        y are real values of ratings.
         """
         rows = X[:, 0]
         cols = X[:, 1]
