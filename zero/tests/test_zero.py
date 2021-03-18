@@ -47,18 +47,18 @@ def test_fit_predict(
     if algo_name in {'balse', 'fma', 'gbr', 'lasso', 'xals'}:
         algo.nb_tags = nb_tags
         algo.T = T
-    if algo_name == 'svd':
+    if algo_name.startswith('svd'):
         algo.U = U
         algo.sigma = np.ones(2)
         algo.VT = VT
         algo.means = np.zeros(nb_users)
+        algo.nb_components = 2
     algo.X_train = X_train
     algo.y_train = y_train
     algo.X_test = X_test
     algo.y_test = y_test
-    if algo_name != 'svd':  # To avoid loading sklearn just for that
-        algo.fit(X_train, y_train)
-    if algo_name in {'als', 'knn', 'sgd', 'svd'}:
+    algo.fit(X_train, y_train)
+    if algo_name in {'als', 'knn', 'sgd', 'svd', 'svd2'}:
         user_parameters = algo.fit_single_user([1], [2])
         y_pred = algo.predict_single_user(list(range(nb_works)),
                                           user_parameters)

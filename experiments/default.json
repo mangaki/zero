@@ -1,6 +1,6 @@
 {
 	"configurations": [
-		["als", 20],
-		["zero"]
+		["svd2"],
+		["svd"]
 	]
 }

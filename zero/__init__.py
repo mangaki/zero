@@ -8,5 +8,6 @@ from .knn import MangakiKNN
 from .sgd import MangakiSGD
 from .sgd2 import MangakiSGD2
 from .svd import MangakiSVD
+from .svd2 import MangakiSVD2
 from .zero import MangakiZero
 from .lasso import MangakiLASSO
