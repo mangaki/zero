@@ -39,6 +39,8 @@ rec {
   shell = pkgs.mkShell {
     buildInputs = with pkgs; [
       pythonDependencies
+      python.pkgs.sphinx
+      python.pkgs.sphinxcontrib-jsmath
       poetry
     ];
   };

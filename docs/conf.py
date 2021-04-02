@@ -29,7 +29,8 @@ author = 'Jill-Jênn Vie, Ryan Lahfa, Basile Clément'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.viewcode'
+    'sphinx.ext.viewcode',
+    'sphinx.ext.githubpages', # Add .nojekyll
 ]
 
 # Add any paths that contain templates here, relative to this directory.
