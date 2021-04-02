@@ -23,7 +23,7 @@ jobs:
           run: |
             nix-shell default.nix \
             -A shell \
-            --command "sphinx-build -d /tmp -b html docs /tmp"
+            --command "sphinx-build -d /tmp -b html docs /tmp/_build"
 
         - name: Deploy to GitHub Pages
           uses: JamesIves/github-pages-deploy-action@4.1.0
