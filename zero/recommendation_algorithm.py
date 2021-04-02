@@ -85,7 +85,7 @@ class RecommendationAlgorithm:
         self.__dict__.update(backup)
 
     def delete_snapshot(self):
-        os.remove(self.backup_pat)
+        os.remove(self.backup_path)
 
     def recommend(self, user_ids, item_ids=None, k=None, method='mean'):
         """
