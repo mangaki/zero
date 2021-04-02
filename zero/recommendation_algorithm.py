@@ -1,6 +1,7 @@
 from zero.side import SideInformation
 from zero.chrono import Chrono
 from collections import defaultdict
+from itertools import product
 import numpy as np
 import pickle
 import os.path
@@ -84,7 +85,36 @@ class RecommendationAlgorithm:
         self.__dict__.update(backup)
 
     def delete_snapshot(self):
-        os.remove(self.backup_path)
+        os.remove(self.backup_pat)
+
+    def recommend(self, user_ids, item_ids=None, k=None, method='mean'):
+        """
+        Recommend :math:`k` items to a group of users.
+
+        :param user_ids: the users
+        :param item_ids: a subset of items. If is it None, then it is all items.
+        :param k: the number of items to recommend, if None then it is all items.
+        :param method: a way to combine the predictions. By default it is mean.
+        :returns: a numpy array with two columns, `item_id` and recommendation score
+        :complexity: :math:`O(N + K \log K)`
+        """
+        if item_ids is None:
+            item_ids = np.arange(self.nb_works)
+        n = len(item_ids)
+        if k is None:
+            k = n
+        X = np.array(list(product(user_ids, item_ids)))
+        pred = self.predict(X).reshape(len(user_ids), -1)
+        if method == 'mean':
+            combined_pred = pred.mean(axis=0)
+            indices = np.argpartition(combined_pred, n - k)[-k:]
+            results = np.empty(k, dtype=[('item_id', int), ('score', combined_pred.dtype)])
+            results['item_id'] = indices
+            results['score'] = combined_pred
+            results.sort(order='score')
+            return results[::-1]
+        else:
+            raise NotImplementedError
 
     def load_tags(self, T=None, perform_scaling=True, with_mean=False):
         side = SideInformation(T, perform_scaling, with_mean)
