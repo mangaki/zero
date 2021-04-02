@@ -12,6 +12,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="zero.tests package" href="zero.tests.html" />
@@ -41,7 +42,6 @@
 <li class="toctree-l1"><a class="reference internal" href="zero.tests.html">zero.tests package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="zero.tests.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zero.tests.html#module-zero.tests.test_zero">zero.tests.test_zero module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="zero.tests.html#zero-tests-test-zero-flymake-module">zero.tests.test_zero_flymake module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zero.tests.html#module-zero.tests">Module contents</a></li>
 </ul>
 </li>
@@ -775,6 +775,28 @@ Complexity: O(P·(M log M + K)) =&gt; Oops!</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.recommend">
+<code class="sig-name descname">recommend</code><span class="sig-paren">(</span><em class="sig-param">user_ids</em>, <em class="sig-param">item_ids=None</em>, <em class="sig-param">k=None</em>, <em class="sig-param">method='mean'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.recommend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.recommend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recommend <span class="math notranslate nohighlight">\(k\)</span> items to a group of users.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_ids</strong> – the users</p></li>
+<li><p><strong>item_ids</strong> – a subset of items. If is it None, then it is all items.</p></li>
+<li><p><strong>k</strong> – the number of items to recommend, if None then it is all items.</p></li>
+<li><p><strong>method</strong> – a way to combine the predictions. By default it is mean.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a numpy array with two columns, <cite>item_id</cite> and recommendation score</p>
+</dd>
+<dt class="field-odd">Complexity</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(O(N + K \log K)\)</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="zero.recommendation_algorithm.RecommendationAlgorithm.register_algorithm">
 <em class="property">classmethod </em><code class="sig-name descname">register_algorithm</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">klass</em>, <em class="sig-param">default_kwargs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.register_algorithm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.register_algorithm" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -946,9 +968,6 @@ Complexity: O(P·(M log M + K)) =&gt; Oops!</p>
 </div>
 <div class="section" id="zero-ssvd-module">
 <h2>zero.ssvd module<a class="headerlink" href="#zero-ssvd-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="zero-ssvd-flymake-module">
-<h2>zero.ssvd_flymake module<a class="headerlink" href="#zero-ssvd-flymake-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-zero.svd">
 <span id="zero-svd-module"></span><h2>zero.svd module<a class="headerlink" href="#module-zero.svd" title="Permalink to this headline">¶</a></h2>

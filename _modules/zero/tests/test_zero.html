@@ -12,6 +12,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -100,7 +101,12 @@
         <span class="n">tmp_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">algo</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span>
         <span class="n">algo</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span>
+    <span class="c1"># Predict on test set</span>
     <span class="n">y_pred</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="c1"># Reorder works 2 and 4 for users 1 and 3</span>
+    <span class="n">algo</span><span class="o">.</span><span class="n">recommend</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+    <span class="c1"># Recommend any works to users 1 and 3</span>
+    <span class="n">algo</span><span class="o">.</span><span class="n">recommend</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">algo</span><span class="o">.</span><span class="n">is_serializable</span><span class="p">:</span>
         <span class="n">algo</span><span class="o">.</span><span class="n">delete_snapshot</span><span class="p">()</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;rmse=</span><span class="si">%.3f</span><span class="s1"> algo=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
