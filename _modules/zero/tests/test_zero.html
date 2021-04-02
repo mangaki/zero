@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>zero.tests.test_zero &#8212; Mangaki Zero  documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for zero.tests.test_zero</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">zero.recommendation_algorithm</span> <span class="kn">import</span> <span class="n">RecommendationAlgorithm</span>
+<span class="kn">from</span> <span class="nn">zero.knn</span> <span class="kn">import</span> <span class="n">normalize</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span><span class="p">,</span> <span class="n">diags</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="kn">import</span> <span class="n">norm</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pytest</span>
+
+
+<span class="c1"># Test normalization function.</span>
+<div class="viewcode-block" id="test_normalize"><a class="viewcode-back" href="../../../source/zero.tests.html#zero.tests.test_zero.test_normalize">[docs]</a><span class="k">def</span> <span class="nf">test_normalize</span><span class="p">():</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+    <span class="n">X_normalized</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">norms_normalized</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">X_normalized</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">norms_normalized</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">entry</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1e-6</span></div>
+
+<div class="viewcode-block" id="test_fit_predict"><a class="viewcode-back" href="../../../source/zero.tests.html#zero.tests.test_zero.test_fit_predict">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+        <span class="p">(</span><span class="s2">&quot;algo_name&quot;</span><span class="p">,</span> <span class="s2">&quot;nb_users&quot;</span><span class="p">,</span> <span class="s2">&quot;nb_works&quot;</span><span class="p">,</span> <span class="s2">&quot;nb_tags&quot;</span><span class="p">),</span>
+        <span class="p">[(</span><span class="n">name</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">RecommendationAlgorithm</span><span class="o">.</span><span class="n">list_available_algorithms</span><span class="p">()])</span>
+<span class="k">def</span> <span class="nf">test_fit_predict</span><span class="p">(</span>
+        <span class="n">algo_name</span><span class="p">,</span>
+        <span class="n">nb_users</span><span class="p">,</span>
+        <span class="n">nb_works</span><span class="p">,</span>
+        <span class="n">nb_tags</span><span class="p">,</span>
+        <span class="n">tmp_path</span><span class="p">):</span>
+    <span class="c1"># set up some variables.</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">nb_users</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">VT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="n">nb_works</span><span class="p">))</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">nb_works</span><span class="p">,</span> <span class="n">nb_tags</span><span class="p">))</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">VT</span><span class="p">)</span>
+
+    <span class="n">train_user_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="n">train_work_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">X_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">train_user_ids</span><span class="p">,</span> <span class="n">train_work_ids</span><span class="p">))</span>
+    <span class="n">y_train</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">train_user_ids</span><span class="p">,</span> <span class="n">train_work_ids</span><span class="p">]</span>
+    <span class="n">test_user_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">test_work_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">X_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">test_user_ids</span><span class="p">,</span> <span class="n">test_work_ids</span><span class="p">))</span>
+    <span class="n">y_test</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">test_user_ids</span><span class="p">,</span> <span class="n">test_work_ids</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Testing algorithm&#39;</span><span class="p">,</span> <span class="n">algo_name</span><span class="p">)</span>
+    <span class="n">algo</span> <span class="o">=</span> <span class="n">RecommendationAlgorithm</span><span class="o">.</span><span class="n">instantiate_algorithm</span><span class="p">(</span><span class="n">algo_name</span><span class="p">)</span>
+    <span class="n">algo</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">nb_users</span><span class="p">,</span> <span class="n">nb_works</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">algo_name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;balse&#39;</span><span class="p">,</span> <span class="s1">&#39;fma&#39;</span><span class="p">,</span> <span class="s1">&#39;gbr&#39;</span><span class="p">,</span> <span class="s1">&#39;lasso&#39;</span><span class="p">,</span> <span class="s1">&#39;xals&#39;</span><span class="p">}:</span>
+        <span class="n">algo</span><span class="o">.</span><span class="n">nb_tags</span> <span class="o">=</span> <span class="n">nb_tags</span>
+        <span class="n">algo</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">T</span>
+    <span class="k">if</span> <span class="n">algo_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;svd&#39;</span><span class="p">):</span>
+        <span class="n">algo</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="n">U</span>
+        <span class="n">algo</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">algo</span><span class="o">.</span><span class="n">VT</span> <span class="o">=</span> <span class="n">VT</span>
+        <span class="n">algo</span><span class="o">.</span><span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nb_users</span><span class="p">)</span>
+        <span class="n">algo</span><span class="o">.</span><span class="n">nb_components</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">algo</span><span class="o">.</span><span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train</span>
+    <span class="n">algo</span><span class="o">.</span><span class="n">y_train</span> <span class="o">=</span> <span class="n">y_train</span>
+    <span class="n">algo</span><span class="o">.</span><span class="n">X_test</span> <span class="o">=</span> <span class="n">X_test</span>
+    <span class="n">algo</span><span class="o">.</span><span class="n">y_test</span> <span class="o">=</span> <span class="n">y_test</span>
+    <span class="n">algo</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">algo_name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;als&#39;</span><span class="p">,</span> <span class="s1">&#39;knn&#39;</span><span class="p">,</span> <span class="s1">&#39;sgd&#39;</span><span class="p">,</span> <span class="s1">&#39;svd&#39;</span><span class="p">,</span> <span class="s1">&#39;svd2&#39;</span><span class="p">}:</span>
+        <span class="n">user_parameters</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">fit_single_user</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">predict_single_user</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nb_works</span><span class="p">)),</span>
+                                          <span class="n">user_parameters</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_pred</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">algo</span><span class="o">.</span><span class="n">is_serializable</span><span class="p">:</span>
+        <span class="n">tmp_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">algo</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span>
+        <span class="n">algo</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">algo</span><span class="o">.</span><span class="n">is_serializable</span><span class="p">:</span>
+        <span class="n">algo</span><span class="o">.</span><span class="n">delete_snapshot</span><span class="p">()</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;rmse=</span><span class="si">%.3f</span><span class="s1"> algo=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                  <span class="n">algo</span><span class="o">.</span><span class="n">compute_rmse</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">y_test</span><span class="p">),</span> <span class="n">algo_name</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Mangaki Zero</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/modules.html">zero</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;1970, Jill-Jênn Vie, Ryan Lahfa, Basile Clément.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

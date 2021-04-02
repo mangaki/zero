@@ -1,0 +1,1228 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>zero package &#8212; Mangaki Zero  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="zero.tests package" href="zero.tests.html" />
+    <link rel="prev" title="zero" href="modules.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="zero-package">
+<h1>zero package<a class="headerlink" href="#zero-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="zero.tests.html">zero.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zero.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zero.tests.html#module-zero.tests.test_zero">zero.tests.test_zero module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zero.tests.html#zero-tests-test-zero-flymake-module">zero.tests.test_zero_flymake module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zero.tests.html#module-zero.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-zero.als">
+<span id="zero-als-module"></span><h2>zero.als module<a class="headerlink" href="#module-zero.als" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.als.MangakiALS">
+<em class="property">class </em><code class="sig-prename descclassname">zero.als.</code><code class="sig-name descname">MangakiALS</code><span class="sig-paren">(</span><em class="sig-param">nb_components=20</em>, <em class="sig-param">nb_iterations=20</em>, <em class="sig-param">lambda_=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als.html#MangakiALS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als.MangakiALS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<p>Alternating Least Squares
+r_{ij} - mean_i = u_i^T v_j
+Ratings are preprocessed by removing the mean rating of each user
+Then u_i and v_j are updated alternatively, using the least squares
+estimator (closed form)</p>
+<p>ALS:
+Zhou, Yunhong, et al. “Large-scale parallel collaborative filtering for
+the netflix prize.” International Conference on Algorithmic Applications
+in Management. Springer, Berlin, Heidelberg, 2008.
+<a class="reference external" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1</a>
+&amp;type=pdf</p>
+<p>Implemented by Pierre Vigier, JJ Vie</p>
+<dl class="method">
+<dt id="zero.als.MangakiALS.factorize">
+<code class="sig-name descname">factorize</code><span class="sig-paren">(</span><em class="sig-param">matrix</em>, <em class="sig-param">random_state</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als.html#MangakiALS.factorize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als.MangakiALS.factorize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als.MangakiALS.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als.html#MangakiALS.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als.MangakiALS.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als.MangakiALS.fit_single_user">
+<code class="sig-name descname">fit_single_user</code><span class="sig-paren">(</span><em class="sig-param">rated_works</em>, <em class="sig-param">ratings</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als.html#MangakiALS.fit_single_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als.MangakiALS.fit_single_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als.MangakiALS.fit_user">
+<code class="sig-name descname">fit_user</code><span class="sig-paren">(</span><em class="sig-param">user</em>, <em class="sig-param">matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als.html#MangakiALS.fit_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als.MangakiALS.fit_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als.MangakiALS.fit_work">
+<code class="sig-name descname">fit_work</code><span class="sig-paren">(</span><em class="sig-param">work</em>, <em class="sig-param">matrixT</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als.html#MangakiALS.fit_work"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als.MangakiALS.fit_work" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als.MangakiALS.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als.html#MangakiALS.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als.MangakiALS.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als.MangakiALS.is_serializable">
+<em class="property">property </em><code class="sig-name descname">is_serializable</code><a class="headerlink" href="#zero.als.MangakiALS.is_serializable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als.MangakiALS.make_matrix">
+<code class="sig-name descname">make_matrix</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als.html#MangakiALS.make_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als.MangakiALS.make_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als.MangakiALS.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als.html#MangakiALS.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als.MangakiALS.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als.MangakiALS.predict_single_user">
+<code class="sig-name descname">predict_single_user</code><span class="sig-paren">(</span><em class="sig-param">work_ids</em>, <em class="sig-param">user_parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als.html#MangakiALS.predict_single_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als.MangakiALS.predict_single_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als.MangakiALS.unzip">
+<code class="sig-name descname">unzip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als.html#MangakiALS.unzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als.MangakiALS.unzip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.als2">
+<span id="zero-als2-module"></span><h2>zero.als2 module<a class="headerlink" href="#module-zero.als2" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.als2.MangakiALS2">
+<em class="property">class </em><code class="sig-prename descclassname">zero.als2.</code><code class="sig-name descname">MangakiALS2</code><span class="sig-paren">(</span><em class="sig-param">nb_components=20</em>, <em class="sig-param">nb_iterations=20</em>, <em class="sig-param">lambda_=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als2.html#MangakiALS2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als2.MangakiALS2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<p>Alternating Least Squares for “Singular Value Decomposition” model
+(aka latent factor model)
+r_{ij} - mean = bias_i + bias_j + u_i^T v_j
+Modified version of ALS for the SVD model
+Ratings are preprocessed by removing the overall mean
+Then (u_i and bias_i), (v_j and bias_j) are updated alternatively in closed
+form</p>
+<p>ALS:
+Zhou, Yunhong, et al. “Large-scale parallel collaborative filtering for the
+netflix prize.” International Conference on Algorithmic Applications in
+Management. Springer, Berlin, Heidelberg, 2008.
+<a class="reference external" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1</a>
+&amp;type=pdf</p>
+<p>SVD:
+Koren, Yehuda, and Robert Bell. “Advances in collaborative filtering.”
+Recommender systems handbook. Springer, Boston, MA, 2015. 77-118.
+<a class="reference external" href="https://pdfs.semanticscholar.org/6800/fbe3314be9f638fb075e15b489d1aadb3030">https://pdfs.semanticscholar.org/6800/fbe3314be9f638fb075e15b489d1aadb3030</a>
+.pdf</p>
+<dl class="method">
+<dt id="zero.als2.MangakiALS2.factorize">
+<code class="sig-name descname">factorize</code><span class="sig-paren">(</span><em class="sig-param">matrix</em>, <em class="sig-param">random_state</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als2.html#MangakiALS2.factorize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als2.MangakiALS2.factorize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als2.MangakiALS2.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als2.html#MangakiALS2.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als2.MangakiALS2.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als2.MangakiALS2.fit_user">
+<code class="sig-name descname">fit_user</code><span class="sig-paren">(</span><em class="sig-param">user</em>, <em class="sig-param">matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als2.html#MangakiALS2.fit_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als2.MangakiALS2.fit_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als2.MangakiALS2.fit_work">
+<code class="sig-name descname">fit_work</code><span class="sig-paren">(</span><em class="sig-param">work</em>, <em class="sig-param">matrixT</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als2.html#MangakiALS2.fit_work"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als2.MangakiALS2.fit_work" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als2.MangakiALS2.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als2.html#MangakiALS2.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als2.MangakiALS2.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als2.MangakiALS2.is_serializable">
+<em class="property">property </em><code class="sig-name descname">is_serializable</code><a class="headerlink" href="#zero.als2.MangakiALS2.is_serializable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als2.MangakiALS2.make_matrix">
+<code class="sig-name descname">make_matrix</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als2.html#MangakiALS2.make_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als2.MangakiALS2.make_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als2.MangakiALS2.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als2.html#MangakiALS2.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als2.MangakiALS2.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als2.MangakiALS2.unzip">
+<code class="sig-name descname">unzip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als2.html#MangakiALS2.unzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als2.MangakiALS2.unzip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.als3">
+<span id="zero-als3-module"></span><h2>zero.als3 module<a class="headerlink" href="#module-zero.als3" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.als3.MangakiALS3">
+<em class="property">class </em><code class="sig-prename descclassname">zero.als3.</code><code class="sig-name descname">MangakiALS3</code><span class="sig-paren">(</span><em class="sig-param">nb_components=20</em>, <em class="sig-param">nb_iterations=20</em>, <em class="sig-param">lambda_=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als3.html#MangakiALS3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als3.MangakiALS3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<p>Alternating Least Squares for “Singular Value Decomposition” model
+(aka latent factor model)</p>
+<p>This implementation was supposed to be shorter and easier to read than
+MangakiALS2, but the performance is slightly worse, maybe because the
+initialization is different.
+(Gaussian instead of uniform; but Zhou’s paper suggested a Gaussian
+initialization)</p>
+<dl class="method">
+<dt id="zero.als3.MangakiALS3.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als3.html#MangakiALS3.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als3.MangakiALS3.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als3.MangakiALS3.fit_user">
+<code class="sig-name descname">fit_user</code><span class="sig-paren">(</span><em class="sig-param">user_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als3.html#MangakiALS3.fit_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als3.MangakiALS3.fit_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als3.MangakiALS3.fit_work">
+<code class="sig-name descname">fit_work</code><span class="sig-paren">(</span><em class="sig-param">work_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als3.html#MangakiALS3.fit_work"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als3.MangakiALS3.fit_work" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als3.MangakiALS3.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als3.html#MangakiALS3.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als3.MangakiALS3.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als3.MangakiALS3.init_vars">
+<code class="sig-name descname">init_vars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als3.html#MangakiALS3.init_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als3.MangakiALS3.init_vars" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als3.MangakiALS3.is_serializable">
+<em class="property">property </em><code class="sig-name descname">is_serializable</code><a class="headerlink" href="#zero.als3.MangakiALS3.is_serializable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als3.MangakiALS3.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als3.html#MangakiALS3.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als3.MangakiALS3.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als3.MangakiALS3.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als3.html#MangakiALS3.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als3.MangakiALS3.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.als3.MangakiALS3.to_sparse">
+<code class="sig-name descname">to_sparse</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als3.html#MangakiALS3.to_sparse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als3.MangakiALS3.to_sparse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.balse">
+<span id="zero-balse-module"></span><h2>zero.balse module<a class="headerlink" href="#module-zero.balse" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.balse.MangakiBALSE">
+<em class="property">class </em><code class="sig-prename descclassname">zero.balse.</code><code class="sig-name descname">MangakiBALSE</code><span class="sig-paren">(</span><em class="sig-param">nb_components=10</em>, <em class="sig-param">nb_iterations=10</em>, <em class="sig-param">lambda_=0.1</em>, <em class="sig-param">alpha=0.01</em>, <em class="sig-param">with_bias=True</em>, <em class="sig-param">gamma=5</em>, <em class="sig-param">T=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/balse.html#MangakiBALSE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.balse.MangakiBALSE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<dl class="attribute">
+<dt id="zero.balse.MangakiBALSE.M">
+<code class="sig-name descname">M</code><em class="property"> = None</em><a class="headerlink" href="#zero.balse.MangakiBALSE.M" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="zero.balse.MangakiBALSE.U">
+<code class="sig-name descname">U</code><em class="property"> = None</em><a class="headerlink" href="#zero.balse.MangakiBALSE.U" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="zero.balse.MangakiBALSE.VT">
+<code class="sig-name descname">VT</code><em class="property"> = None</em><a class="headerlink" href="#zero.balse.MangakiBALSE.VT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.balse.MangakiBALSE.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/balse.html#MangakiBALSE.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.balse.MangakiBALSE.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.balse.MangakiBALSE.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/balse.html#MangakiBALSE.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.balse.MangakiBALSE.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.balse.MangakiBALSE.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/balse.html#MangakiBALSE.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.balse.MangakiBALSE.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="zero-cfm-module">
+<h2>zero.cfm module<a class="headerlink" href="#zero-cfm-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-zero.chrono">
+<span id="zero-chrono-module"></span><h2>zero.chrono module<a class="headerlink" href="#module-zero.chrono" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.chrono.Chrono">
+<em class="property">class </em><code class="sig-prename descclassname">zero.chrono.</code><code class="sig-name descname">Chrono</code><span class="sig-paren">(</span><em class="sig-param">is_enabled</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/chrono.html#Chrono"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.chrono.Chrono" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="zero.chrono.Chrono.checkpoint">
+<code class="sig-name descname">checkpoint</code><em class="property"> = None</em><a class="headerlink" href="#zero.chrono.Chrono.checkpoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="zero.chrono.Chrono.connection">
+<code class="sig-name descname">connection</code><em class="property"> = None</em><a class="headerlink" href="#zero.chrono.Chrono.connection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="zero.chrono.Chrono.is_enabled">
+<code class="sig-name descname">is_enabled</code><em class="property"> = True</em><a class="headerlink" href="#zero.chrono.Chrono.is_enabled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.chrono.Chrono.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">title</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/chrono.html#Chrono.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.chrono.Chrono.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.dataset">
+<span id="zero-dataset-module"></span><h2>zero.dataset module<a class="headerlink" href="#module-zero.dataset" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.dataset.AnonymizedData">
+<em class="property">class </em><code class="sig-prename descclassname">zero.dataset.</code><code class="sig-name descname">AnonymizedData</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em>, <em class="sig-param">y_text</em>, <em class="sig-param">nb_users</em>, <em class="sig-param">nb_works</em><span class="sig-paren">)</span><a class="headerlink" href="#zero.dataset.AnonymizedData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="method">
+<dt id="zero.dataset.AnonymizedData.X">
+<em class="property">property </em><code class="sig-name descname">X</code><a class="headerlink" href="#zero.dataset.AnonymizedData.X" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zero.dataset.AnonymizedData.nb_users">
+<em class="property">property </em><code class="sig-name descname">nb_users</code><a class="headerlink" href="#zero.dataset.AnonymizedData.nb_users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zero.dataset.AnonymizedData.nb_works">
+<em class="property">property </em><code class="sig-name descname">nb_works</code><a class="headerlink" href="#zero.dataset.AnonymizedData.nb_works" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zero.dataset.AnonymizedData.y">
+<em class="property">property </em><code class="sig-name descname">y</code><a class="headerlink" href="#zero.dataset.AnonymizedData.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zero.dataset.AnonymizedData.y_text">
+<em class="property">property </em><code class="sig-name descname">y_text</code><a class="headerlink" href="#zero.dataset.AnonymizedData.y_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="zero.dataset.Dataset">
+<em class="property">class </em><code class="sig-prename descclassname">zero.dataset.</code><code class="sig-name descname">Dataset</code><a class="reference internal" href="../_modules/zero/dataset.html#Dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.dataset.Dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="zero.dataset.Dataset.decode_users">
+<code class="sig-name descname">decode_users</code><span class="sig-paren">(</span><em class="sig-param">encoded_user_ids</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/dataset.html#Dataset.decode_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.dataset.Dataset.decode_users" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.dataset.Dataset.encode_works">
+<code class="sig-name descname">encode_works</code><span class="sig-paren">(</span><em class="sig-param">work_ids</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/dataset.html#Dataset.encode_works"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.dataset.Dataset.encode_works" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.dataset.Dataset.load_csv">
+<code class="sig-name descname">load_csv</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">convert=&lt;class 'float'&gt;</em>, <em class="sig-param">title_filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/dataset.html#Dataset.load_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.dataset.Dataset.load_csv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.dataset.Dataset.make_anonymous_data">
+<code class="sig-name descname">make_anonymous_data</code><span class="sig-paren">(</span><em class="sig-param">triplets</em>, <em class="sig-param">convert=&lt;function Dataset.&lt;lambda&gt;&gt;</em>, <em class="sig-param">ordered=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/dataset.html#Dataset.make_anonymous_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.dataset.Dataset.make_anonymous_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.dataset.Dataset.save_csv">
+<code class="sig-name descname">save_csv</code><span class="sig-paren">(</span><em class="sig-param">folder</em>, <em class="sig-param">suffix=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/dataset.html#Dataset.save_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.dataset.Dataset.save_csv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.efa">
+<span id="zero-efa-module"></span><h2>zero.efa module<a class="headerlink" href="#module-zero.efa" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.efa.MangakiEFA">
+<em class="property">class </em><code class="sig-prename descclassname">zero.efa.</code><code class="sig-name descname">MangakiEFA</code><span class="sig-paren">(</span><em class="sig-param">NB_COMPONENTS=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/efa.html#MangakiEFA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.efa.MangakiEFA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<p>Factor Analysis: See
+<a class="reference external" href="http://scikit-learn.org/stable/modules/decomposition.html#factor-analysis">http://scikit-learn.org/stable/modules/decomposition.html#factor-analysis</a>
+Better way to get interpretable components, see MangakiNMF</p>
+<dl class="method">
+<dt id="zero.efa.MangakiEFA.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em>, <em class="sig-param">truncated=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/efa.html#MangakiEFA.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.efa.MangakiEFA.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.efa.MangakiEFA.fit_user">
+<code class="sig-name descname">fit_user</code><span class="sig-paren">(</span><em class="sig-param">user_id</em>, <em class="sig-param">sparse_matrix_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/efa.html#MangakiEFA.fit_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.efa.MangakiEFA.fit_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.efa.MangakiEFA.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/efa.html#MangakiEFA.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.efa.MangakiEFA.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.efa.MangakiEFA.make_matrix">
+<code class="sig-name descname">make_matrix</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/efa.html#MangakiEFA.make_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.efa.MangakiEFA.make_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.efa.MangakiEFA.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/efa.html#MangakiEFA.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.efa.MangakiEFA.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.efa.MangakiEFA.set_parameters">
+<code class="sig-name descname">set_parameters</code><span class="sig-paren">(</span><em class="sig-param">nb_users</em>, <em class="sig-param">nb_works</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/efa.html#MangakiEFA.set_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.efa.MangakiEFA.set_parameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="zero-fma-module">
+<h2>zero.fma module<a class="headerlink" href="#zero-fma-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-zero.gbr">
+<span id="zero-gbr-module"></span><h2>zero.gbr module<a class="headerlink" href="#module-zero.gbr" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.gbr.MangakiGBR">
+<em class="property">class </em><code class="sig-prename descclassname">zero.gbr.</code><code class="sig-name descname">MangakiGBR</code><span class="sig-paren">(</span><em class="sig-param">nb_components=20</em>, <em class="sig-param">nb_estimators=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/gbr.html#MangakiGBR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.gbr.MangakiGBR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<dl class="method">
+<dt id="zero.gbr.MangakiGBR.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/gbr.html#MangakiGBR.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.gbr.MangakiGBR.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.gbr.MangakiGBR.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/gbr.html#MangakiGBR.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.gbr.MangakiGBR.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.gbr.MangakiGBR.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/gbr.html#MangakiGBR.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.gbr.MangakiGBR.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.gbr.MangakiGBR.prepare_features">
+<code class="sig-name descname">prepare_features</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">U</em>, <em class="sig-param">V</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/gbr.html#MangakiGBR.prepare_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.gbr.MangakiGBR.prepare_features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.knn">
+<span id="zero-knn-module"></span><h2>zero.knn module<a class="headerlink" href="#module-zero.knn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.knn.MangakiKNN">
+<em class="property">class </em><code class="sig-prename descclassname">zero.knn.</code><code class="sig-name descname">MangakiKNN</code><span class="sig-paren">(</span><em class="sig-param">nb_neighbors=20</em>, <em class="sig-param">rated_by_neighbors_at_least=3</em>, <em class="sig-param">missing_is_mean=True</em>, <em class="sig-param">weighted_neighbors=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn.html#MangakiKNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn.MangakiKNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<dl class="method">
+<dt id="zero.knn.MangakiKNN.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em>, <em class="sig-param">whole_dataset=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn.html#MangakiKNN.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn.MangakiKNN.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.knn.MangakiKNN.fit_single_user">
+<code class="sig-name descname">fit_single_user</code><span class="sig-paren">(</span><em class="sig-param">rated_works</em>, <em class="sig-param">ratings</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn.html#MangakiKNN.fit_single_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn.MangakiKNN.fit_single_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.knn.MangakiKNN.get_neighbors">
+<code class="sig-name descname">get_neighbors</code><span class="sig-paren">(</span><em class="sig-param">user_ids=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn.html#MangakiKNN.get_neighbors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn.MangakiKNN.get_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.knn.MangakiKNN.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn.html#MangakiKNN.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn.MangakiKNN.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.knn.MangakiKNN.is_serializable">
+<em class="property">property </em><code class="sig-name descname">is_serializable</code><a class="headerlink" href="#zero.knn.MangakiKNN.is_serializable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.knn.MangakiKNN.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn.html#MangakiKNN.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn.MangakiKNN.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.knn.MangakiKNN.predict_single_user">
+<code class="sig-name descname">predict_single_user</code><span class="sig-paren">(</span><em class="sig-param">work_ids</em>, <em class="sig-param">neighbor_ids</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn.html#MangakiKNN.predict_single_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn.MangakiKNN.predict_single_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="zero.knn.cosine_similarity">
+<code class="sig-prename descclassname">zero.knn.</code><code class="sig-name descname">cosine_similarity</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">Y=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn.html#cosine_similarity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn.cosine_similarity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="zero.knn.mean_of_nonzero">
+<code class="sig-prename descclassname">zero.knn.</code><code class="sig-name descname">mean_of_nonzero</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">cols</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn.html#mean_of_nonzero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn.mean_of_nonzero" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="zero.knn.normalize">
+<code class="sig-prename descclassname">zero.knn.</code><code class="sig-name descname">normalize</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn.html#normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn.normalize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-zero.knn0">
+<span id="zero-knn0-module"></span><h2>zero.knn0 module<a class="headerlink" href="#module-zero.knn0" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.knn0.MangakiKNN">
+<em class="property">class </em><code class="sig-prename descclassname">zero.knn0.</code><code class="sig-name descname">MangakiKNN</code><span class="sig-paren">(</span><em class="sig-param">nb_users</em>, <em class="sig-param">nb_works</em>, <em class="sig-param">nb_neighbors=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn0.html#MangakiKNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn0.MangakiKNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="zero.knn0.MangakiKNN.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn0.html#MangakiKNN.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn0.MangakiKNN.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.knn0.MangakiKNN.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn0.html#MangakiKNN.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn0.MangakiKNN.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.knn2">
+<span id="zero-knn2-module"></span><h2>zero.knn2 module<a class="headerlink" href="#module-zero.knn2" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.knn2.MangakiKNN2">
+<em class="property">class </em><code class="sig-prename descclassname">zero.knn2.</code><code class="sig-name descname">MangakiKNN2</code><span class="sig-paren">(</span><em class="sig-param">nb_neighbors=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn2.html#MangakiKNN2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn2.MangakiKNN2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<p>Toy implementation (not usable in production) of KNN for the mere
+sake of science.
+N users, M ~ 10k works, P ~ 300k user-work pairs, K neighbors.</p>
+<p>Algorithm:
+For each user-work pair (over all P pairs):
+- Find closest raters of user <em>who rated this work</em> (takes O(M log M))
+- Compute their average rating (takes O(K))
+Complexity: O(P·(M log M + K)) =&gt; Oops!</p>
+<dl class="method">
+<dt id="zero.knn2.MangakiKNN2.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em>, <em class="sig-param">whole_dataset=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn2.html#MangakiKNN2.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn2.MangakiKNN2.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.knn2.MangakiKNN2.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn2.html#MangakiKNN2.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn2.MangakiKNN2.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.knn2.MangakiKNN2.is_serializable">
+<em class="property">property </em><code class="sig-name descname">is_serializable</code><a class="headerlink" href="#zero.knn2.MangakiKNN2.is_serializable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.knn2.MangakiKNN2.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn2.html#MangakiKNN2.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn2.MangakiKNN2.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.lasso">
+<span id="zero-lasso-module"></span><h2>zero.lasso module<a class="headerlink" href="#module-zero.lasso" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.lasso.MangakiLASSO">
+<em class="property">class </em><code class="sig-prename descclassname">zero.lasso.</code><code class="sig-name descname">MangakiLASSO</code><span class="sig-paren">(</span><em class="sig-param">with_bias=True</em>, <em class="sig-param">alpha=0.01</em>, <em class="sig-param">T=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/lasso.html#MangakiLASSO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.lasso.MangakiLASSO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<dl class="method">
+<dt id="zero.lasso.MangakiLASSO.compute_user_sparsities">
+<code class="sig-name descname">compute_user_sparsities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/lasso.html#MangakiLASSO.compute_user_sparsities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.lasso.MangakiLASSO.compute_user_sparsities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.lasso.MangakiLASSO.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em>, <em class="sig-param">autoload_tags=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/lasso.html#MangakiLASSO.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.lasso.MangakiLASSO.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.lasso.MangakiLASSO.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/lasso.html#MangakiLASSO.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.lasso.MangakiLASSO.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.lasso.MangakiLASSO.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/lasso.html#MangakiLASSO.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.lasso.MangakiLASSO.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="zero.lasso.relu">
+<code class="sig-prename descclassname">zero.lasso.</code><code class="sig-name descname">relu</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/lasso.html#relu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.lasso.relu" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-zero.lasso0">
+<span id="zero-lasso0-module"></span><h2>zero.lasso0 module<a class="headerlink" href="#module-zero.lasso0" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.lasso0.MangakiLASSO">
+<em class="property">class </em><code class="sig-prename descclassname">zero.lasso0.</code><code class="sig-name descname">MangakiLASSO</code><span class="sig-paren">(</span><em class="sig-param">nb_users</em>, <em class="sig-param">nb_works</em>, <em class="sig-param">T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/lasso0.html#MangakiLASSO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.lasso0.MangakiLASSO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="zero.lasso0.MangakiLASSO.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/lasso0.html#MangakiLASSO.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.lasso0.MangakiLASSO.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.lasso0.MangakiLASSO.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/lasso0.html#MangakiLASSO.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.lasso0.MangakiLASSO.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="zero-nmf-module">
+<h2>zero.nmf module<a class="headerlink" href="#zero-nmf-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-zero.pca">
+<span id="zero-pca-module"></span><h2>zero.pca module<a class="headerlink" href="#module-zero.pca" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.pca.MangakiPCA">
+<em class="property">class </em><code class="sig-prename descclassname">zero.pca.</code><code class="sig-name descname">MangakiPCA</code><span class="sig-paren">(</span><em class="sig-param">NB_COMPONENTS=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/pca.html#MangakiPCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.pca.MangakiPCA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<dl class="method">
+<dt id="zero.pca.MangakiPCA.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/pca.html#MangakiPCA.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.pca.MangakiPCA.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.pca.MangakiPCA.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/pca.html#MangakiPCA.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.pca.MangakiPCA.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.pca.MangakiPCA.make_matrix">
+<code class="sig-name descname">make_matrix</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/pca.html#MangakiPCA.make_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.pca.MangakiPCA.make_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.pca.MangakiPCA.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/pca.html#MangakiPCA.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.pca.MangakiPCA.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.recommendation_algorithm">
+<span id="zero-recommendation-algorithm-module"></span><h2>zero.recommendation_algorithm module<a class="headerlink" href="#module-zero.recommendation_algorithm" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm">
+<em class="property">class </em><code class="sig-prename descclassname">zero.recommendation_algorithm.</code><code class="sig-name descname">RecommendationAlgorithm</code><span class="sig-paren">(</span><em class="sig-param">verbose_level=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.available_evaluation_metrics">
+<em class="property">static </em><code class="sig-name descname">available_evaluation_metrics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.available_evaluation_metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.available_evaluation_metrics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.compute_dcg">
+<code class="sig-name descname">compute_dcg</code><span class="sig-paren">(</span><em class="sig-param">y_pred</em>, <em class="sig-param">y_true</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.compute_dcg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.compute_dcg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the discounted cumulative gain as stated in:
+<a class="reference external" href="https://gist.github.com/bwhite/3726239">https://gist.github.com/bwhite/3726239</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.compute_mae">
+<em class="property">static </em><code class="sig-name descname">compute_mae</code><span class="sig-paren">(</span><em class="sig-param">y_pred</em>, <em class="sig-param">y_true</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.compute_mae"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.compute_mae" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.compute_metrics">
+<code class="sig-name descname">compute_metrics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.compute_metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.compute_metrics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.compute_ndcg">
+<code class="sig-name descname">compute_ndcg</code><span class="sig-paren">(</span><em class="sig-param">y_pred</em>, <em class="sig-param">y_true</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.compute_ndcg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.compute_ndcg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.compute_rmse">
+<em class="property">static </em><code class="sig-name descname">compute_rmse</code><span class="sig-paren">(</span><em class="sig-param">y_pred</em>, <em class="sig-param">y_true</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.compute_rmse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.compute_rmse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.dcg_at_k">
+<code class="sig-name descname">dcg_at_k</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">k</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.dcg_at_k"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.dcg_at_k" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.delete_snapshot">
+<code class="sig-name descname">delete_snapshot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.delete_snapshot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.delete_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.factory">
+<code class="sig-name descname">factory</code><em class="property"> = &lt;zero.recommendation_algorithm.RecommendationAlgorithmFactory object&gt;</em><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.factory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.get_backup_path">
+<code class="sig-name descname">get_backup_path</code><span class="sig-paren">(</span><em class="sig-param">folder</em>, <em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.get_backup_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.get_backup_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.get_ranked_gains">
+<code class="sig-name descname">get_ranked_gains</code><span class="sig-paren">(</span><em class="sig-param">y_pred</em>, <em class="sig-param">y_true</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.get_ranked_gains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.get_ranked_gains" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.instantiate_algorithm">
+<em class="property">classmethod </em><code class="sig-name descname">instantiate_algorithm</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.instantiate_algorithm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.instantiate_algorithm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.is_serializable">
+<em class="property">property </em><code class="sig-name descname">is_serializable</code><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.is_serializable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.list_available_algorithms">
+<em class="property">classmethod </em><code class="sig-name descname">list_available_algorithms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.list_available_algorithms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.list_available_algorithms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.load">
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">folder</em>, <em class="sig-param">filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function raises FileNotFoundException if no backup exists.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.load_tags">
+<code class="sig-name descname">load_tags</code><span class="sig-paren">(</span><em class="sig-param">T=None</em>, <em class="sig-param">perform_scaling=True</em>, <em class="sig-param">with_mean=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.load_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.load_tags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.ndcg_at_k">
+<code class="sig-name descname">ndcg_at_k</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">k</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.ndcg_at_k"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.ndcg_at_k" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.register_algorithm">
+<em class="property">classmethod </em><code class="sig-name descname">register_algorithm</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">klass</em>, <em class="sig-param">default_kwargs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.register_algorithm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.register_algorithm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">folder</em>, <em class="sig-param">filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithm.set_parameters">
+<code class="sig-name descname">set_parameters</code><span class="sig-paren">(</span><em class="sig-param">nb_users</em>, <em class="sig-param">nb_works</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithm.set_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithm.set_parameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithmFactory">
+<em class="property">class </em><code class="sig-prename descclassname">zero.recommendation_algorithm.</code><code class="sig-name descname">RecommendationAlgorithmFactory</code><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithmFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithmFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithmFactory.initialize">
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithmFactory.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithmFactory.initialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.recommendation_algorithm.RecommendationAlgorithmFactory.register">
+<code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">klass</em>, <em class="sig-param">default_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#RecommendationAlgorithmFactory.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.RecommendationAlgorithmFactory.register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="zero.recommendation_algorithm.register_algorithm">
+<code class="sig-prename descclassname">zero.recommendation_algorithm.</code><code class="sig-name descname">register_algorithm</code><span class="sig-paren">(</span><em class="sig-param">algorithm_name</em>, <em class="sig-param">default_kwargs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/recommendation_algorithm.html#register_algorithm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.recommendation_algorithm.register_algorithm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-zero.sgd">
+<span id="zero-sgd-module"></span><h2>zero.sgd module<a class="headerlink" href="#module-zero.sgd" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.sgd.MangakiSGD">
+<em class="property">class </em><code class="sig-prename descclassname">zero.sgd.</code><code class="sig-name descname">MangakiSGD</code><span class="sig-paren">(</span><em class="sig-param">nb_components=20</em>, <em class="sig-param">nb_iterations=10</em>, <em class="sig-param">gamma=0.01</em>, <em class="sig-param">lambda_=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd.html#MangakiSGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd.MangakiSGD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<dl class="method">
+<dt id="zero.sgd.MangakiSGD.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd.html#MangakiSGD.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd.MangakiSGD.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd.MangakiSGD.fit_single_user">
+<code class="sig-name descname">fit_single_user</code><span class="sig-paren">(</span><em class="sig-param">rated_works</em>, <em class="sig-param">ratings</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd.html#MangakiSGD.fit_single_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd.MangakiSGD.fit_single_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd.MangakiSGD.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd.html#MangakiSGD.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd.MangakiSGD.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd.MangakiSGD.is_serializable">
+<em class="property">property </em><code class="sig-name descname">is_serializable</code><a class="headerlink" href="#zero.sgd.MangakiSGD.is_serializable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd.MangakiSGD.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd.html#MangakiSGD.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd.MangakiSGD.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd.MangakiSGD.predict_one">
+<code class="sig-name descname">predict_one</code><span class="sig-paren">(</span><em class="sig-param">i</em>, <em class="sig-param">j</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd.html#MangakiSGD.predict_one"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd.MangakiSGD.predict_one" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd.MangakiSGD.predict_single_user">
+<code class="sig-name descname">predict_single_user</code><span class="sig-paren">(</span><em class="sig-param">work_ids</em>, <em class="sig-param">user_parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd.html#MangakiSGD.predict_single_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd.MangakiSGD.predict_single_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.sgd0">
+<span id="zero-sgd0-module"></span><h2>zero.sgd0 module<a class="headerlink" href="#module-zero.sgd0" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.sgd0.MangakiSGD">
+<em class="property">class </em><code class="sig-prename descclassname">zero.sgd0.</code><code class="sig-name descname">MangakiSGD</code><span class="sig-paren">(</span><em class="sig-param">nb_users</em>, <em class="sig-param">nb_works</em>, <em class="sig-param">nb_components=20</em>, <em class="sig-param">nb_iterations=10</em>, <em class="sig-param">gamma=0.01</em>, <em class="sig-param">lambda_=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd0.html#MangakiSGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd0.MangakiSGD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="zero.sgd0.MangakiSGD.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd0.html#MangakiSGD.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd0.MangakiSGD.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd0.MangakiSGD.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd0.html#MangakiSGD.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd0.MangakiSGD.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd0.MangakiSGD.predict_one">
+<code class="sig-name descname">predict_one</code><span class="sig-paren">(</span><em class="sig-param">i</em>, <em class="sig-param">j</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd0.html#MangakiSGD.predict_one"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd0.MangakiSGD.predict_one" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.sgd2">
+<span id="zero-sgd2-module"></span><h2>zero.sgd2 module<a class="headerlink" href="#module-zero.sgd2" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.sgd2.MangakiSGD2">
+<em class="property">class </em><code class="sig-prename descclassname">zero.sgd2.</code><code class="sig-name descname">MangakiSGD2</code><span class="sig-paren">(</span><em class="sig-param">nb_components=20</em>, <em class="sig-param">nb_iterations=10</em>, <em class="sig-param">gamma=0.01</em>, <em class="sig-param">lambda_=0.1</em>, <em class="sig-param">batches=400</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd2.html#MangakiSGD2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd2.MangakiSGD2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<dl class="method">
+<dt id="zero.sgd2.MangakiSGD2.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd2.html#MangakiSGD2.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd2.MangakiSGD2.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd2.MangakiSGD2.fit_single_user">
+<code class="sig-name descname">fit_single_user</code><span class="sig-paren">(</span><em class="sig-param">rated_works</em>, <em class="sig-param">ratings</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd2.html#MangakiSGD2.fit_single_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd2.MangakiSGD2.fit_single_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd2.MangakiSGD2.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd2.html#MangakiSGD2.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd2.MangakiSGD2.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd2.MangakiSGD2.is_serializable">
+<em class="property">property </em><code class="sig-name descname">is_serializable</code><a class="headerlink" href="#zero.sgd2.MangakiSGD2.is_serializable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd2.MangakiSGD2.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd2.html#MangakiSGD2.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd2.MangakiSGD2.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd2.MangakiSGD2.predict_fm">
+<code class="sig-name descname">predict_fm</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd2.html#MangakiSGD2.predict_fm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd2.MangakiSGD2.predict_fm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.sgd2.MangakiSGD2.predict_single_user">
+<code class="sig-name descname">predict_single_user</code><span class="sig-paren">(</span><em class="sig-param">work_ids</em>, <em class="sig-param">user_parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd2.html#MangakiSGD2.predict_single_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd2.MangakiSGD2.predict_single_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="zero.sgd2.onehotize">
+<code class="sig-prename descclassname">zero.sgd2.</code><code class="sig-name descname">onehotize</code><span class="sig-paren">(</span><em class="sig-param">col</em>, <em class="sig-param">depth</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/sgd2.html#onehotize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.sgd2.onehotize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-zero.side">
+<span id="zero-side-module"></span><h2>zero.side module<a class="headerlink" href="#module-zero.side" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.side.SideInformation">
+<em class="property">class </em><code class="sig-prename descclassname">zero.side.</code><code class="sig-name descname">SideInformation</code><span class="sig-paren">(</span><em class="sig-param">T=None</em>, <em class="sig-param">perform_scaling=True</em>, <em class="sig-param">with_mean=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/side.html#SideInformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.side.SideInformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="zero.side.SideInformation.load">
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/side.html#SideInformation.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.side.SideInformation.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="zero-ssvd-module">
+<h2>zero.ssvd module<a class="headerlink" href="#zero-ssvd-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="zero-ssvd-flymake-module">
+<h2>zero.ssvd_flymake module<a class="headerlink" href="#zero-ssvd-flymake-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-zero.svd">
+<span id="zero-svd-module"></span><h2>zero.svd module<a class="headerlink" href="#module-zero.svd" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.svd.MangakiSVD">
+<em class="property">class </em><code class="sig-prename descclassname">zero.svd.</code><code class="sig-name descname">MangakiSVD</code><span class="sig-paren">(</span><em class="sig-param">nb_components=20</em>, <em class="sig-param">nb_iterations=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd.MangakiSVD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<dl class="method">
+<dt id="zero.svd.MangakiSVD.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd.MangakiSVD.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.svd.MangakiSVD.fit_single_user">
+<code class="sig-name descname">fit_single_user</code><span class="sig-paren">(</span><em class="sig-param">rated_works</em>, <em class="sig-param">ratings</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.fit_single_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd.MangakiSVD.fit_single_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.svd.MangakiSVD.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd.MangakiSVD.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.svd.MangakiSVD.is_serializable">
+<em class="property">property </em><code class="sig-name descname">is_serializable</code><a class="headerlink" href="#zero.svd.MangakiSVD.is_serializable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.svd.MangakiSVD.make_matrix">
+<code class="sig-name descname">make_matrix</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.make_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd.MangakiSVD.make_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.svd.MangakiSVD.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd.MangakiSVD.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.svd.MangakiSVD.predict_single_user">
+<code class="sig-name descname">predict_single_user</code><span class="sig-paren">(</span><em class="sig-param">work_ids</em>, <em class="sig-param">user_parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.predict_single_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd.MangakiSVD.predict_single_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.svd.MangakiSVD.unzip">
+<code class="sig-name descname">unzip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.unzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd.MangakiSVD.unzip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.svd2">
+<span id="zero-svd2-module"></span><h2>zero.svd2 module<a class="headerlink" href="#module-zero.svd2" title="Permalink to this headline">¶</a></h2>
+<p>Mangaki sparse SVD.
+Author: Jill-Jênn Vie, 2020</p>
+<dl class="class">
+<dt id="zero.svd2.MangakiSVD2">
+<em class="property">class </em><code class="sig-prename descclassname">zero.svd2.</code><code class="sig-name descname">MangakiSVD2</code><span class="sig-paren">(</span><em class="sig-param">nb_components=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd2.html#MangakiSVD2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd2.MangakiSVD2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<p>Implementation of SVD with sparse matrices.
+It does not compute the whole matrix for recommendations
+but the production should be able to do sparse matrix
+operations effectively.
+It is 7x faster than svd.py, and it only relies on numpy/scipy.</p>
+<dl class="method">
+<dt id="zero.svd2.MangakiSVD2.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd2.html#MangakiSVD2.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd2.MangakiSVD2.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the SVD.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zero.svd2.MangakiSVD2.fit_single_user">
+<code class="sig-name descname">fit_single_user</code><span class="sig-paren">(</span><em class="sig-param">rated_works</em>, <em class="sig-param">ratings</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd2.html#MangakiSVD2.fit_single_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd2.MangakiSVD2.fit_single_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the SVD for a single user.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zero.svd2.MangakiSVD2.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd2.html#MangakiSVD2.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd2.MangakiSVD2.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Short name useful for logging output.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zero.svd2.MangakiSVD2.is_serializable">
+<em class="property">property </em><code class="sig-name descname">is_serializable</code><a class="headerlink" href="#zero.svd2.MangakiSVD2.is_serializable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether we can save the model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zero.svd2.MangakiSVD2.make_matrix">
+<code class="sig-name descname">make_matrix</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd2.html#MangakiSVD2.make_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd2.MangakiSVD2.make_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a sparse matrix out of X and y.
+X is a matrix of pairs (user_id, item_id),
+y are real values of ratings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zero.svd2.MangakiSVD2.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd2.html#MangakiSVD2.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd2.MangakiSVD2.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict ratings for user, item pairs.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zero.svd2.MangakiSVD2.predict_single_user">
+<code class="sig-name descname">predict_single_user</code><span class="sig-paren">(</span><em class="sig-param">work_ids</em>, <em class="sig-param">user_parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd2.html#MangakiSVD2.predict_single_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd2.MangakiSVD2.predict_single_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict ratings for a single user.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="zero.svd2.remove_mean">
+<code class="sig-prename descclassname">zero.svd2.</code><code class="sig-name descname">remove_mean</code><span class="sig-paren">(</span><em class="sig-param">sp_matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd2.html#remove_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.svd2.remove_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>For each row of a sparse matrix,
+remove the mean of nonzero elements
+from the nonzero elements.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.values">
+<span id="zero-values-module"></span><h2>zero.values module<a class="headerlink" href="#module-zero.values" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="zero-wals-module">
+<h2>zero.wals module<a class="headerlink" href="#zero-wals-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-zero.xals">
+<span id="zero-xals-module"></span><h2>zero.xals module<a class="headerlink" href="#module-zero.xals" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.xals.MangakiXALS">
+<em class="property">class </em><code class="sig-prename descclassname">zero.xals.</code><code class="sig-name descname">MangakiXALS</code><span class="sig-paren">(</span><em class="sig-param">nb_components=10</em>, <em class="sig-param">nb_iterations=10</em>, <em class="sig-param">lambda_=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/xals.html#MangakiXALS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.xals.MangakiXALS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<dl class="method">
+<dt id="zero.xals.MangakiXALS.factorize">
+<code class="sig-name descname">factorize</code><span class="sig-paren">(</span><em class="sig-param">matrix</em>, <em class="sig-param">random_state</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/xals.html#MangakiXALS.factorize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.xals.MangakiXALS.factorize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.xals.MangakiXALS.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/xals.html#MangakiXALS.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.xals.MangakiXALS.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.xals.MangakiXALS.fit_user">
+<code class="sig-name descname">fit_user</code><span class="sig-paren">(</span><em class="sig-param">user</em>, <em class="sig-param">matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/xals.html#MangakiXALS.fit_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.xals.MangakiXALS.fit_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.xals.MangakiXALS.fit_work">
+<code class="sig-name descname">fit_work</code><span class="sig-paren">(</span><em class="sig-param">work</em>, <em class="sig-param">matrixT</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/xals.html#MangakiXALS.fit_work"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.xals.MangakiXALS.fit_work" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.xals.MangakiXALS.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/xals.html#MangakiXALS.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.xals.MangakiXALS.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.xals.MangakiXALS.is_serializable">
+<em class="property">property </em><code class="sig-name descname">is_serializable</code><a class="headerlink" href="#zero.xals.MangakiXALS.is_serializable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.xals.MangakiXALS.make_matrix">
+<code class="sig-name descname">make_matrix</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/xals.html#MangakiXALS.make_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.xals.MangakiXALS.make_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.xals.MangakiXALS.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/xals.html#MangakiXALS.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.xals.MangakiXALS.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero.zero">
+<span id="zero-zero-module"></span><h2>zero.zero module<a class="headerlink" href="#module-zero.zero" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="zero.zero.MangakiZero">
+<em class="property">class </em><code class="sig-prename descclassname">zero.zero.</code><code class="sig-name descname">MangakiZero</code><a class="reference internal" href="../_modules/zero/zero.html#MangakiZero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.zero.MangakiZero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<dl class="method">
+<dt id="zero.zero.MangakiZero.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/zero.html#MangakiZero.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.zero.MangakiZero.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.zero.MangakiZero.get_shortname">
+<code class="sig-name descname">get_shortname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/zero.html#MangakiZero.get_shortname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.zero.MangakiZero.get_shortname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="zero.zero.MangakiZero.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/zero.html#MangakiZero.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.zero.MangakiZero.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-zero">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-zero" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Mangaki Zero</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">zero</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">zero package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">zero</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">zero</a></li>
+      <li>Next: <a href="zero.tests.html" title="next chapter">zero.tests package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;1970, Jill-Jênn Vie, Ryan Lahfa, Basile Clément.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/source/zero.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
