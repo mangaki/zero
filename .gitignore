@@ -10,3 +10,6 @@ dist/
 mangaki_zero.egg-info/
 .coverage
 coverage.xml
+result
+docs/_build
+_build

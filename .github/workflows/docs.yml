@@ -1,0 +1,32 @@
+name: Publish docs to GitHub Pages
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  publish-docs:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v2
+          
+        - name: Install Nix
+          uses: cachix/install-nix-action@v12
+          
+        - name: Get the magic cache (Cachix)
+          uses: cachix/cachix-action@v8
+          with:
+            name: mangaki
+            signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+
+        - name: Run Sphinx
+          run: |
+            nix-shell default.nix \
+            -A shell \
+            --command "sphinx-build -d /tmp -b html docs /tmp"
+
+        - name: Deploy to GitHub Pages
+          uses: JamesIves/github-pages-deploy-action@4.1.0
+          with:
+            branch: gh-pages
+            folder: /tmp/_build
