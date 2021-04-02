@@ -196,14 +196,6 @@ zero.ssvd module
    :undoc-members:
    :show-inheritance:
 
-zero.ssvd\_flymake module
--------------------------
-
-.. automodule:: zero.ssvd_flymake
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 zero.svd module
 ---------------
 
