@@ -43,24 +43,22 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Alternating Least Squares for &quot;Singular Value Decomposition&quot; model</span>
 <span class="sd">    (aka latent factor model)</span>
-<span class="sd">    r_{ij} - mean = bias_i + bias_j + u_i^T v_j</span>
+<span class="sd">    :math:`r_{ij} - mean = bias_i + bias_j + u_i^T v_j`</span>
 <span class="sd">    Modified version of ALS for the SVD model</span>
 <span class="sd">    Ratings are preprocessed by removing the overall mean</span>
-<span class="sd">    Then (u_i and bias_i), (v_j and bias_j) are updated alternatively in closed</span>
+<span class="sd">    Then (:math:`u_i` and :math:`bias_i`), (:math:`v_j` and :math:`bias_j`) are updated alternatively in closed</span>
 <span class="sd">    form</span>
 
 <span class="sd">    ALS:</span>
 <span class="sd">    Zhou, Yunhong, et al. &quot;Large-scale parallel collaborative filtering for the</span>
 <span class="sd">    netflix prize.&quot; International Conference on Algorithmic Applications in</span>
 <span class="sd">    Management. Springer, Berlin, Heidelberg, 2008.</span>
-<span class="sd">    http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1</span>
-<span class="sd">    &amp;type=pdf</span>
+<span class="sd">    http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1&amp;type=pdf</span>
 
 <span class="sd">    SVD:</span>
 <span class="sd">    Koren, Yehuda, and Robert Bell. &quot;Advances in collaborative filtering.&quot;</span>
 <span class="sd">    Recommender systems handbook. Springer, Boston, MA, 2015. 77-118.</span>
-<span class="sd">    https://pdfs.semanticscholar.org/6800/fbe3314be9f638fb075e15b489d1aadb3030</span>
-<span class="sd">    .pdf</span>
+<span class="sd">    https://pdfs.semanticscholar.org/6800/fbe3314be9f638fb075e15b489d1aadb3030.pdf</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nb_components</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">nb_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -179,9 +177,9 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">zero</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">The zero package</a></li>
 </ul>
 
 <div class="relations">

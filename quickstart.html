@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Quick start &#8212; Mangaki Zero  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="zero" href="source/modules.html" />
+    <link rel="prev" title="Welcome to Mangaki Zero’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="quick-start">
+<h1>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="n">venv</span>
+<span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>To run cross-validation:</p>
+<ol class="arabic simple">
+<li><p>Download a dataset like <a class="reference external" href="http://files.grouplens.org/datasets/movielens/ml-latest-small.zip">Movielens 100k</a></p></li>
+<li><p>Ensure the columns are named <code class="code docutils literal notranslate"><span class="pre">user,item,rating</span></code>:</p></li>
+</ol>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 29%" />
+<col style="width: 43%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>user</p></th>
+<th class="head"><p>item</p></th>
+<th class="head"><p>rating</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>5</p></td>
+<td><p>4.5</p></td>
+</tr>
+</tbody>
+</table>
+<p>For example, here, user 3 gave 4.5 stars to item 5.</p>
+<ol class="arabic" start="3">
+<li><p>Then run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">compare</span><span class="o">.</span><span class="n">py</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">dataset</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>You can tweak the <code class="code docutils literal notranslate"><span class="pre">experiments/default.json</span></code> file to compare other models.</p>
+</div>
+<div class="section" id="custom-usage">
+<h2>Custom usage<a class="headerlink" href="#custom-usage" title="Permalink to this headline">¶</a></h2>
+<p>Most models have the following routines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">zero.als</span> <span class="kn">import</span> <span class="n">MangakiALS</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MangakiALS</span><span class="p">(</span><span class="n">nb_components</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><em>X</em> is a numpy array of size <cite>nb_samples</cite> x 2 (first column: user ID, second column: item ID)</p></li>
+<li><p>and <em>y</em> is the column of ratings.</p></li>
+</ul>
+<p>There are a couple of other methods that can be used for online fit, say <code class="code docutils literal notranslate"><span class="pre">model.predict_single_user(work_ids,</span> <span class="pre">user_parameters)</span></code>.</p>
+<p>See <a class="reference external" href="_modules/zero/zero.html#MangakiZero">zero.py</a> as an example of dumb baseline (only predicts zeroes) to start from. See <a class="reference external" href="_modules/zero/svd2.html#MangakiSVD2">svd2.py</a> for a more advanced example.</p>
+</div>
+<div class="section" id="results">
+<h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="mangaki-data">
+<h3>Mangaki data<a class="headerlink" href="#mangaki-data" title="Permalink to this headline">¶</a></h3>
+<img alt="Comparing on Mangaki" src="_images/mangaki.png" />
+</div>
+<div class="section" id="movielens-data">
+<h3>Movielens data<a class="headerlink" href="#movielens-data" title="Permalink to this headline">¶</a></h3>
+<img alt="Comparing on Movielens" src="_images/movielens.png" />
+<p>Feel free to use. Under MIT license.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Mangaki Zero</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-usage">Custom usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#results">Results</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="source/modules.html">The zero package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Mangaki Zero’s documentation!</a></li>
+      <li>Next: <a href="source/modules.html" title="next chapter">zero</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;1970, Jill-Jênn Vie, Ryan Lahfa, Basile Clément.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/quickstart.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

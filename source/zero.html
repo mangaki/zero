@@ -58,16 +58,15 @@
 <em class="property">class </em><code class="sig-prename descclassname">zero.als.</code><code class="sig-name descname">MangakiALS</code><span class="sig-paren">(</span><em class="sig-param">nb_components=20</em>, <em class="sig-param">nb_iterations=20</em>, <em class="sig-param">lambda_=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als.html#MangakiALS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als.MangakiALS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
 <p>Alternating Least Squares
-r_{ij} - mean_i = u_i^T v_j
+<span class="math notranslate nohighlight">\(r_{ij} - mean_i = u_i^T v_j\)</span>
 Ratings are preprocessed by removing the mean rating of each user
-Then u_i and v_j are updated alternatively, using the least squares
+Then <span class="math notranslate nohighlight">\(u_i\)</span> and <span class="math notranslate nohighlight">\(v_j\)</span> are updated alternatively, using the least squares
 estimator (closed form)</p>
 <p>ALS:
 Zhou, Yunhong, et al. “Large-scale parallel collaborative filtering for
 the netflix prize.” International Conference on Algorithmic Applications
 in Management. Springer, Berlin, Heidelberg, 2008.
-<a class="reference external" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1</a>
-&amp;type=pdf</p>
+<a class="reference external" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1&amp;type=pdf">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1&amp;type=pdf</a></p>
 <p>Implemented by Pierre Vigier, JJ Vie</p>
 <dl class="method">
 <dt id="zero.als.MangakiALS.factorize">
@@ -135,22 +134,20 @@ in Management. Springer, Berlin, Heidelberg, 2008.
 <dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
 <p>Alternating Least Squares for “Singular Value Decomposition” model
 (aka latent factor model)
-r_{ij} - mean = bias_i + bias_j + u_i^T v_j
+<span class="math notranslate nohighlight">\(r_{ij} - mean = bias_i + bias_j + u_i^T v_j\)</span>
 Modified version of ALS for the SVD model
 Ratings are preprocessed by removing the overall mean
-Then (u_i and bias_i), (v_j and bias_j) are updated alternatively in closed
+Then (<span class="math notranslate nohighlight">\(u_i\)</span> and <span class="math notranslate nohighlight">\(bias_i\)</span>), (<span class="math notranslate nohighlight">\(v_j\)</span> and <span class="math notranslate nohighlight">\(bias_j\)</span>) are updated alternatively in closed
 form</p>
 <p>ALS:
 Zhou, Yunhong, et al. “Large-scale parallel collaborative filtering for the
 netflix prize.” International Conference on Algorithmic Applications in
 Management. Springer, Berlin, Heidelberg, 2008.
-<a class="reference external" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1</a>
-&amp;type=pdf</p>
+<a class="reference external" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1&amp;type=pdf">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&amp;rep=rep1&amp;type=pdf</a></p>
 <p>SVD:
 Koren, Yehuda, and Robert Bell. “Advances in collaborative filtering.”
 Recommender systems handbook. Springer, Boston, MA, 2015. 77-118.
-<a class="reference external" href="https://pdfs.semanticscholar.org/6800/fbe3314be9f638fb075e15b489d1aadb3030">https://pdfs.semanticscholar.org/6800/fbe3314be9f638fb075e15b489d1aadb3030</a>
-.pdf</p>
+<a class="reference external" href="https://pdfs.semanticscholar.org/6800/fbe3314be9f638fb075e15b489d1aadb3030.pdf">https://pdfs.semanticscholar.org/6800/fbe3314be9f638fb075e15b489d1aadb3030.pdf</a></p>
 <dl class="method">
 <dt id="zero.als2.MangakiALS2.factorize">
 <code class="sig-name descname">factorize</code><span class="sig-paren">(</span><em class="sig-param">matrix</em>, <em class="sig-param">random_state</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/als2.html#MangakiALS2.factorize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.als2.MangakiALS2.factorize" title="Permalink to this definition">¶</a></dt>
@@ -561,12 +558,12 @@ Better way to get interpretable components, see MangakiNMF</p>
 <dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
 <p>Toy implementation (not usable in production) of KNN for the mere
 sake of science.
-N users, M ~ 10k works, P ~ 300k user-work pairs, K neighbors.</p>
+<span class="math notranslate nohighlight">\(N\)</span> users, <span class="math notranslate nohighlight">\(M\)</span> ~ 10k works, <span class="math notranslate nohighlight">\(P\)</span> ~ 300k user-work pairs, <span class="math notranslate nohighlight">\(K\)</span> neighbors.</p>
 <p>Algorithm:
 For each user-work pair (over all P pairs):
-- Find closest raters of user <em>who rated this work</em> (takes O(M log M))
-- Compute their average rating (takes O(K))
-Complexity: O(P·(M log M + K)) =&gt; Oops!</p>
+- Find closest raters of user <em>who rated this work</em> (takes <span class="math notranslate nohighlight">\(O(M \log M)\)</span>)
+- Compute their average rating (takes <span class="math notranslate nohighlight">\(O(K)\)</span>)
+Complexity: <span class="math notranslate nohighlight">\(O(P (M \log M + K))\)</span> =&gt; Oops!</p>
 <dl class="method">
 <dt id="zero.knn2.MangakiKNN2.fit">
 <code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em>, <em class="sig-param">whole_dataset=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/knn2.html#MangakiKNN2.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#zero.knn2.MangakiKNN2.fit" title="Permalink to this definition">¶</a></dt>
@@ -1187,9 +1184,9 @@ from the nonzero elements.</p>
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">zero</a><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick start</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">The zero package</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">zero package</a></li>
 </ul>
 </li>

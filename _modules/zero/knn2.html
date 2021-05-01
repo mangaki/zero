@@ -45,13 +45,13 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Toy implementation (not usable in production) of KNN for the mere</span>
 <span class="sd">    sake of science.</span>
-<span class="sd">    N users, M ~ 10k works, P ~ 300k user-work pairs, K neighbors.</span>
+<span class="sd">    :math:`N` users, :math:`M` ~ 10k works, :math:`P` ~ 300k user-work pairs, :math:`K` neighbors.</span>
 
 <span class="sd">    Algorithm:</span>
 <span class="sd">    For each user-work pair (over all P pairs):</span>
-<span class="sd">    - Find closest raters of user *who rated this work* (takes O(M log M))</span>
-<span class="sd">    - Compute their average rating (takes O(K))</span>
-<span class="sd">    Complexity: O(P·(M log M + K)) =&gt; Oops!</span>
+<span class="sd">    - Find closest raters of user *who rated this work* (takes :math:`O(M \log M)`)</span>
+<span class="sd">    - Compute their average rating (takes :math:`O(K)`)</span>
+<span class="sd">    Complexity: :math:`O(P (M \log M + K))` =&gt; Oops!</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nb_neighbors</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -106,9 +106,9 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">zero</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">The zero package</a></li>
 </ul>
 
 <div class="relations">
