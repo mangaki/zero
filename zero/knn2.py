@@ -11,13 +11,13 @@ class MangakiKNN2(RecommendationAlgorithm):
     '''
     Toy implementation (not usable in production) of KNN for the mere
     sake of science.
-    N users, M ~ 10k works, P ~ 300k user-work pairs, K neighbors.
+    :math:`N` users, :math:`M` ~ 10k works, :math:`P` ~ 300k user-work pairs, :math:`K` neighbors.
 
     Algorithm:
     For each user-work pair (over all P pairs):
-    - Find closest raters of user *who rated this work* (takes O(M log M))
-    - Compute their average rating (takes O(K))
-    Complexity: O(P·(M log M + K)) => Oops!
+    - Find closest raters of user *who rated this work* (takes :math:`O(M \log M)`)
+    - Compute their average rating (takes :math:`O(K)`)
+    Complexity: :math:`O(P (M \log M + K))` => Oops!
     '''
     def __init__(self, nb_neighbors=20):
         super().__init__()

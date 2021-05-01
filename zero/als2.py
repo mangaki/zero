@@ -9,24 +9,22 @@ class MangakiALS2(RecommendationAlgorithm):
     '''
     Alternating Least Squares for "Singular Value Decomposition" model
     (aka latent factor model)
-    r_{ij} - mean = bias_i + bias_j + u_i^T v_j
+    :math:`r_{ij} - mean = bias_i + bias_j + u_i^T v_j`
     Modified version of ALS for the SVD model
     Ratings are preprocessed by removing the overall mean
-    Then (u_i and bias_i), (v_j and bias_j) are updated alternatively in closed
+    Then (:math:`u_i` and :math:`bias_i`), (:math:`v_j` and :math:`bias_j`) are updated alternatively in closed
     form
 
     ALS:
     Zhou, Yunhong, et al. "Large-scale parallel collaborative filtering for the
     netflix prize." International Conference on Algorithmic Applications in
     Management. Springer, Berlin, Heidelberg, 2008.
-    http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&rep=rep1
-    &type=pdf
+    http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.173.2797&rep=rep1&type=pdf
 
     SVD:
     Koren, Yehuda, and Robert Bell. "Advances in collaborative filtering."
     Recommender systems handbook. Springer, Boston, MA, 2015. 77-118.
-    https://pdfs.semanticscholar.org/6800/fbe3314be9f638fb075e15b489d1aadb3030
-    .pdf
+    https://pdfs.semanticscholar.org/6800/fbe3314be9f638fb075e15b489d1aadb3030.pdf
     '''
     def __init__(self, nb_components=20, nb_iterations=20, lambda_=0.1):
         super().__init__()
