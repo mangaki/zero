@@ -20,7 +20,7 @@ jobs:
             signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
 
         - name: Install Poetry
-          run: nix-env -iA nixpkgs.poetry
+          run: nix-env -i poetry -f '<nixpkgs>'
 
         - name: Install dependencies using Poetry
           run: poetry install
