@@ -1,12 +1,12 @@
 let ourNixpkgs =
   builtins.fetchGit {
   # Descriptive name to make the store path easier to identify
-  name = "nixos-unstable-2020-05-02";
-  url = "https://github.com/nixos/nixpkgs-channels/";
-  # Commit hash for nixos-unstable as of 2020-05-02
+  name = "nixos-21.05";
+  url = "https://github.com/nixos/nixpkgs";
+  # Commit hash for nixos-unstable as of 2021-10-17
   # `git ls-remote https://github.com/nixos/nixpkgs-channels nixos-unstable`
-  ref = "refs/heads/nixos-unstable";
-  rev = "fce7562cf46727fdaf801b232116bc9ce0512049";
+  ref = "refs/heads/nixos-21.05";
+  rev = "83667ff60a88e22b76ef4b0bdf5334670b39c2b6";
 };
 in
 { blasProvider ? "openblasCompat"
