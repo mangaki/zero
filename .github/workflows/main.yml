@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         blasProvider: [ "openblasCompat", "mkl" ]
-        pythonVersion: [ "python36", "python37", "python38" ]
+        pythonVersion: [ "python37", "python38", "python39" ]
 
     env:
       PYTHON_PACKAGE_NAME: ${{ matrix.pythonVersion }}
