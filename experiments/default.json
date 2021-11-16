@@ -1,7 +1,6 @@
 {
 	"configurations": [
-        ["als2"],
-        ["sgd"],
-        ["als"]
+        ["svd2"],
+        ["svd"]
 	]
 }
