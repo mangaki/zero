@@ -7,8 +7,9 @@ from .recommendation_algorithm import (RecommendationAlgorithm,
 
 @register_algorithm('xals')
 class MangakiXALS(RecommendationAlgorithm):
-    def __init__(self, nb_components=10, nb_iterations=10, lambda_=0.1):
-        super().__init__()
+    def __init__(self, nb_components=10, nb_iterations=10, lambda_=0.1, *args,
+                 **kwargs):
+        super().__init__(*args, **kwargs)
         self.M = None
         self.U = None
         self.VT = None

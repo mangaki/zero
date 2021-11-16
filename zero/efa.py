@@ -13,8 +13,8 @@ class MangakiEFA(RecommendationAlgorithm):
     http://scikit-learn.org/stable/modules/decomposition.html#factor-analysis
     Better way to get interpretable components, see MangakiNMF
     '''
-    def __init__(self, NB_COMPONENTS=20):
-        super().__init__()
+    def __init__(self, NB_COMPONENTS=20, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.M = None
         self.W = None
         self.H = None

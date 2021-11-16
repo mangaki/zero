@@ -7,8 +7,8 @@ import numpy as np
 
 @register_algorithm('ssvd')
 class MangakiSSVD(RecommendationAlgorithm):
-    def __init__(self, rank=10, nb_iterations=20):
-        super().__init__()
+    def __init__(self, rank=10, nb_iterations=20, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.model = SVD(n_factors=rank, n_epochs=nb_iterations)
 
     def fit(self, X, y):

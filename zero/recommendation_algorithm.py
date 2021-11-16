@@ -14,6 +14,7 @@ class RecommendationAlgorithmFactory:
         self.algorithm_factory = {}
         self.logger = logging.getLogger(__name__ + '.' +
                                         self.__class__.__name__)
+        self.logger.setLevel(logging.INFO)
         self.initialized = False
         self.size = 0
 
@@ -39,13 +40,16 @@ class RecommendationAlgorithmFactory:
 class RecommendationAlgorithm:
     factory = RecommendationAlgorithmFactory()
 
-    def __init__(self, verbose_level=1):
+    def __init__(self, metrics=['rmse'], verbose_level=1):
         self.verbose_level = verbose_level
+        self.logger = logging.getLogger(__name__ + '.' +
+                                        self.__class__.__name__)
+        self.logger.setLevel(logging.DEBUG)
         self.chrono = Chrono(self.verbose_level)
         self.nb_users = None
         self.nb_works = None
         self.size = 0  # For backup files
-        self.metrics = {category: defaultdict(list)
+        self.metrics = {category: {metric: [] for metric in metrics}
                         for category in {'train', 'test'}}
         self.dataset = None
         self.X_train = None
@@ -165,16 +169,18 @@ class RecommendationAlgorithm:
         return self.dcg_at_k(r, k) / idcg
 
     def compute_metrics(self):
-        if self.X_train is not None:
-            y_train_pred = self.predict(self.X_train)
-            train_rmse = self.compute_rmse(self.y_train, y_train_pred)
-            self.metrics['train']['rmse'].append(train_rmse)
-            logging.warning('Train RMSE=%f', train_rmse)
-        if self.X_test is not None:
-            y_test_pred = self.predict(self.X_test)
-            test_rmse = self.compute_rmse(self.y_test, y_test_pred)
-            self.metrics['test']['rmse'].append(test_rmse)
-            logging.warning('Test RMSE=%f', test_rmse)
+        for mode in ['train', 'test']:
+            X = getattr(self, 'X_{}'.format(mode))
+            if X is not None:
+                y_true = getattr(self, 'y_{}'.format(mode))
+                y_pred = self.predict(X)
+                log = mode
+                for metric in self.metrics['test'].keys():
+                    compute_method = getattr(self, 'compute_{}'.format(metric))
+                    value = compute_method(y_pred, y_true)
+                    self.metrics[mode][metric].append(value)
+                    log += " {}={:.6f}".format(metric, value)
+                self.logger.info(log)
 
     @staticmethod
     def available_evaluation_metrics():

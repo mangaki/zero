@@ -38,11 +38,12 @@ class Experiment(object):
                  fancy_formatting: bool = False):
         self.algos = []
 
+        self.evaluation_metrics = eval_metrics
+
         self.experiment_filename = experiment_filename
         if experiment_filename:
             self.prepare_experiment()
 
-        self.evaluation_metrics = eval_metrics
         self.anonymized = None
         self.fancy_formatting = fancy_formatting
         self.load_dataset(dataset_path)
@@ -76,7 +77,11 @@ class Experiment(object):
             short_name, *params = config
             klass = (RecommendationAlgorithm.factory
                                             .algorithm_registry[short_name])
-            self.algos.append(AlgorithmWrapper(short_name, klass, params))
+            kwparams = (RecommendationAlgorithm.factory
+                                               .algorithm_factory[short_name])
+            kwparams['metrics'] = self.evaluation_metrics
+            self.algos.append(AlgorithmWrapper(
+                short_name, klass, params, kwparams))
 
     def load_dataset(self, dataset_path):
         dataset = Dataset()

@@ -33,8 +33,8 @@ class MangakiSVD2(RecommendationAlgorithm):
     operations effectively.
     It is 7x faster than svd.py, and it only relies on numpy/scipy.
     '''
-    def __init__(self, nb_components=20):
-        super().__init__()
+    def __init__(self, nb_components=20, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.U = None
         self.sigma = None
         self.VT = None

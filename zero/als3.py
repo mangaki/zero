@@ -17,8 +17,9 @@ class MangakiALS3(RecommendationAlgorithm):
     (Gaussian instead of uniform; but Zhou's paper suggested a Gaussian
     initialization)
     '''
-    def __init__(self, nb_components=20, nb_iterations=20, lambda_=0.1):
-        super().__init__()
+    def __init__(self, nb_components=20, nb_iterations=20, lambda_=0.1, *args,
+                 **kwargs):
+        super().__init__(*args, **kwargs)
         self.nb_components = nb_components
         self.nb_iterations = nb_iterations
         self.lambda_ = lambda_

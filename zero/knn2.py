@@ -19,8 +19,8 @@ class MangakiKNN2(RecommendationAlgorithm):
     - Compute their average rating (takes :math:`O(K)`)
     Complexity: :math:`O(P (M \log M + K))` => Oops!
     '''
-    def __init__(self, nb_neighbors=20):
-        super().__init__()
+    def __init__(self, nb_neighbors=20, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.nb_neighbors = nb_neighbors
         self.ratings = None
 

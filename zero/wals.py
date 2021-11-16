@@ -31,10 +31,10 @@ class MangakiWALS(RecommendationAlgorithm):
     U = None
     V = None
 
-    def __init__(self, nb_components=20):
+    def __init__(self, nb_components=20, *args, **kwargs):
         """An implementation of the Weighted Alternate Least Squares.
         NB_COMPONENTS: the number of components in the factorization"""
-        super().__init__()
+        super().__init__(*args, **kwargs)
         self.nb_components = nb_components
 
     @property

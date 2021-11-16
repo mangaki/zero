@@ -6,8 +6,8 @@ from zero.recommendation_algorithm import (RecommendationAlgorithm,
 
 @register_algorithm('svd', {'nb_components': 20})
 class MangakiSVD(RecommendationAlgorithm):
-    def __init__(self, nb_components=20, nb_iterations=10):
-        super().__init__()
+    def __init__(self, nb_components=20, nb_iterations=10, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.M = None
         self.U = None
         self.sigma = None

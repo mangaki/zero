@@ -8,8 +8,8 @@ from zero.recommendation_algorithm import (RecommendationAlgorithm,
 
 @register_algorithm('cfm', {'rank': 20})
 class MangakiCFM(RecommendationAlgorithm):
-    def __init__(self, rank=20, nb_iterations=10):
-        super().__init__()
+    def __init__(self, rank=20, nb_iterations=10, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rank = rank
         self.nb_iterations = nb_iterations
         self.fm = None
