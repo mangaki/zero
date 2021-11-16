@@ -40,7 +40,7 @@ class MangakiSGD(RecommendationAlgorithm):
                 self.V[j] -= self.gamma * (error * self.U[i] +
                                            self.lambda_ * self.V[j])
                 step += 1
-            print('elapsed', time.time() - dt)
+            self.logger.info('elapsed %f', time.time() - dt)
             self.compute_metrics()
 
     def fit_single_user(self, rated_works, ratings):
