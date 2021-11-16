@@ -34,10 +34,11 @@ class AlgorithmWrapper:
 
 
 class Experiment(object):
-    def __init__(self, dataset_path, eval_metrics, experiment_filename=None,
-                 fancy_formatting: bool = False):
+    def __init__(self, dataset_path, nb_iterations, eval_metrics,
+                 experiment_filename=None, fancy_formatting: bool = False):
         self.algos = []
 
+        self.nb_iterations = nb_iterations
         self.evaluation_metrics = eval_metrics
 
         self.experiment_filename = experiment_filename
@@ -79,6 +80,7 @@ class Experiment(object):
                                             .algorithm_registry[short_name])
             kwparams = (RecommendationAlgorithm.factory
                                                .algorithm_factory[short_name])
+            kwparams['nb_iterations'] = self.nb_iterations
             kwparams['metrics'] = self.evaluation_metrics
             self.algos.append(AlgorithmWrapper(
                 short_name, klass, params, kwparams))
@@ -185,6 +187,11 @@ if __name__ == '__main__':
                         help='Make a full cross validation instead of a '
                              'single run',
                         default=False)
+    parser.add_argument('-it', '--nb_iterations',
+                        dest='nb_iterations',
+                        type=int,
+                        default=20,
+                        help='Sets the number of iterations')
     parser.add_argument('-em', '--eval-metric',
                         dest='eval_metrics',
                         type=str,
@@ -216,6 +223,7 @@ if __name__ == '__main__':
 
     dataset_path = options.get('dataset_path')
     full_cv = options.get('full')
+    nb_iterations = options.get('nb_iterations')
     eval_metrics = options.get('eval_metrics')
     experiment_filename = options.get('experiment_filename')
     nb_split = options.get('nb_split')
@@ -231,6 +239,6 @@ if __name__ == '__main__':
         logger.debug('Compare will perform a full cross validation of {}-fold.'
                      .format(nb_split))
 
-    experiment = Experiment(dataset_path, eval_metrics, experiment_filename,
-                            fancy_formatting)
+    experiment = Experiment(dataset_path, nb_iterations, eval_metrics,
+                            experiment_filename, fancy_formatting)
     experiment.compare_models(nb_split, full_cv=full_cv)
