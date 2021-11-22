@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        blasProvider: [ "openblasCompat", "mkl" ]
+        blasProvider: [ "openblasCompat" ] # XXX: when Intel MKL failures are fixed, add it back.
         pythonVersion: [ "python37", "python38", "python39" ]
 
     env:

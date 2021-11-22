@@ -5,7 +5,7 @@
 
 Mangaki's recommendation algorithms.
 
-They are tested on Python 3.6, 3.7, 3.8 over OpenBLAS LP64 & MKL.
+They are tested on Python 3.7, 3.8, 3.9 over OpenBLAS LP64. Intel MKL is broken for now, see <https://github.com/mangaki/zero/issues/25>.
 
 ## Install
 
