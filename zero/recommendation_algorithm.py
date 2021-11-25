@@ -40,7 +40,7 @@ class RecommendationAlgorithmFactory:
 class RecommendationAlgorithm:
     factory = RecommendationAlgorithmFactory()
 
-    def __init__(self, metrics=['rmse'], verbose_level=1):
+    def __init__(self, metrics=None, verbose_level=1):
         self.verbose_level = verbose_level
         self.logger = logging.getLogger(__name__ + '.' +
                                         self.__class__.__name__)
@@ -49,6 +49,8 @@ class RecommendationAlgorithm:
         self.nb_users = None
         self.nb_works = None
         self.size = 0  # For backup files
+        if metrics is None:
+            metrics = ['rmse']
         self.metrics = {category: {metric: [] for metric in metrics}
                         for category in {'train', 'test'}}
         self.dataset = None
@@ -169,7 +171,7 @@ class RecommendationAlgorithm:
         return self.dcg_at_k(r, k) / idcg
 
     def compute_metrics(self):
-        for mode in ['train', 'test']:
+        for mode in ('train', 'test'):
             X = getattr(self, 'X_{}'.format(mode))
             if X is not None:
                 y_true = getattr(self, 'y_{}'.format(mode))
