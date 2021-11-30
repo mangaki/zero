@@ -111,7 +111,7 @@ class RecommendationAlgorithm:
             cache_pred = self.predict(X).reshape(len(user_ids), -1)
         else:
             cache_pred = np.zeros((0, len(item_ids)))
-        if len(extra_users_parameters):
+        if extra_users_parameters is not None and len(extra_users_parameters):
             extra_pred = np.array([
                 self.predict_single_user(item_ids, parameters)
                 for parameters in extra_users_parameters
