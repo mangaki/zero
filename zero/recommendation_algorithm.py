@@ -103,6 +103,7 @@ class RecommendationAlgorithm:
         n = len(item_ids)
         if k is None:
             k = n
+        k = min(n, k)
         X = np.array(list(product(user_ids, item_ids)))
         pred = self.predict(X).reshape(len(user_ids), -1)
         if method == 'mean':
@@ -110,7 +111,7 @@ class RecommendationAlgorithm:
             indices = np.argpartition(combined_pred, n - k)[-k:]
             results = np.empty(k, dtype=[('item_id', int), ('score', combined_pred.dtype)])
             results['item_id'] = indices
-            results['score'] = combined_pred
+            results['score'] = combined_pred[indices]
             results.sort(order='score')
             return results[::-1]
         else:
