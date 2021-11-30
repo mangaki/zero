@@ -87,11 +87,13 @@ class RecommendationAlgorithm:
     def delete_snapshot(self):
         os.remove(self.backup_path)
 
-    def recommend(self, user_ids, item_ids=None, k=None, method='mean'):
+    def recommend(self, user_ids, extra_users_parameters=None, item_ids=None,
+                  k=None, method='mean'):
         """
         Recommend :math:`k` items to a group of users.
 
-        :param user_ids: the users
+        :param user_ids: the users that are in the dataset of this algorithm.
+        :param extra_users_parameters: the parameters for users that weren't.
         :param item_ids: a subset of items. If is it None, then it is all items.
         :param k: the number of items to recommend, if None then it is all items.
         :param method: a way to combine the predictions. By default it is mean.
@@ -104,8 +106,19 @@ class RecommendationAlgorithm:
         if k is None:
             k = n
         k = min(n, k)
-        X = np.array(list(product(user_ids, item_ids)))
-        pred = self.predict(X).reshape(len(user_ids), -1)
+        if len(user_ids):
+            X = np.array(list(product(user_ids, item_ids)))
+            cache_pred = self.predict(X).reshape(len(user_ids), -1)
+        else:
+            cache_pred = np.zeros((0, len(item_ids)))
+        if len(extra_users_parameters):
+            extra_pred = np.array([
+                self.predict_single_user(item_ids, parameters)
+                for parameters in extra_users_parameters
+            ])
+        else:
+            extra_pred = np.zeros((0, len(item_ids)))
+        pred = np.concatenate((cache_pred, extra_pred), axis=0)
         if method == 'mean':
             combined_pred = pred.mean(axis=0)
             indices = np.argpartition(combined_pred, n - k)[-k:]
