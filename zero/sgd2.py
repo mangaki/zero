@@ -15,8 +15,9 @@ def onehotize(col, depth):
 @register_algorithm('sgd2')
 class MangakiSGD2(RecommendationAlgorithm):
     def __init__(self, nb_components=20, nb_iterations=10,
-                 gamma=0.01, lambda_=0.1, batches=400):
-        super().__init__()
+                 gamma=0.01, lambda_=0.1, batches=400,
+                 *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.nb_components = nb_components
         self.nb_iterations = nb_iterations
         self.gamma = gamma

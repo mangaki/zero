@@ -34,15 +34,17 @@ class AlgorithmWrapper:
 
 
 class Experiment(object):
-    def __init__(self, dataset_path, eval_metrics, experiment_filename=None,
-                 fancy_formatting: bool = False):
+    def __init__(self, dataset_path, nb_iterations, eval_metrics,
+                 experiment_filename=None, fancy_formatting: bool = False):
         self.algos = []
+
+        self.nb_iterations = nb_iterations
+        self.evaluation_metrics = eval_metrics
 
         self.experiment_filename = experiment_filename
         if experiment_filename:
             self.prepare_experiment()
 
-        self.evaluation_metrics = eval_metrics
         self.anonymized = None
         self.fancy_formatting = fancy_formatting
         self.load_dataset(dataset_path)
@@ -76,7 +78,12 @@ class Experiment(object):
             short_name, *params = config
             klass = (RecommendationAlgorithm.factory
                                             .algorithm_registry[short_name])
-            self.algos.append(AlgorithmWrapper(short_name, klass, params))
+            kwparams = (RecommendationAlgorithm.factory
+                                               .algorithm_factory[short_name])
+            kwparams['nb_iterations'] = self.nb_iterations
+            kwparams['metrics'] = self.evaluation_metrics
+            self.algos.append(AlgorithmWrapper(
+                short_name, klass, params, kwparams))
 
     def load_dataset(self, dataset_path):
         dataset = Dataset()
@@ -180,6 +187,11 @@ if __name__ == '__main__':
                         help='Make a full cross validation instead of a '
                              'single run',
                         default=False)
+    parser.add_argument('-it', '--nb_iterations',
+                        dest='nb_iterations',
+                        type=int,
+                        default=20,
+                        help='Sets the number of iterations')
     parser.add_argument('-em', '--eval-metric',
                         dest='eval_metrics',
                         type=str,
@@ -211,6 +223,7 @@ if __name__ == '__main__':
 
     dataset_path = options.get('dataset_path')
     full_cv = options.get('full')
+    nb_iterations = options.get('nb_iterations')
     eval_metrics = options.get('eval_metrics')
     experiment_filename = options.get('experiment_filename')
     nb_split = options.get('nb_split')
@@ -226,6 +239,6 @@ if __name__ == '__main__':
         logger.debug('Compare will perform a full cross validation of {}-fold.'
                      .format(nb_split))
 
-    experiment = Experiment(dataset_path, eval_metrics, experiment_filename,
-                            fancy_formatting)
+    experiment = Experiment(dataset_path, nb_iterations, eval_metrics,
+                            experiment_filename, fancy_formatting)
     experiment.compare_models(nb_split, full_cv=full_cv)

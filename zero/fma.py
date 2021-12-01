@@ -7,10 +7,10 @@ from zero.recommendation_algorithm import (RecommendationAlgorithm,
                                            register_algorithm)
 
 
-@register_algorithm('fma', {'rank': 20, 'nb_iterations': 20})
+@register_algorithm('fma', {'rank': 20, 'nb_iterations': 40})
 class MangakiFMA(RecommendationAlgorithm):
-    def __init__(self, rank=20, nb_iterations=20):
-        super().__init__()
+    def __init__(self, rank=20, nb_iterations=40, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rank = rank
         self.nb_iterations = nb_iterations
         self.fm = None

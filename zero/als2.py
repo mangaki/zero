@@ -26,8 +26,9 @@ class MangakiALS2(RecommendationAlgorithm):
     Recommender systems handbook. Springer, Boston, MA, 2015. 77-118.
     https://pdfs.semanticscholar.org/6800/fbe3314be9f638fb075e15b489d1aadb3030.pdf
     '''
-    def __init__(self, nb_components=20, nb_iterations=20, lambda_=0.1):
-        super().__init__()
+    def __init__(self, nb_components=20, nb_iterations=40, lambda_=0.1, *args,
+                 **kwargs):
+        super().__init__(*args, **kwargs)
         self.M = None
         self.U = None
         self.VT = None

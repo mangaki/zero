@@ -17,8 +17,9 @@ class MangakiBALSE(RecommendationAlgorithm):
                  alpha=0.01,
                  with_bias=True,
                  gamma=5,
-                 T=None):
-        super().__init__()
+                 T=None,
+                 *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.nb_components = nb_components
         self.nb_iterations = nb_iterations
         self.lambda_ = lambda_

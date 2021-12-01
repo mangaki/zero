@@ -45,8 +45,8 @@ explanation = {
 
 
 class MangakiNMF(RecommendationAlgorithm):
-    def __init__(self, NB_COMPONENTS=10):
-        super().__init__()
+    def __init__(self, NB_COMPONENTS=10, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.M = None
         self.W = None
         self.H = None

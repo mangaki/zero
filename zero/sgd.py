@@ -10,9 +10,9 @@ from zero.recommendation_algorithm import (RecommendationAlgorithm,
 
 @register_algorithm('sgd')
 class MangakiSGD(RecommendationAlgorithm):
-    def __init__(self, nb_components=20, nb_iterations=10,
-                 gamma=0.01, lambda_=0.1):
-        super().__init__()
+    def __init__(self, nb_components=20, nb_iterations=40, gamma=0.01,
+                 lambda_=0.1, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.nb_components = nb_components
         self.nb_iterations = nb_iterations
         self.gamma = gamma
@@ -40,7 +40,7 @@ class MangakiSGD(RecommendationAlgorithm):
                 self.V[j] -= self.gamma * (error * self.U[i] +
                                            self.lambda_ * self.V[j])
                 step += 1
-            print('elapsed', time.time() - dt)
+            self.logger.info('elapsed %f', time.time() - dt)
             self.compute_metrics()
 
     def fit_single_user(self, rated_works, ratings):

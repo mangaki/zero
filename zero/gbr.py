@@ -10,8 +10,8 @@ import logging
 
 @register_algorithm('gbr')
 class MangakiGBR(RecommendationAlgorithm):
-    def __init__(self, nb_components=20, nb_estimators=2):
-        super().__init__()
+    def __init__(self, nb_components=20, nb_estimators=2, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.nb_components = nb_components
         self.nb_estimators = nb_estimators
         self.T = None

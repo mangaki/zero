@@ -5,8 +5,8 @@ import numpy as np
 
 @register_algorithm('zero')
 class MangakiZero(RecommendationAlgorithm):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def fit(self, X, y):
         pass

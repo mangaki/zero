@@ -14,8 +14,8 @@ def relu(x):
 
 @register_algorithm('lasso')
 class MangakiLASSO(RecommendationAlgorithm):
-    def __init__(self, with_bias=True, alpha=0.01, T=None):
-        super().__init__()
+    def __init__(self, with_bias=True, alpha=0.01, T=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.alpha = alpha
         self.with_bias = with_bias
         self.logger = logging.getLogger(__name__ + '.' + self.get_shortname())

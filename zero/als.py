@@ -21,8 +21,9 @@ class MangakiALS(RecommendationAlgorithm):
 
     Implemented by Pierre Vigier, JJ Vie
     '''
-    def __init__(self, nb_components=20, nb_iterations=20, lambda_=0.1):
-        super().__init__()
+    def __init__(self, nb_components=20, nb_iterations=40, lambda_=0.1, *args,
+                 **kwargs):
+        super().__init__(*args, **kwargs)
         self.M = None
         self.U = None
         self.VT = None

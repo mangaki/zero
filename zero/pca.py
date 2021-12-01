@@ -7,8 +7,8 @@ from zero.recommendation_algorithm import (RecommendationAlgorithm,
 
 @register_algorithm('pca')
 class MangakiPCA(RecommendationAlgorithm):
-    def __init__(self, NB_COMPONENTS=10):
-        super().__init__()
+    def __init__(self, NB_COMPONENTS=10, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.M = None
         self.NB_COMPONENTS = NB_COMPONENTS
         self.VT = None
