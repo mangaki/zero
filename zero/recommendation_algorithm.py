@@ -93,11 +93,13 @@ class RecommendationAlgorithm:
     def delete_snapshot(self):
         os.remove(self.backup_path)
 
-    def recommend(self, user_ids, item_ids=None, k=None, method='mean'):
+    def recommend(self, user_ids, extra_users_parameters=None, item_ids=None,
+                  k=None, method='mean'):
         """
         Recommend :math:`k` items to a group of users.
 
-        :param user_ids: the users
+        :param user_ids: the users that are in the dataset of this algorithm.
+        :param extra_users_parameters: the parameters for users that weren't.
         :param item_ids: a subset of items. If is it None, then it is all items.
         :param k: the number of items to recommend, if None then it is all items.
         :param method: a way to combine the predictions. By default it is mean.
@@ -109,14 +111,26 @@ class RecommendationAlgorithm:
         n = len(item_ids)
         if k is None:
             k = n
-        X = np.array(list(product(user_ids, item_ids)))
-        pred = self.predict(X).reshape(len(user_ids), -1)
+        k = min(n, k)
+        if user_ids is not None and len(user_ids):
+            X = np.array(list(product(user_ids, item_ids)))
+            cache_pred = self.predict(X).reshape(len(user_ids), -1)
+        else:
+            cache_pred = np.zeros((0, len(item_ids)))
+        if extra_users_parameters is not None and len(extra_users_parameters):
+            extra_pred = np.array([
+                self.predict_single_user(item_ids, parameters)
+                for parameters in extra_users_parameters
+            ])
+        else:
+            extra_pred = np.zeros((0, len(item_ids)))
+        pred = np.concatenate((cache_pred, extra_pred), axis=0)
         if method == 'mean':
             combined_pred = pred.mean(axis=0)
             indices = np.argpartition(combined_pred, n - k)[-k:]
             results = np.empty(k, dtype=[('item_id', int), ('score', combined_pred.dtype)])
             results['item_id'] = indices
-            results['score'] = combined_pred
+            results['score'] = combined_pred[indices]
             results.sort(order='score')
             return results[::-1]
         else:

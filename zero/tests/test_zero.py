@@ -70,7 +70,7 @@ def test_fit_predict(
     # Predict on test set
     y_pred = algo.predict(X_test)
     # Reorder works 2 and 4 for users 1 and 3
-    algo.recommend([1, 3], [2, 4, 5])
+    algo.recommend([1, 3], item_ids=[2, 4, 5])
     # Recommend any works to users 1 and 3
     algo.recommend([1, 3])
     if algo.is_serializable:
