@@ -103,7 +103,7 @@
     <span class="c1"># Predict on test set</span>
     <span class="n">y_pred</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
     <span class="c1"># Reorder works 2 and 4 for users 1 and 3</span>
-    <span class="n">algo</span><span class="o">.</span><span class="n">recommend</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+    <span class="n">algo</span><span class="o">.</span><span class="n">recommend</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">item_ids</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
     <span class="c1"># Recommend any works to users 1 and 3</span>
     <span class="n">algo</span><span class="o">.</span><span class="n">recommend</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">algo</span><span class="o">.</span><span class="n">is_serializable</span><span class="p">:</span>
