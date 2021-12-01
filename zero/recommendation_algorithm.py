@@ -106,7 +106,7 @@ class RecommendationAlgorithm:
         if k is None:
             k = n
         k = min(n, k)
-        if len(user_ids):
+        if user_ids is not None and len(user_ids):
             X = np.array(list(product(user_ids, item_ids)))
             cache_pred = self.predict(X).reshape(len(user_ids), -1)
         else:
