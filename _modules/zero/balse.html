@@ -50,8 +50,9 @@
                  <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
                  <span class="n">with_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">gamma</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                 <span class="n">T</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+                 <span class="n">T</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nb_components</span> <span class="o">=</span> <span class="n">nb_components</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nb_iterations</span> <span class="o">=</span> <span class="n">nb_iterations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lambda_</span> <span class="o">=</span> <span class="n">lambda_</span>

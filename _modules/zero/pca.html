@@ -40,8 +40,8 @@
 
 <div class="viewcode-block" id="MangakiPCA"><a class="viewcode-back" href="../../source/zero.html#zero.pca.MangakiPCA">[docs]</a><span class="nd">@register_algorithm</span><span class="p">(</span><span class="s1">&#39;pca&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MangakiPCA</span><span class="p">(</span><span class="n">RecommendationAlgorithm</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NB_COMPONENTS</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NB_COMPONENTS</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">NB_COMPONENTS</span> <span class="o">=</span> <span class="n">NB_COMPONENTS</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">VT</span> <span class="o">=</span> <span class="kc">None</span>
