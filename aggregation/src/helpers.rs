@@ -1,0 +1,101 @@
+
+use std::num::Wrapping;
+
+use rand::{Rng, SeedableRng};
+use rand_chacha::ChaCha8Rng;
+use x25519_dalek::PublicKey as KAPublicKey;
+use serde::{Serialize, Deserialize};
+
+use crate::sodium_bindings::*;
+
+pub trait Signable {
+    fn as_message(&self) -> Vec<u8>;
+}
+
+pub struct Signed<T: Signable> {
+    msg: T,
+    sig: Signature,
+}
+
+impl<T: Signable> Signed<T> {
+    pub fn wrap(msg: T, sk: &SignSecretKey) -> Signed<T> {
+        let sig = sign(&msg.as_message(), sk);
+        Signed {
+            msg,
+            sig,
+        }
+    }
+
+    pub fn verify(self, pk: &SignPublicKey) -> Result<(), ()> {
+        verify_signature(&self.msg.as_message(), &self.sig, pk)
+    }
+
+    pub fn msg(&self) -> &T {
+        &self.msg
+    }
+
+    pub fn into_msg(self) -> T {
+        self.msg
+    }
+}
+
+impl Signable for AEPublicKey {
+    fn as_message(&self) -> Vec<u8> { self.to_vec() }
+}
+
+impl Signable for KAPublicKey {
+    fn as_message(&self) -> Vec<u8> { self.as_bytes().to_vec() }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct MaskGenShares {
+    pub u: usize,
+    pub v: usize,
+    pub rand_sk_share: Vec<u8>,
+    pub seed_share: Vec<u8>,
+}
+
+impl MaskGenShares {
+    pub fn new(u: usize, v: usize, rand_sk_share: Vec<u8>, seed_share: Vec<u8>) -> Self {
+        MaskGenShares { u, v, rand_sk_share, seed_share }
+    }
+}
+
+pub enum RevealedShare {
+    RandSk(Vec<u8>),
+    Seed(Vec<u8>),
+}
+
+pub struct CryptoMsg {
+    pub nonce: Nonce,
+    pub c: Vec<u8>,
+}
+
+impl CryptoMsg {
+    pub fn new(m: &[u8], k: Key) -> Self {
+        let nonce = gen_nonce();
+        CryptoMsg { nonce, c: crypto_secret_wrap(m, nonce, k).unwrap() } //TODO
+    }
+
+    pub fn unwrap(&self, k: Key) -> Result<Vec<u8>, ()> {
+        crypto_secret_unwrap(&self.c, self.nonce, k)
+    }
+}
+
+pub fn vector_from_seed(seed: [u8; 32], length: usize) -> Vec<Wrapping<i64>> {
+    let mut noise = vec![Wrapping(0); length];
+    let mut rng = ChaCha8Rng::from_seed(seed);
+    rng.fill(noise.as_mut_slice());
+    noise
+}
+
+pub fn sum_components<I>(v: I, n: usize) -> Vec<Wrapping<i64>>
+    where I: Iterator<Item=Vec<Wrapping<i64>>>
+{
+    v.fold(vec![Wrapping(0); n], |acc, v| { Iterator::zip(acc.into_iter(), v.into_iter()).map(|(a, b)| a + b).collect() })
+}
+
+pub fn scalar_mul(l: Wrapping<i64>, v: Vec<Wrapping<i64>>) -> Vec<Wrapping<i64>> {
+    v.into_iter().map(|x| l * x).collect()
+}
+
