@@ -5,6 +5,10 @@ use rand::{Rng, SeedableRng};
 use rand_chacha::ChaCha8Rng;
 use x25519_dalek::PublicKey as KAPublicKey;
 use serde::{Serialize, Deserialize};
+#[macro_use]
+use serde_big_array::big_array;
+
+serde_big_array::big_array! { BigArray; }
 
 use crate::sodium_bindings::*;
 
@@ -12,8 +16,10 @@ pub trait Signable {
     fn as_message(&self) -> Vec<u8>;
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Signed<T: Signable> {
     msg: T,
+    #[serde(with = "BigArray")]
     sig: Signature,
 }
 
@@ -61,11 +67,13 @@ impl MaskGenShares {
     }
 }
 
+#[derive(Serialize, Deserialize)]
 pub enum RevealedShare {
     RandSk(Vec<u8>),
     Seed(Vec<u8>),
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct CryptoMsg {
     pub nonce: Nonce,
     pub c: Vec<u8>,
@@ -97,5 +105,11 @@ pub fn sum_components<I>(v: I, n: usize) -> Vec<Wrapping<i64>>
 
 pub fn scalar_mul(l: Wrapping<i64>, v: Vec<Wrapping<i64>>) -> Vec<Wrapping<i64>> {
     v.into_iter().map(|x| l * x).collect()
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct BundledSignature {
+    #[serde(with = "BigArray")]
+    pub sig: Signature,
 }
 
