@@ -210,39 +210,42 @@ impl<'a> User<'a> {
         }
     }
 
-    pub fn round(&mut self, input: &[u8]) -> Result<Vec<u8>, ()> {
+    pub fn id(&self) -> usize {
+        self.data.id
+    }
+
+    pub fn round(&mut self, input: UserInput) -> Result<UserOutput, ()> {
         // FIXME: unwrap()s !
         replace_with_or_abort_and_return(&mut self.state, |state| { // HACK
-            let input: UserInput = bincode::deserialize(input).unwrap();
             match (state, input) {
                 (UserState::Round0, UserInput::Round0()) => {
                     let (own_keys, (comm_pk, rand_pk)) =
                         round_0(&self.data);
-                    (Ok(bincode::serialize(&UserOutput::Round0(comm_pk, rand_pk)).unwrap()),
+                    (Ok(UserOutput::Round0(comm_pk, rand_pk)),
                         UserState::Round1(own_keys))
                 },
                 (UserState::Round1(own_keys), UserInput::Round1(v)) => {
                     let ((own_keys, others_keys, seed), msgs) =
                         round_1(&self.data, own_keys, v).unwrap();
-                    (Ok(bincode::serialize(&UserOutput::Round1(msgs)).unwrap()),
+                    (Ok(UserOutput::Round1(msgs)),
                         UserState::Round2(own_keys, others_keys, seed))
                 },
                 (UserState::Round2(own_keys, others_keys, own_seed), UserInput::Round2(crypted_keys)) => {
                     let ((own_keys, others_keys, own_seed, crypted_keys), sum) =
                         round_2(&self.data, own_keys, others_keys, own_seed, crypted_keys).unwrap();
-                    (Ok(bincode::serialize(&UserOutput::Round2(sum)).unwrap()),
+                    (Ok(UserOutput::Round2(sum)),
                         UserState::Round3(own_keys, others_keys, own_seed, crypted_keys))
                 },
                 (UserState::Round3(own_keys, others_keys, own_seed, crypted_keys), UserInput::Round3(users)) => {
                     let ((own_keys, others_keys, own_seed, crypted_keys, alive), sig) =
                         round_3(&self.data, own_keys, others_keys, own_seed, crypted_keys, users).unwrap();
-                    (Ok(bincode::serialize(&UserOutput::Round3(BundledSignature::new(sig))).unwrap()),
+                    (Ok(UserOutput::Round3(BundledSignature::new(sig))),
                         UserState::Round4(own_keys, others_keys, own_seed, crypted_keys, alive))
                 },
                 (UserState::Round4(own_keys, others_keys, own_seed, crypted_keys, alive), UserInput::Round4(signatures)) => {
                     let ((), x) =
                         round_4(&self.data, own_keys, others_keys, own_seed, crypted_keys, alive, signatures).unwrap();
-                    (Ok(bincode::serialize(&UserOutput::Round4(x)).unwrap()),
+                    (Ok(UserOutput::Round4(x)),
                         UserState::Done)
                 },
                 _ => panic!()

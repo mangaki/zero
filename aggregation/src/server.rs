@@ -16,6 +16,10 @@ pub struct Server {
 }
 
 impl Server {
+    pub fn new(threshold: usize, grad_len: usize) -> Self {
+        Server { threshold, grad_len, state: ServerState::Round0(Collector::new(threshold)) }
+    }
+
     pub fn recv(&mut self, id: usize, msg: UserOutput) {
         match (&mut self.state, msg) {
             (ServerState::Round0(c), UserOutput::Round0(x, y)) => c.recv(id, (x, y)),
@@ -85,7 +89,7 @@ impl Server {
                             (u, s.unwrap_vec())
                         }).collect();
                     let alive_contribution: Vec<Vec<Wrapping<i64>>> = alive_secrets.into_iter().map(|(v, seed)| {
-                        vector_from_seed(seed.try_into().unwrap(), self.grad_len)
+                        scalar_mul(Wrapping(-1), vector_from_seed(seed.try_into().unwrap(), self.grad_len))
                     }).collect();
                     
                     let dropped_shares = dropped.iter().map(|u| {
@@ -108,7 +112,7 @@ impl Server {
                             let common_seed = x25519_dalek::x25519(rand_sk, other_rand_pk.clone());
 
                             use std::cmp::Ordering;
-                            let l = match usize::cmp(&u, v) {
+                            let l = match usize::cmp(v, &u) {
                                 Ordering::Less => 1,
                                 Ordering::Equal => 0,
                                 Ordering::Greater => -1,
