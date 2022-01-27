@@ -1,9 +1,9 @@
 
 use std::num::Wrapping;
+use std::collections::{BTreeMap, BTreeSet};
 
 use rand::{Rng, SeedableRng};
 use rand_chacha::ChaCha8Rng;
-use x25519_dalek::PublicKey as KAPublicKey;
 use serde::{Serialize, Deserialize};
 #[macro_use]
 use serde_big_array::big_array;
@@ -11,6 +11,9 @@ use serde_big_array::big_array;
 serde_big_array::big_array! { BigArray; }
 
 use crate::sodium_bindings::*;
+
+pub type KAPublicKey = [u8; 32];
+pub type KASecretKey = [u8; 32];
 
 pub trait Signable {
     fn as_message(&self) -> Vec<u8>;
@@ -45,12 +48,8 @@ impl<T: Signable> Signed<T> {
     }
 }
 
-impl Signable for AEPublicKey {
-    fn as_message(&self) -> Vec<u8> { self.to_vec() }
-}
-
 impl Signable for KAPublicKey {
-    fn as_message(&self) -> Vec<u8> { self.as_bytes().to_vec() }
+    fn as_message(&self) -> Vec<u8> { self.to_vec() }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -116,6 +115,31 @@ pub struct BundledSignature {
 impl BundledSignature {
     pub fn new(sig: Signature) -> Self {
         BundledSignature { sig }
+    }
+}
+
+pub struct Collector<T> {
+    threshold: usize,
+    map: BTreeMap<usize, T>,
+}
+
+impl<T> Collector<T> {
+    pub fn new(threshold: usize) -> Self {
+        Collector { threshold, map: BTreeMap::new() }
+    }
+
+    pub fn recv(&mut self, id: usize, x: T) {
+        // Receiving two inputs from the same user in't a problem
+        // (we just overwrite)
+        self.map.insert(id, x);
+    }
+
+    pub fn get(self) -> Result<BTreeMap<usize, T>, ()> {
+        if self.map.len() < self.threshold {
+            Err(())
+        } else {
+            Ok(self.map)
+        }
     }
 }
 
