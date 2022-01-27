@@ -16,7 +16,7 @@ pub trait Signable {
     fn as_message(&self) -> Vec<u8>;
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Signed<T: Signable> {
     msg: T,
     #[serde(with = "BigArray")]
@@ -32,7 +32,7 @@ impl<T: Signable> Signed<T> {
         }
     }
 
-    pub fn verify(self, pk: &SignPublicKey) -> Result<(), ()> {
+    pub fn verify(&self, pk: &SignPublicKey) -> Result<(), ()> {
         verify_signature(&self.msg.as_message(), &self.sig, pk)
     }
 
@@ -73,7 +73,7 @@ pub enum RevealedShare {
     Seed(Vec<u8>),
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct CryptoMsg {
     pub nonce: Nonce,
     pub c: Vec<u8>,
@@ -107,9 +107,15 @@ pub fn scalar_mul(l: Wrapping<i64>, v: Vec<Wrapping<i64>>) -> Vec<Wrapping<i64>>
     v.into_iter().map(|x| l * x).collect()
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct BundledSignature {
     #[serde(with = "BigArray")]
     pub sig: Signature,
+}
+
+impl BundledSignature {
+    pub fn new(sig: Signature) -> Self {
+        BundledSignature { sig }
+    }
 }
 
