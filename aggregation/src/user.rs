@@ -1,4 +1,5 @@
 
+use std::sync::Arc;
 use std::num::Wrapping;
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -10,7 +11,7 @@ use crate::sodium_bindings::*;
 use crate::helpers::*;
 use crate::types::*;
 
-fn round_0(data: &UserData<'_>) -> (OwnKeysData, (Signed<KAPublicKey>, Signed<KAPublicKey>)) {
+fn round_0(data: &UserData) -> (OwnKeysData, (Signed<KAPublicKey>, Signed<KAPublicKey>)) {
     let (comm_pk, comm_sk) = {
         let secret = x25519_dalek::StaticSecret::new(rand_core::OsRng);
         (x25519_dalek::PublicKey::from(&secret).to_bytes(), secret.to_bytes())
@@ -30,7 +31,7 @@ fn round_0(data: &UserData<'_>) -> (OwnKeysData, (Signed<KAPublicKey>, Signed<KA
 }
 
 fn round_1(
-    data: &UserData<'_>,
+    data: &UserData,
     own_keys: OwnKeysData,
     v: BTreeMap<usize, (Signed<KAPublicKey>, Signed<KAPublicKey>)>
 )
@@ -185,20 +186,20 @@ fn round_4(
     Ok(((), revealed))
 }
 
-pub struct User<'a> {
-    data: UserData<'a>,
+pub struct User {
+    data: UserData,
     state: UserState,
 }
 
-impl<'a> User<'a> {
+impl User {
     pub fn new(
         id: usize,
         threshold: usize,
         sign_pk: SignPublicKey,
         sign_sk: SignSecretKey,
         grad: Vec<Wrapping<i64>>,
-        others_sign_pks: &'a BTreeMap<usize, SignPublicKey>
-    ) -> User<'a> {
+        others_sign_pks: Arc<BTreeMap<usize, SignPublicKey>>
+    ) -> User {
         User {
             data: UserData {
                 id, threshold,
@@ -212,6 +213,16 @@ impl<'a> User<'a> {
 
     pub fn id(&self) -> usize {
         self.data.id
+    }
+
+    pub fn round_serialized(&mut self, input: &[u8]) -> Result<Vec<u8>, ()> {
+        match bincode::deserialize::<UserInput>(input) {
+            Ok(input) => match self.round(input) {
+                Ok(res) => Ok(bincode::serialize(&res).unwrap()),
+                Err(()) => Err(())
+            },
+            Err(_) => Err(())
+        }
     }
 
     pub fn round(&mut self, input: UserInput) -> Result<UserOutput, ()> {

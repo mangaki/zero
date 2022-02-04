@@ -5,6 +5,7 @@ mod types;
 mod user;
 mod server;
 
+use std::sync::Arc;
 use std::num::Wrapping;
 use std::collections::BTreeMap;
 
@@ -35,14 +36,14 @@ fn main() {
     let sign_keys = (0..participants).map(|u| {
         (u, gen_sign_keypair())
     }).collect::<BTreeMap<usize, (SignPublicKey, SignSecretKey)>>();
-    let sign_pks = sign_keys.iter().map(|(u, (pk, _))| (*u, pk.clone())).collect::<BTreeMap<usize, SignPublicKey>>();
+    let sign_pks = Arc::new(sign_keys.iter().map(|(u, (pk, _))| (*u, pk.clone())).collect::<BTreeMap<usize, SignPublicKey>>());
 
     let mut users = sign_keys.into_iter().map(|(u, (sign_pk, sign_sk))| {
         let vec = (0..grad_len)
             .map(|i| if (i % participants) == u { i as i64 + 1 } else { 0 })
             .map(Wrapping).collect();
         println!("user {} : {:?}", u, vec);
-        User::new(u, threshold, sign_pk, sign_sk, vec, &sign_pks)
+        User::new(u, threshold, sign_pk, sign_sk, vec, Arc::clone(&sign_pks))
     }).collect::<Vec<User>>();
     
     let mut server = Server::new(threshold, grad_len);

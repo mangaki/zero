@@ -1,4 +1,5 @@
 
+use std::sync::Arc;
 use std::num::Wrapping;
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -18,12 +19,12 @@ use crate::helpers::*;
 
 serde_big_array::big_array! { BigArray; }
 
-pub struct UserData<'a> {
+pub struct UserData {
     pub id: usize,
     pub threshold: usize,
     pub sign_pk: SignPublicKey,
     pub sign_sk: SignSecretKey,
-    pub others_sign_pks: &'a BTreeMap<usize, SignPublicKey>,
+    pub others_sign_pks: Arc<BTreeMap<usize, SignPublicKey>>,
     pub grad: Vec<Wrapping<i64>>,
 }
 
@@ -79,8 +80,14 @@ pub enum ServerState {
     Done,
 }
 
+#[derive(Serialize, Deserialize)]
 pub enum ServerOutput {
     Messages(BTreeMap<usize, UserInput>),
+    Gradient(Vec<Wrapping<i64>>),
+}
+
+pub enum ServerOutputSerialized {
+    Messages(BTreeMap<usize, Vec<u8>>),
     Gradient(Vec<Wrapping<i64>>),
 }
 

@@ -20,6 +20,24 @@ impl Server {
         Server { threshold, grad_len, state: ServerState::Round0(Collector::new(threshold)) }
     }
 
+    pub fn recv_serialized(&mut self, id: usize, msg: &[u8]) -> Result<(), ()> {
+        match bincode::deserialize::<UserOutput>(msg) {
+            Ok(msg) => { self.recv(id, msg); Ok(()) },
+            Err(_) => Err(())
+        }
+    }
+
+    pub fn round_serialized(&mut self) -> Result<ServerOutputSerialized, ()> {
+        match self.round() {
+            Ok(ServerOutput::Messages(res)) =>
+                Ok(ServerOutputSerialized::Messages(
+                        res.into_iter()
+                        .map(|(k, v)| (k, bincode::serialize(&v).unwrap())).collect())),
+            Ok(ServerOutput::Gradient(v)) => Ok(ServerOutputSerialized::Gradient(v)),
+            Err(()) => Err(())
+        }
+    }
+
     pub fn recv(&mut self, id: usize, msg: UserOutput) {
         match (&mut self.state, msg) {
             (ServerState::Round0(c), UserOutput::Round0(x, y)) => c.recv(id, (x, y)),
