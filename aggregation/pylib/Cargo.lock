@@ -15,6 +15,24 @@ dependencies = [
  "bincode",
  "getrandom 0.2.4",
  "libsodium-sys-stable",
+ "rand 0.8.4",
+ "rand_chacha 0.3.1",
+ "rand_core 0.5.1",
+ "replace_with",
+ "serde",
+ "serde-big-array",
+ "sss-rs",
+ "x25519-dalek",
+]
+
+[[package]]
+name = "aggregation-python"
+version = "0.1.0"
+dependencies = [
+ "aggregation",
+ "bincode",
+ "getrandom 0.2.4",
+ "libsodium-sys-stable",
  "pyo3",
  "rand 0.8.4",
  "rand_chacha 0.3.1",

@@ -1,10 +1,4 @@
 
-mod sodium_bindings;
-mod helpers;
-mod types;
-mod user;
-mod server;
-
 use std::collections::BTreeMap;
 use std::num::Wrapping;
 use std::sync::Arc;
@@ -13,10 +7,10 @@ use pyo3::prelude::*;
 use pyo3::types::PyBytes;
 use pyo3::exceptions;
 
-use sodium_bindings::*;
-use types::*;
-use user::*;
-use server::*;
+use aggregation::sodium_bindings::*;
+use aggregation::types::*;
+use aggregation::user::*;
+use aggregation::server::*;
 
 #[pyclass]
 #[derive(Clone)]
