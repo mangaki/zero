@@ -42,7 +42,7 @@ class MangakiSVDKNN(RecommendationAlgorithm):
     operations effectively.
     It is 7x faster than svd1.py, and it only relies on numpy/scipy.
     '''
-    def __init__(self, nb_components=20, nb_neighbors=20, nb_iterations=None, *args, **kwargs):
+    def __init__(self, nb_components=20, nb_neighbors=5, nb_iterations=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.U = None
         self.sigma = None
