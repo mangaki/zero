@@ -31,86 +31,133 @@
           <div class="body" role="main">
             
   <h1>Source code for zero.svd</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Mangaki sparse SVD.</span>
+<span class="sd">Author: Jill-Jênn Vie, 2020</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span><span class="p">,</span> <span class="n">diags</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="kn">import</span> <span class="n">svds</span>
 <span class="kn">from</span> <span class="nn">zero.recommendation_algorithm</span> <span class="kn">import</span> <span class="p">(</span><span class="n">RecommendationAlgorithm</span><span class="p">,</span>
                                            <span class="n">register_algorithm</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="remove_mean"><a class="viewcode-back" href="../../source/zero.html#zero.svd.remove_mean">[docs]</a><span class="k">def</span> <span class="nf">remove_mean</span><span class="p">(</span><span class="n">sp_matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    For each row (resp. column if axis is 0) of a sparse matrix,</span>
+<span class="sd">    remove the mean of nonzero elements (resp. the mean of the column)</span>
+<span class="sd">    from the nonzero elements.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">sp_matrix</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">mask</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">sp_matrix</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">line_sums</span> <span class="o">=</span> <span class="n">sp_matrix</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">.</span><span class="n">A1</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">line_counts</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">.</span><span class="n">A1</span>
+        <span class="n">line_counts</span><span class="p">[</span><span class="n">line_counts</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nb_users</span><span class="p">,</span> <span class="n">nb_works</span> <span class="o">=</span> <span class="n">sp_matrix</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">line_counts</span> <span class="o">=</span> <span class="n">nb_users</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nb_works</span><span class="p">)</span>
+    <span class="n">means</span> <span class="o">=</span> <span class="n">line_sums</span> <span class="o">/</span> <span class="n">line_counts</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># Remove from columns</span>
+        <span class="n">shifted</span> <span class="o">=</span> <span class="n">sp_matrix</span> <span class="o">-</span> <span class="n">mask</span> <span class="o">*</span> <span class="n">diags</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Remove from rows</span>
+        <span class="n">shifted</span> <span class="o">=</span> <span class="n">sp_matrix</span> <span class="o">-</span> <span class="n">diags</span><span class="p">(</span><span class="n">means</span><span class="p">)</span> <span class="o">*</span> <span class="n">mask</span>
+    <span class="k">return</span> <span class="n">shifted</span><span class="p">,</span> <span class="n">means</span></div>
+
+
 <div class="viewcode-block" id="MangakiSVD"><a class="viewcode-back" href="../../source/zero.html#zero.svd.MangakiSVD">[docs]</a><span class="nd">@register_algorithm</span><span class="p">(</span><span class="s1">&#39;svd&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;nb_components&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">})</span>
 <span class="k">class</span> <span class="nc">MangakiSVD</span><span class="p">(</span><span class="n">RecommendationAlgorithm</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nb_components</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">nb_iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Implementation of SVD with sparse matrices.</span>
+<span class="sd">    It does not compute the whole matrix for recommendations</span>
+<span class="sd">    but the production must be able to do sparse matrix</span>
+<span class="sd">    operations effectively.</span>
+<span class="sd">    It is 7x faster than svd1.py, and it only relies on numpy/scipy.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nb_components</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">nb_iterations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">VT</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nb_components</span> <span class="o">=</span> <span class="n">nb_components</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nb_iterations</span> <span class="o">=</span> <span class="n">nb_iterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">means</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_serializable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check whether we can save the model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="MangakiSVD.make_matrix"><a class="viewcode-back" href="../../source/zero.html#zero.svd.MangakiSVD.make_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">make_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_users</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_works</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">work</span><span class="p">),</span> <span class="n">rating</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-            <span class="n">matrix</span><span class="p">[</span><span class="n">user</span><span class="p">][</span><span class="n">work</span><span class="p">]</span> <span class="o">=</span> <span class="n">rating</span>
-        <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_users</span><span class="p">,))</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_users</span><span class="p">):</span>
-            <span class="n">means</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">means</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
-                <span class="n">means</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">means</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">means</span></div>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make a sparse matrix out of X and y.</span>
+<span class="sd">        X is a matrix of pairs (user_id, item_id),</span>
+<span class="sd">        y are real values of ratings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">ratings</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)),</span>
+                             <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_users</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_works</span><span class="p">))</span>
+        <span class="n">ratings</span><span class="p">,</span> <span class="n">row_means</span> <span class="o">=</span> <span class="n">remove_mean</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ratings</span><span class="p">,</span> <span class="n">col_means</span> <span class="o">=</span> <span class="n">remove_mean</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chrono</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;salut&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ratings</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">ratings</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="c1"># self.chrono.save(ratings.mean(axis=0), ratings.mean(axis=1))</span>
+        <span class="k">return</span> <span class="n">ratings</span><span class="p">,</span> <span class="n">col_means</span><span class="p">,</span> <span class="n">row_means</span></div>
 
 <div class="viewcode-block" id="MangakiSVD.fit"><a class="viewcode-back" href="../../source/zero.html#zero.svd.MangakiSVD.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">sklearn.utils.extmath</span> <span class="kn">import</span> <span class="n">randomized_svd</span>
-
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fit the SVD.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose_level</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing M: (</span><span class="si">%i</span><span class="s2"> × </span><span class="si">%i</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_users</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_works</span><span class="p">))</span>
-        <span class="n">matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">means</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_matrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_means</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_means</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_matrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">chrono</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;fill and center matrix&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VT</span> <span class="o">=</span> <span class="n">randomized_svd</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span>
-                                                     <span class="bp">self</span><span class="o">.</span><span class="n">nb_components</span><span class="p">,</span>
-                                                     <span class="n">n_iter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_iterations</span><span class="p">,</span>
-                                                     <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VT</span> <span class="o">=</span> <span class="n">svds</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_components</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose_level</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Shapes&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VT</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">chrono</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;factor matrix&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MangakiSVD.fit_single_user"><a class="viewcode-back" href="../../source/zero.html#zero.svd.MangakiSVD.fit_single_user">[docs]</a>    <span class="k">def</span> <span class="nf">fit_single_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rated_works</span><span class="p">,</span> <span class="n">ratings</span><span class="p">):</span>
-        <span class="n">nb_components</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_components</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fit the SVD for a single user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># nb_components = min(self.nb_components, self.sigma.shape[0])</span>
         <span class="n">mean_user</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ratings</span><span class="p">)</span>
-        <span class="n">ratings</span> <span class="o">-=</span> <span class="n">mean_user</span>
-        <span class="n">Ru</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-        <span class="n">Vu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VT</span><span class="p">[:,</span> <span class="n">rated_works</span><span class="p">])</span>
-        <span class="n">Gu</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">rated_works</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">nb_components</span><span class="p">)</span>
-        <span class="n">feat_user</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">Vu</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vu</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">+</span> <span class="n">Gu</span><span class="p">,</span> <span class="n">Vu</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Ru</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ratings</span> <span class="o">-=</span> <span class="n">mean_user</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_means</span><span class="p">[</span><span class="n">rated_works</span><span class="p">]</span>
+        <span class="c1">#Ru = np.array(ratings, ndmin=2).T</span>
+        <span class="c1">#Vu = np.diag(self.sigma).dot(self.VT[:, rated_works])</span>
+        <span class="c1">#Gu = 0.1 * len(rated_works) * np.eye(nb_components)</span>
+        <span class="c1">#feat_user = np.linalg.solve(Vu.dot(Vu.T) + Gu, Vu.dot(Ru)).reshape(-1)</span>
+        <span class="n">feat_user</span> <span class="o">=</span> <span class="n">ratings</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">VT</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">rated_works</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;wawawa&#39;</span><span class="p">,</span> <span class="n">feat_user</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mean_user</span><span class="p">,</span> <span class="n">feat_user</span></div>
 
-<div class="viewcode-block" id="MangakiSVD.unzip"><a class="viewcode-back" href="../../source/zero.html#zero.svd.MangakiSVD.unzip">[docs]</a>    <span class="k">def</span> <span class="nf">unzip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chrono</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;begin of fit&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VT</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chrono</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;end of fit&#39;</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="MangakiSVD.predict"><a class="viewcode-back" href="../../source/zero.html#zero.svd.MangakiSVD.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Model is unzipped</span>
-            <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VT</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span> <span class="o">+</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">means</span><span class="p">[</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)])</span></div>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Predict ratings for user, item pairs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Us</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span>
+        <span class="k">return</span> <span class="p">((</span><span class="n">Us</span><span class="p">[</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">VT</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">row_means</span><span class="p">[</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_means</span><span class="p">[</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]])</span></div>
 
 <div class="viewcode-block" id="MangakiSVD.predict_single_user"><a class="viewcode-back" href="../../source/zero.html#zero.svd.MangakiSVD.predict_single_user">[docs]</a>    <span class="k">def</span> <span class="nf">predict_single_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_ids</span><span class="p">,</span> <span class="n">user_parameters</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Predict ratings for a single user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mean</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">user_parameters</span>
-        <span class="k">return</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VT</span><span class="p">[:,</span> <span class="n">work_ids</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VT</span><span class="p">[:,</span> <span class="n">work_ids</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_means</span><span class="p">[</span><span class="n">work_ids</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="MangakiSVD.get_shortname"><a class="viewcode-back" href="../../source/zero.html#zero.svd.MangakiSVD.get_shortname">[docs]</a>    <span class="k">def</span> <span class="nf">get_shortname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;svd-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_components</span></div></div>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Short name useful for logging output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;svd3-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_components</span></div></div>
 </pre></div>
 
           </div>

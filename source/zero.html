@@ -969,50 +969,69 @@ Complexity: <span class="math notranslate nohighlight">\(O(P (M \log M + K))\)</
 </div>
 <div class="section" id="module-zero.svd">
 <span id="zero-svd-module"></span><h2>zero.svd module<a class="headerlink" href="#module-zero.svd" title="Permalink to this headline">¶</a></h2>
+<p>Mangaki sparse SVD.
+Author: Jill-Jênn Vie, 2020</p>
 <dl class="py class">
 <dt id="zero.svd.MangakiSVD">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">zero.svd.</span></code><code class="sig-name descname"><span class="pre">MangakiSVD</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zero.svd.MangakiSVD" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">zero.svd.</span></code><code class="sig-name descname"><span class="pre">MangakiSVD</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zero.svd.MangakiSVD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
+<p>Implementation of SVD with sparse matrices.
+It does not compute the whole matrix for recommendations
+but the production must be able to do sparse matrix
+operations effectively.
+It is 7x faster than svd1.py, and it only relies on numpy/scipy.</p>
 <dl class="py method">
 <dt id="zero.svd.MangakiSVD.fit">
 <code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zero.svd.MangakiSVD.fit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Fit the SVD.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="zero.svd.MangakiSVD.fit_single_user">
 <code class="sig-name descname"><span class="pre">fit_single_user</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rated_works</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.fit_single_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zero.svd.MangakiSVD.fit_single_user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Fit the SVD for a single user.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="zero.svd.MangakiSVD.get_shortname">
 <code class="sig-name descname"><span class="pre">get_shortname</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.get_shortname"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zero.svd.MangakiSVD.get_shortname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Short name useful for logging output.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="zero.svd.MangakiSVD.is_serializable">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_serializable</span></code><a class="headerlink" href="#zero.svd.MangakiSVD.is_serializable" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check whether we can save the model.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="zero.svd.MangakiSVD.make_matrix">
 <code class="sig-name descname"><span class="pre">make_matrix</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.make_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zero.svd.MangakiSVD.make_matrix" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Make a sparse matrix out of X and y.
+X is a matrix of pairs (user_id, item_id),
+y are real values of ratings.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="zero.svd.MangakiSVD.predict">
 <code class="sig-name descname"><span class="pre">predict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zero.svd.MangakiSVD.predict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Predict ratings for user, item pairs.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="zero.svd.MangakiSVD.predict_single_user">
 <code class="sig-name descname"><span class="pre">predict_single_user</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">work_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.predict_single_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zero.svd.MangakiSVD.predict_single_user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Predict ratings for a single user.</p>
+</dd></dl>
 
-<dl class="py method">
-<dt id="zero.svd.MangakiSVD.unzip">
-<code class="sig-name descname"><span class="pre">unzip</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#MangakiSVD.unzip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zero.svd.MangakiSVD.unzip" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+</dd></dl>
 
+<dl class="py function">
+<dt id="zero.svd.remove_mean">
+<code class="sig-prename descclassname"><span class="pre">zero.svd.</span></code><code class="sig-name descname"><span class="pre">remove_mean</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sp_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd.html#remove_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zero.svd.remove_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>For each row (resp. column if axis is 0) of a sparse matrix,
+remove the mean of nonzero elements (resp. the mean of the column)
+from the nonzero elements.</p>
 </dd></dl>
 
 </div>
@@ -1022,7 +1041,7 @@ Complexity: <span class="math notranslate nohighlight">\(O(P (M \log M + K))\)</
 Author: Jill-Jênn Vie, 2020</p>
 <dl class="py class">
 <dt id="zero.svd2.MangakiSVD2">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">zero.svd2.</span></code><code class="sig-name descname"><span class="pre">MangakiSVD2</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd2.html#MangakiSVD2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zero.svd2.MangakiSVD2" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">zero.svd2.</span></code><code class="sig-name descname"><span class="pre">MangakiSVD2</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/zero/svd2.html#MangakiSVD2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#zero.svd2.MangakiSVD2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#zero.recommendation_algorithm.RecommendationAlgorithm" title="zero.recommendation_algorithm.RecommendationAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">zero.recommendation_algorithm.RecommendationAlgorithm</span></code></a></p>
 <p>Implementation of SVD with sparse matrices.
 It does not compute the whole matrix for recommendations
