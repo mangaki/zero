@@ -5,6 +5,7 @@ Author: Jill-Jênn Vie, 2020
 import numpy as np
 from scipy.sparse import csr_matrix, diags
 from scipy.sparse.linalg import svds
+from sklearn.neighbors import NearestNeighbors
 from zero.recommendation_algorithm import (RecommendationAlgorithm,
                                            register_algorithm)
 
@@ -32,8 +33,8 @@ def remove_mean(sp_matrix, axis=1):
     return shifted, means
 
 
-@register_algorithm('svd', {'nb_components': 20})
-class MangakiSVD(RecommendationAlgorithm):
+@register_algorithm('svdknn')
+class MangakiSVDKNN(RecommendationAlgorithm):
     '''
     Implementation of SVD with sparse matrices.
     It does not compute the whole matrix for recommendations
@@ -41,12 +42,13 @@ class MangakiSVD(RecommendationAlgorithm):
     operations effectively.
     It is 7x faster than svd1.py, and it only relies on numpy/scipy.
     '''
-    def __init__(self, nb_components=20, nb_iterations=None, *args, **kwargs):
+    def __init__(self, nb_components=20, nb_neighbors=20, nb_iterations=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.U = None
         self.sigma = None
         self.VT = None
         self.nb_components = nb_components
+        self.nb_neighbors = nb_neighbors
         self.means = None
 
     @property
@@ -100,8 +102,14 @@ class MangakiSVD(RecommendationAlgorithm):
         """
         Predict ratings for user, item pairs.
         """
+        knn = NearestNeighbors(n_neighbors=self.nb_neighbors)
         Us = self.U * self.sigma
-        return ((Us[X[:, 0]] * self.VT.T[X[:, 1]]).sum(axis=1) +
+        knn.fit(Us)
+        pred_user_ids = list(set(X[:, 0]))
+        neighbor_ids = knn.kneighbors(Us[pred_user_ids], return_distance=False)
+        averaged_embedding = np.zeros_like(Us)
+        averaged_embedding[pred_user_ids] = Us[neighbor_ids].mean(axis=1)
+        return ((averaged_embedding[X[:, 0]] * self.VT.T[X[:, 1]]).sum(axis=1) +
                 self.row_means[X[:, 0]] + self.col_means[X[:, 1]])
 
     def predict_single_user(self, work_ids, user_parameters):
@@ -115,4 +123,4 @@ class MangakiSVD(RecommendationAlgorithm):
         """
         Short name useful for logging output.
         """
-        return 'svd-%d' % self.nb_components
+        return f'svdknn-{self.nb_components}-{self.nb_neighbors}'
