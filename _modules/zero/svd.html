@@ -101,9 +101,6 @@
                              <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_users</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_works</span><span class="p">))</span>
         <span class="n">ratings</span><span class="p">,</span> <span class="n">row_means</span> <span class="o">=</span> <span class="n">remove_mean</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">ratings</span><span class="p">,</span> <span class="n">col_means</span> <span class="o">=</span> <span class="n">remove_mean</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chrono</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;salut&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ratings</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">ratings</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        <span class="c1"># self.chrono.save(ratings.mean(axis=0), ratings.mean(axis=1))</span>
         <span class="k">return</span> <span class="n">ratings</span><span class="p">,</span> <span class="n">col_means</span><span class="p">,</span> <span class="n">row_means</span></div>
 
 <div class="viewcode-block" id="MangakiSVD.fit"><a class="viewcode-back" href="../../source/zero.html#zero.svd.MangakiSVD.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -127,15 +124,9 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fit the SVD for a single user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># nb_components = min(self.nb_components, self.sigma.shape[0])</span>
         <span class="n">mean_user</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ratings</span><span class="p">)</span>
         <span class="n">ratings</span> <span class="o">-=</span> <span class="n">mean_user</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_means</span><span class="p">[</span><span class="n">rated_works</span><span class="p">]</span>
-        <span class="c1">#Ru = np.array(ratings, ndmin=2).T</span>
-        <span class="c1">#Vu = np.diag(self.sigma).dot(self.VT[:, rated_works])</span>
-        <span class="c1">#Gu = 0.1 * len(rated_works) * np.eye(nb_components)</span>
-        <span class="c1">#feat_user = np.linalg.solve(Vu.dot(Vu.T) + Gu, Vu.dot(Ru)).reshape(-1)</span>
         <span class="n">feat_user</span> <span class="o">=</span> <span class="n">ratings</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">VT</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">rated_works</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;wawawa&#39;</span><span class="p">,</span> <span class="n">feat_user</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mean_user</span><span class="p">,</span> <span class="n">feat_user</span></div>
 
 <div class="viewcode-block" id="MangakiSVD.predict"><a class="viewcode-back" href="../../source/zero.html#zero.svd.MangakiSVD.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
@@ -157,7 +148,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Short name useful for logging output.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s1">&#39;svd3-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_components</span></div></div>
+        <span class="k">return</span> <span class="s1">&#39;svd-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_components</span></div></div>
 </pre></div>
 
           </div>
