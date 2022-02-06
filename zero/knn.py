@@ -34,7 +34,7 @@ def mean_of_nonzero(X, cols):
 @register_algorithm('knn')
 class MangakiKNN(RecommendationAlgorithm):
     def __init__(self, nb_neighbors=20, rated_by_neighbors_at_least=3,
-                 missing_is_mean=True, weighted_neighbors=False, *args,
+                 missing_is_mean=True, weighted_neighbors=False, nb_iterations=None, *args,
                  **kwargs):
         super().__init__(*args, **kwargs)
         self.M = None

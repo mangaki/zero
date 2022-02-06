@@ -1,10 +1,11 @@
 """
-Mangaki sparse SVD.
-Author: Jill-Jênn Vie, 2020
+Mangaki sparse SVD with KNN.
+Author: Jill-Jênn Vie, 2022
 """
 import numpy as np
 from scipy.sparse import csr_matrix, diags
 from scipy.sparse.linalg import svds
+from sklearn.neighbors import NearestNeighbors
 from zero.recommendation_algorithm import (RecommendationAlgorithm,
                                            register_algorithm)
 
@@ -32,22 +33,23 @@ def remove_mean(sp_matrix, axis=1):
     return shifted, means
 
 
-@register_algorithm('svd', {'nb_components': 20})
-class MangakiSVD(RecommendationAlgorithm):
+@register_algorithm('svdknn')
+class MangakiSVDKNN(RecommendationAlgorithm):
     '''
     Implementation of SVD with sparse matrices.
-    It does not compute the whole matrix for recommendations
-    but the production must be able to do sparse matrix
-    operations effectively.
-    It is 7x faster than svd1.py, and it only relies on numpy/scipy.
+.   Then it computes the average embedding of k-nearest neighbors.
     '''
-    def __init__(self, nb_components=20, nb_iterations=None, *args, **kwargs):
+    def __init__(self, nb_components=20, nb_neighbors=5, is_weighted=True,
+                 nb_iterations=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.U = None
         self.sigma = None
         self.VT = None
         self.nb_components = nb_components
+        self.nb_neighbors = nb_neighbors
+        self.is_weighted = is_weighted
         self.means = None
+        self.knn = NearestNeighbors(n_neighbors=self.nb_neighbors)
 
     @property
     def is_serializable(self):
@@ -81,6 +83,8 @@ class MangakiSVD(RecommendationAlgorithm):
         self.chrono.save('fill and center matrix')
 
         self.U, self.sigma, self.VT = svds(matrix, k=self.nb_components)
+        self.user_embeddings = self.U * self.sigma
+        self.knn.fit(self.user_embeddings)
 
         if self.verbose_level:
             print('Shapes', self.U.shape, self.sigma.shape, self.VT.shape)
@@ -96,12 +100,30 @@ class MangakiSVD(RecommendationAlgorithm):
         feat_user = ratings @ self.VT.T[rated_works]
         return mean_user, feat_user
 
+    def compute_average_embedding(self, query):
+        dist, neighbor_ids = self.knn.kneighbors(query)
+        if 0 in dist:  # Query is in the stored embeddings (predict)
+            adj = self.knn.kneighbors_graph(query, self.nb_neighbors + 1,
+                                            mode='distance')
+        else:  # predict_single_user
+            adj = self.knn.kneighbors_graph(query, mode='distance')
+        if self.is_weighted:
+            adj.data[adj.data > 0] = 1 / adj.data[adj.data > 0]
+        else:
+            adj.data[adj.data > 0] = np.ones_like(adj.data[adj.data > 0])
+        answer = adj @ self.user_embeddings / adj.sum(axis=1)
+        return answer
+
     def predict(self, X):
         """
         Predict ratings for user, item pairs.
         """
-        Us = self.U * self.sigma
-        return ((Us[X[:, 0]] * self.VT.T[X[:, 1]]).sum(axis=1) +
+        pred_user_ids = list(set(X[:, 0]))
+        averaged_embeddings = self.compute_average_embedding(
+            self.user_embeddings[pred_user_ids])
+        averaged_embedding = np.zeros_like(self.user_embeddings)
+        averaged_embedding[pred_user_ids] = averaged_embeddings            
+        return ((averaged_embedding[X[:, 0]] * self.VT.T[X[:, 1]]).sum(axis=1) +
                 self.row_means[X[:, 0]] + self.col_means[X[:, 1]])
 
     def predict_single_user(self, work_ids, user_parameters):
@@ -109,10 +131,14 @@ class MangakiSVD(RecommendationAlgorithm):
         Predict ratings for a single user.
         """
         mean, U = user_parameters
-        return mean + U.dot(self.VT[:, work_ids]) + self.col_means[work_ids]
+        average_embedding = self.compute_average_embedding(
+            U.reshape(1, -1)).A1  # Make it a flattened embedding no matter what
+        return (mean + average_embedding.dot(self.VT[:, work_ids]) +
+                self.col_means[work_ids])
 
     def get_shortname(self):
         """
         Short name useful for logging output.
         """
-        return 'svd-%d' % self.nb_components
+        suffix = '-weight' if self.is_weighted else ''
+        return f'svdknn-{self.nb_components}-{self.nb_neighbors}{suffix}'

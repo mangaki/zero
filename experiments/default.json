@@ -1,6 +1,8 @@
 {
 	"configurations": [
-        ["svd2"],
-        ["svd"]
+        ["svd"],
+        ["svdknn", 30, 5, true],
+        ["svdknn", 20, 5, true],
+        ["svdknn", 20, 2, true]
 	]
 }
