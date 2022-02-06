@@ -42,8 +42,12 @@ fn round_1(
         return Err(())
     }
 
-    if !(v.iter().all(|(id, (x, y))| {
-        let pk = data.others_sign_pks.get(id).unwrap();
+    let i = v.iter()
+        .map(|(id, (x, y))| -> Option<_> { Some((data.others_sign_pks.get(id)?, (x, y))) })
+        .collect::<Option<Vec<_>>>()
+        .ok_or(())?;
+
+    if !(i.into_iter().all(|(pk, (x, y))| {
         x.verify(pk).is_ok() && y.verify(pk).is_ok()
     })) {
         return Err(())
@@ -54,16 +58,13 @@ fn round_1(
 
     let seed = {
         let mut seed = [0; 32];
-        match getrandom::getrandom(&mut seed) {
-            Ok(()) => (),
-            Err(_) => panic!(), //TODO
-        }
+        getrandom::getrandom(&mut seed).map_err(|_| ())?;
         seed
     };
 
     //FIXME: Find an implementation that allows for higher numbers of shares !
-    let rand_sk_shares = share(Secret::InMemory(own_keys.rand_sk.to_vec()), data.threshold as u8, n as u8, true).unwrap();
-    let seed_shares = share(Secret::InMemory(seed.to_vec()), data.threshold as u8, n as u8, true).unwrap();
+    let rand_sk_shares = share(Secret::InMemory(own_keys.rand_sk.to_vec()), data.threshold as u8, n as u8, true).map_err(|_| ())?;
+    let seed_shares = share(Secret::InMemory(seed.to_vec()), data.threshold as u8, n as u8, true).map_err(|_| ())?;
 
     let msgs: BTreeMap<usize, CryptoMsg> = comm_pks.iter()
         .zip(Iterator::zip(rand_sk_shares.into_iter(), seed_shares.into_iter()))
@@ -72,10 +73,10 @@ fn round_1(
             let msg_struct = MaskGenShares::new(data.id, *id, rand_sk_share, seed_share);
 
             let msg = CryptoMsg::new(
-                &bincode::serialize(&msg_struct).unwrap(),
+                &bincode::serialize(&msg_struct).map_err(|_| ())?,
                 common_key);
-            (*id, msg) //TODO
-        }).collect();
+            Ok((*id, msg))
+        }).collect::<Result<_, ()>>()?;
 
     let others_keys = OthersKeysData { comm_pks, rand_pks };
     
@@ -99,7 +100,7 @@ fn round_2(
 
     let other_masks: Vec<Vec<Wrapping<i64>>> = u_2.into_iter().map(|v| {
         let rand_sk = own_keys.rand_sk;
-        let other_rand_pk = others_keys.rand_pks.get(&v).unwrap();
+        let other_rand_pk = others_keys.rand_pks.get(&v).ok_or(())?;
         let common_seed = x25519_dalek::x25519(rand_sk, other_rand_pk.clone());
 
         use std::cmp::Ordering;
@@ -108,8 +109,8 @@ fn round_2(
             Ordering::Equal => 0,
             Ordering::Greater => -1,
         };
-        scalar_mul(Wrapping(l), vector_from_seed(common_seed, data.grad.len()))
-    }).collect();
+        Ok(scalar_mul(Wrapping(l), vector_from_seed(common_seed, data.grad.len())))
+    }).collect::<Result<_, ()>>()?;
     let own_mask = vector_from_seed(own_seed.clone(), data.grad.len());
     let sum: Vec<Wrapping<i64>> = sum_components(
         Iterator::chain(std::iter::once(data.grad.clone()), std::iter::once(own_mask))
@@ -133,7 +134,7 @@ fn round_3(
 
     let alive: BTreeSet<usize> = users.into_iter().collect();
 
-    Ok(((own_keys, others_keys, own_seed, crypted_keys, alive.clone()), sign(&bincode::serialize(&alive).unwrap(), &data.sign_sk)))
+    Ok(((own_keys, others_keys, own_seed, crypted_keys, alive.clone()), sign(&bincode::serialize(&alive).map_err(|_| ())?, &data.sign_sk)))
 }
 
 fn round_4(
@@ -152,10 +153,14 @@ fn round_4(
         return Err(())
     }
 
-    let signatures_ok = signatures.into_iter().all(|(v, sig)| {
-        //TODO: unwrap()s
-        let other_sign_pk = data.others_sign_pks.get(&v).unwrap();
-        verify_signature(&bincode::serialize(&alive).unwrap(), &sig.sig, other_sign_pk).is_ok()
+    let sigs = signatures.into_iter()
+        .map(|(v, sig)| { Some((data.others_sign_pks.get(&v)?, sig)) })
+        .collect::<Option<Vec<_>>>()
+        .ok_or(())?;
+    let alive_msg = bincode::serialize(&alive).map_err(|_| ())?;
+
+    let signatures_ok = sigs.into_iter().all(|(other_sign_pk, sig)| {
+        verify_signature(&alive_msg, &sig.sig, other_sign_pk).is_ok()
     });
 
     if !signatures_ok {
@@ -166,22 +171,22 @@ fn round_4(
 
     let gen_shares: BTreeMap<usize, MaskGenShares> = crypted_keys.into_iter()
         .map(|(v, m)| {
-            let v_comm_pk = others_keys.comm_pks.get(&v).unwrap();
+            let v_comm_pk = others_keys.comm_pks.get(&v).ok_or(())?;
             let comm_sk = own_keys.comm_sk;
             let clear_m = m.unwrap(x25519_dalek::x25519(comm_sk, v_comm_pk.clone()));
-            let share: MaskGenShares = bincode::deserialize(&clear_m.unwrap()).unwrap();
+            let share: MaskGenShares = bincode::deserialize(&clear_m.map_err(|_| ())?).map_err(|_| ())?;
 
             if !(share.u == v && share.v == data.id) {
-                panic!() //TODO
+                Err(())
+            } else {
+                Ok((v, share))
             }
-
-            (v, share) //TODO: unwrap()s
-        }).collect();
+        }).collect::<Result<_, ()>>()?;
 
     let revealed: BTreeMap<usize, RevealedShare> = Iterator::chain(
-        alive.iter().map(|v| (*v, RevealedShare::Seed(gen_shares.get(&v).unwrap().seed_share.clone()))),
-        dropped.iter().map(|v| (*v, RevealedShare::RandSk(gen_shares.get(&v).unwrap().rand_sk_share.clone())))
-    ).collect();
+        alive.iter().map(|v| Ok((*v, RevealedShare::Seed(gen_shares.get(&v).ok_or(())?.seed_share.clone())))),
+        dropped.iter().map(|v| Ok((*v, RevealedShare::RandSk(gen_shares.get(&v).ok_or(())?.rand_sk_share.clone()))))
+    ).collect::<Result<_, ()>>()?;
 
     Ok(((), revealed))
 }
@@ -218,7 +223,7 @@ impl User {
     pub fn round_serialized(&mut self, input: &[u8]) -> Result<Vec<u8>, ()> {
         match bincode::deserialize::<UserInput>(input) {
             Ok(input) => match self.round(input) {
-                Ok(res) => Ok(bincode::serialize(&res).unwrap()),
+                Ok(res) => bincode::serialize(&res).map_err(|_| ()),
                 Err(()) => Err(())
             },
             Err(_) => Err(())
@@ -226,7 +231,6 @@ impl User {
     }
 
     pub fn round(&mut self, input: UserInput) -> Result<UserOutput, ()> {
-        // FIXME: unwrap()s !
         replace_with_or_abort_and_return(&mut self.state, |state| { // HACK
             match (state, input) {
                 (UserState::Round0, UserInput::Round0()) => {
@@ -236,30 +240,38 @@ impl User {
                         UserState::Round1(own_keys))
                 },
                 (UserState::Round1(own_keys), UserInput::Round1(v)) => {
-                    let ((own_keys, others_keys, seed), msgs) =
-                        round_1(&self.data, own_keys, v).unwrap();
-                    (Ok(UserOutput::Round1(msgs)),
-                        UserState::Round2(own_keys, others_keys, seed))
+                    match round_1(&self.data, own_keys, v) {
+                        Ok(((own_keys, others_keys, seed), msgs)) =>
+                            (Ok(UserOutput::Round1(msgs)),
+                                UserState::Round2(own_keys, others_keys, seed)),
+                        Err(_) => (Err(()), UserState::Failed)
+                    }
                 },
                 (UserState::Round2(own_keys, others_keys, own_seed), UserInput::Round2(crypted_keys)) => {
-                    let ((own_keys, others_keys, own_seed, crypted_keys), sum) =
-                        round_2(&self.data, own_keys, others_keys, own_seed, crypted_keys).unwrap();
+                    match round_2(&self.data, own_keys, others_keys, own_seed, crypted_keys) {
+                        Ok(((own_keys, others_keys, own_seed, crypted_keys), sum)) =>
                     (Ok(UserOutput::Round2(sum)),
-                        UserState::Round3(own_keys, others_keys, own_seed, crypted_keys))
+                        UserState::Round3(own_keys, others_keys, own_seed, crypted_keys)),
+                        Err(_) => (Err(()), UserState::Failed)
+                    }
                 },
                 (UserState::Round3(own_keys, others_keys, own_seed, crypted_keys), UserInput::Round3(users)) => {
-                    let ((own_keys, others_keys, own_seed, crypted_keys, alive), sig) =
-                        round_3(&self.data, own_keys, others_keys, own_seed, crypted_keys, users).unwrap();
-                    (Ok(UserOutput::Round3(BundledSignature::new(sig))),
-                        UserState::Round4(own_keys, others_keys, own_seed, crypted_keys, alive))
+                    match round_3(&self.data, own_keys, others_keys, own_seed, crypted_keys, users) {
+                        Ok(((own_keys, others_keys, own_seed, crypted_keys, alive), sig)) =>
+                            (Ok(UserOutput::Round3(BundledSignature::new(sig))),
+                                UserState::Round4(own_keys, others_keys, own_seed, crypted_keys, alive)),
+                        Err(_) => (Err(()), UserState::Failed)
+                    }
                 },
                 (UserState::Round4(own_keys, others_keys, own_seed, crypted_keys, alive), UserInput::Round4(signatures)) => {
-                    let ((), x) =
-                        round_4(&self.data, own_keys, others_keys, own_seed, crypted_keys, alive, signatures).unwrap();
-                    (Ok(UserOutput::Round4(x)),
-                        UserState::Done)
+                    match round_4(&self.data, own_keys, others_keys, own_seed, crypted_keys, alive, signatures) {
+                        Ok(((), x)) =>
+                            (Ok(UserOutput::Round4(x)),
+                                UserState::Done),
+                        Err(_) => (Err(()), UserState::Failed)
+                    }
                 },
-                _ => panic!()
+                _ => (Err(()), UserState::Failed)
             }
         })
     }

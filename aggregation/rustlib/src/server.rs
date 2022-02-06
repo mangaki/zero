@@ -15,6 +15,119 @@ pub struct Server {
     state: ServerState,
 }
 
+fn round_0(c: Collector<(Signed<KAPublicKey>, Signed<KAPublicKey>)>) -> Result<(ServerOutput, BTreeMap<usize, KAPublicKey>), ()> {
+    let m = c.get()?;
+    let users = m.keys().cloned().collect::<Vec<usize>>();
+    let msg = users.into_iter().map(|id| {
+            (id, UserInput::Round1(m.clone()))
+        }).collect();
+    let rand_pks = m.into_iter().map(|(u, (_, k))| (u, k.into_msg())).collect();
+    Ok((ServerOutput::Messages(msg), rand_pks))
+}
+
+fn round_1(
+    c: Collector<BTreeMap<usize, CryptoMsg>>,
+    rand_pks: BTreeMap<usize, KAPublicKey>
+) -> Result<(ServerOutput, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>), ()> {
+    let mut maps = c.get()?;
+    let users = maps.keys().cloned().collect::<Vec<usize>>();
+    let msgs = users.iter().map(|v| {
+        Ok((*v, UserInput::Round2(maps.iter_mut().map(|(u, m)| Ok((*u, m.remove(&v).ok_or(())?))).collect::<Result<_, ()>>()?)))
+    }).collect::<Result<BTreeMap<usize, UserInput>, ()>>()?;
+    Ok((ServerOutput::Messages(msgs), rand_pks, users.into_iter().collect()))
+}
+
+fn round_2(
+    c: Collector<Vec<Wrapping<i64>>>,
+    rand_pks: BTreeMap<usize, KAPublicKey>,
+    sharing_users: BTreeSet<usize>
+) -> Result<(ServerOutput, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>, Vec<Vec<Wrapping<i64>>>), ()> {
+    let vecs = c.get()?;
+    let users = vecs.keys().cloned().collect::<Vec<usize>>();
+    let msgs = users.iter().map(|u| (*u, UserInput::Round3(users.clone()))).collect();
+    Ok((ServerOutput::Messages(msgs), rand_pks, sharing_users, vecs.into_values().collect()))
+}
+
+fn round_3(
+    c: Collector<BundledSignature>,
+    rand_pks: BTreeMap<usize, KAPublicKey>,
+    sharing_users: BTreeSet<usize>,
+    vecs: Vec<Vec<Wrapping<i64>>>
+) -> Result<(ServerOutput, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>, Vec<Vec<Wrapping<i64>>>), ()> {
+    let m = c.get()?;
+    let users = m.keys().cloned().collect::<Vec<usize>>();
+    let msg = users.into_iter().map(|id| {
+            (id, UserInput::Round4(m.clone()))
+        }).collect();
+    Ok((ServerOutput::Messages(msg), rand_pks, sharing_users, vecs))
+}
+
+fn round_4(
+    c: Collector<BTreeMap<usize, RevealedShare>>,
+    rand_pks: BTreeMap<usize, KAPublicKey>,
+    sharing_users: BTreeSet<usize>,
+    vecs: Vec<Vec<Wrapping<i64>>>,
+    grad_len: usize,
+)   -> Result<(ServerOutput, ()), ()> {
+    let mut m = c.get()?;
+    let alive = m.keys().cloned().collect::<BTreeSet<usize>>();
+    let dropped = sharing_users.difference(&alive).cloned().collect::<BTreeSet<usize>>();
+    
+    let alive_shares = alive.iter().map(|u| {
+        let shares = m.iter_mut().map(|(v, m)| match m.remove(u).ok_or(())? {
+            RevealedShare::Seed(s) => Ok(s),
+            RevealedShare::RandSk(s) => Err(()),
+        }).collect::<Result<_, ()>>()?;
+        Ok((*u, shares))
+    }).collect::<Result<BTreeMap<usize, Vec<Vec<u8>>>, ()>>()?;
+    let alive_secrets: BTreeMap<usize, Vec<u8>> = alive_shares.into_iter()
+        .map(|(u, shares)| {
+            let mut s = Secret::empty_in_memory();
+            reconstruct(&mut s, shares, true).map_err(|_| ())?;
+            Ok((u, s.try_unwrap_vec().ok_or(())?))
+        }).collect::<Result<_, ()>>()?;
+    let alive_contribution: Vec<Vec<Wrapping<i64>>> = alive_secrets.into_iter().map(|(v, seed)| {
+        Ok(scalar_mul(Wrapping(-1), vector_from_seed(seed.try_into().map_err(|_| ())?, grad_len)))
+    }).collect::<Result<_, ()>>()?;
+    
+    let dropped_shares = dropped.iter().map(|u| {
+        let shares = m.iter_mut().map(|(v, m)| match m.remove(u).ok_or(())? {
+            RevealedShare::Seed(s) => Err(()),
+            RevealedShare::RandSk(s) => Ok(s),
+        }).collect::<Result<_, ()>>()?;
+        Ok((*u, shares))
+    }).collect::<Result<BTreeMap<usize, Vec<Vec<u8>>>, ()>>()?;
+    let dropped_secrets: BTreeMap<usize, Vec<u8>> = dropped_shares.into_iter()
+        .map(|(u, shares)| {
+            let mut s = Secret::empty_in_memory();
+            reconstruct(&mut s, shares, true).map_err(|_| ())?;
+            Ok((u, s.try_unwrap_vec().ok_or(())?))
+        }).collect::<Result<_, ()>>()?;
+    let dropped_contribution: Vec<Vec<Wrapping<i64>>> = dropped_secrets.into_iter().map(|(u, secret)| {
+        let rand_sk = secret.try_into().map_err(|_| ())?;
+        let masks: Vec<Vec<Wrapping<i64>>> = alive.iter().map(|v| {
+            let other_rand_pk = rand_pks.get(v).ok_or(())?;
+            let common_seed = x25519_dalek::x25519(rand_sk, other_rand_pk.clone());
+
+            use std::cmp::Ordering;
+            let l = match usize::cmp(v, &u) {
+                Ordering::Less => 1,
+                Ordering::Equal => 0,
+                Ordering::Greater => -1,
+            };
+            Ok(scalar_mul(Wrapping(l), vector_from_seed(common_seed, grad_len)))
+        }).collect::<Result<_, ()>>()?;
+        Ok(sum_components(masks.into_iter(), grad_len))
+    }).collect::<Result<_, ()>>()?;
+
+    let res = sum_components(
+        Iterator::chain(alive_contribution.into_iter(), dropped_contribution.into_iter()).chain(vecs.into_iter()),
+        grad_len
+    );
+
+    Ok((ServerOutput::Gradient(res), ()))
+}
+
 impl Server {
     pub fn new(threshold: usize, grad_len: usize) -> Self {
         Server { threshold, grad_len, state: ServerState::Round0(Collector::new(threshold)) }
@@ -32,7 +145,7 @@ impl Server {
             Ok(ServerOutput::Messages(res)) =>
                 Ok(ServerOutputSerialized::Messages(
                         res.into_iter()
-                        .map(|(k, v)| (k, bincode::serialize(&v).unwrap())).collect())),
+                        .map(|(k, v)| Ok((k, bincode::serialize(&v).map_err(|_| ())?))).collect::<Result<_, ()>>()?)),
             Ok(ServerOutput::Gradient(v)) => Ok(ServerOutputSerialized::Gradient(v)),
             Err(()) => Err(())
         }
@@ -50,102 +163,42 @@ impl Server {
     }
 
     pub fn round(&mut self) -> Result<ServerOutput, ()> {
-        // FIXME: unwrap()s !
         replace_with_or_abort_and_return(&mut self.state, |state| {
             match state {
                 ServerState::Round0(c) => {
-                    let m = c.get().unwrap();
-                    let users = m.keys().cloned().collect::<Vec<usize>>();
-                    let msg = users.into_iter().map(|id| {
-                            (id, UserInput::Round1(m.clone()))
-                        }).collect();
-                    let rand_pks = m.into_iter().map(|(u, (_, k))| (u, k.into_msg())).collect();
-                    (Ok(ServerOutput::Messages(msg)),
-                        ServerState::Round1(Collector::new(self.threshold), rand_pks))
+                    match round_0(c) {
+                        Ok((output, rand_pks)) =>
+                            (Ok(output), ServerState::Round1(Collector::new(self.threshold), rand_pks)),
+                        Err(()) => (Err(()), ServerState::Failed),
+                    }
                 },
                 ServerState::Round1(c, rand_pks) => {
-                    let mut maps = c.get().unwrap();
-                    let users = maps.keys().cloned().collect::<Vec<usize>>();
-                    let msgs = users.iter().map(|v| {
-                        (*v, UserInput::Round2(maps.iter_mut().map(|(u, m)| (*u, m.remove(&v).unwrap())).collect()))
-                    }).collect::<BTreeMap<usize, UserInput>>();
-                    (Ok(ServerOutput::Messages(msgs)),
-                        ServerState::Round2(Collector::new(self.threshold), rand_pks, users.into_iter().collect()))
+                    match round_1(c, rand_pks) {
+                        Ok((output, rand_pks, sharing_users)) =>
+                            (Ok(output), ServerState::Round2(Collector::new(self.threshold), rand_pks, sharing_users)),
+                        Err(()) => (Err(()), ServerState::Failed),
+                    }
                 },
                 ServerState::Round2(c, rand_pks, sharing_users) => {
-                    let vecs = c.get().unwrap();
-                    let users = vecs.keys().cloned().collect::<Vec<usize>>();
-                    let msgs = users.iter().map(|u| (*u, UserInput::Round3(users.clone()))).collect();
-                    (Ok(ServerOutput::Messages(msgs)),
-                        ServerState::Round3(Collector::new(self.threshold), rand_pks, sharing_users, vecs.into_values().collect()))
+                    match round_2(c, rand_pks, sharing_users) {
+                        Ok((output, rand_pks, sharing_users, vecs)) =>
+                            (Ok(output), ServerState::Round3(Collector::new(self.threshold), rand_pks, sharing_users, vecs)),
+                        Err(()) => (Err(()), ServerState::Failed)
+                    }
                 },
                 ServerState::Round3(c, rand_pks, sharing_users, vecs) => {
-                    let m = c.get().unwrap();
-                    let users = m.keys().cloned().collect::<Vec<usize>>();
-                    let msg = users.into_iter().map(|id| {
-                            (id, UserInput::Round4(m.clone()))
-                        }).collect();
-                    (Ok(ServerOutput::Messages(msg)),
-                        ServerState::Round4(Collector::new(self.threshold), rand_pks, sharing_users, vecs))
+                    match round_3(c, rand_pks, sharing_users, vecs) {
+                        Ok((output, rand_pks, sharing_users, vecs)) =>
+                            (Ok(output), ServerState::Round4(Collector::new(self.threshold), rand_pks, sharing_users, vecs)),
+                        Err(()) => (Err(()), ServerState::Failed)
+                    }
                 },
                 ServerState::Round4(c, rand_pks, sharing_users, vecs) => {
-                    let mut m = c.get().unwrap();
-                    let alive = m.keys().cloned().collect::<BTreeSet<usize>>();
-                    let dropped = sharing_users.difference(&alive).cloned().collect::<BTreeSet<usize>>();
-                    
-                    let alive_shares = alive.iter().map(|u| {
-                        let shares = m.iter_mut().map(|(v, m)| match m.remove(u).unwrap() {
-                            RevealedShare::Seed(s) => s,
-                            RevealedShare::RandSk(s) => panic!(),
-                        }).collect();
-                        (*u, shares)
-                    }).collect::<BTreeMap<usize, Vec<Vec<u8>>>>();
-                    let alive_secrets: BTreeMap<usize, Vec<u8>> = alive_shares.into_iter()
-                        .map(|(u, shares)| {
-                            let mut s = Secret::empty_in_memory();
-                            reconstruct(&mut s, shares, true).unwrap();
-                            (u, s.unwrap_vec())
-                        }).collect();
-                    let alive_contribution: Vec<Vec<Wrapping<i64>>> = alive_secrets.into_iter().map(|(v, seed)| {
-                        scalar_mul(Wrapping(-1), vector_from_seed(seed.try_into().unwrap(), self.grad_len))
-                    }).collect();
-                    
-                    let dropped_shares = dropped.iter().map(|u| {
-                        let shares = m.iter_mut().map(|(v, m)| match m.remove(u).unwrap() {
-                            RevealedShare::Seed(s) => panic!(),
-                            RevealedShare::RandSk(s) => s,
-                        }).collect();
-                        (*u, shares)
-                    }).collect::<BTreeMap<usize, Vec<Vec<u8>>>>();
-                    let dropped_secrets: BTreeMap<usize, Vec<u8>> = dropped_shares.into_iter()
-                        .map(|(u, shares)| {
-                            let mut s = Secret::empty_in_memory();
-                            reconstruct(&mut s, shares, true).unwrap();
-                            (u, s.unwrap_vec())
-                        }).collect();
-                    let dropped_contribution: Vec<Vec<Wrapping<i64>>> = dropped_secrets.into_iter().map(|(u, secret)| {
-                        let rand_sk = secret.try_into().unwrap();
-                        let masks: Vec<Vec<Wrapping<i64>>> = alive.iter().map(|v| {
-                            let other_rand_pk = rand_pks.get(v).unwrap();
-                            let common_seed = x25519_dalek::x25519(rand_sk, other_rand_pk.clone());
-
-                            use std::cmp::Ordering;
-                            let l = match usize::cmp(v, &u) {
-                                Ordering::Less => 1,
-                                Ordering::Equal => 0,
-                                Ordering::Greater => -1,
-                            };
-                            scalar_mul(Wrapping(l), vector_from_seed(common_seed, self.grad_len))
-                        }).collect();
-                        sum_components(masks.into_iter(), self.grad_len)
-                    }).collect();
-
-                    let res = sum_components(
-                        Iterator::chain(alive_contribution.into_iter(), dropped_contribution.into_iter()).chain(vecs.into_iter()),
-                        self.grad_len
-                    );
-
-                    (Ok(ServerOutput::Gradient(res)), ServerState::Done)
+                    match round_4(c, rand_pks, sharing_users, vecs, self.grad_len) {
+                        Ok((output, ())) =>
+                            (Ok(output), ServerState::Done),
+                        Err(()) => (Err(()), ServerState::Failed)
+                    }
                 },
                 _ => panic!()
             }

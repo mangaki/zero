@@ -51,6 +51,7 @@ pub enum UserState {
     Round3(OwnKeysData, OthersKeysData, [u8; 32], BTreeMap<usize, CryptoMsg>),
     Round4(OwnKeysData, OthersKeysData, [u8; 32], BTreeMap<usize, CryptoMsg>, BTreeSet<usize>),
     Done,
+    Failed,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -78,6 +79,7 @@ pub enum ServerState {
     Round3(Collector<BundledSignature>, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>, Vec<Vec<Wrapping<i64>>>),
     Round4(Collector<BTreeMap<usize, RevealedShare>>, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>, Vec<Vec<Wrapping<i64>>>),
     Done,
+    Failed,
 }
 
 #[derive(Serialize, Deserialize)]
