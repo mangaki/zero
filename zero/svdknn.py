@@ -39,14 +39,15 @@ class MangakiSVDKNN(RecommendationAlgorithm):
     Implementation of SVD with sparse matrices.
 .   Then it computes the average embedding of k-nearest neighbors.
     '''
-    def __init__(self, nb_components=20, nb_neighbors=5, nb_iterations=None,
-                 *args, **kwargs):
+    def __init__(self, nb_components=20, nb_neighbors=5, is_weighted=True,
+                 nb_iterations=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.U = None
         self.sigma = None
         self.VT = None
         self.nb_components = nb_components
         self.nb_neighbors = nb_neighbors
+        self.is_weighted = is_weighted
         self.means = None
         self.knn = NearestNeighbors(n_neighbors=self.nb_neighbors)
 
@@ -100,8 +101,18 @@ class MangakiSVDKNN(RecommendationAlgorithm):
         return mean_user, feat_user
 
     def compute_average_embedding(self, query):
-        neighbor_ids = self.knn.kneighbors(query, return_distance=False)
-        return self.user_embeddings[neighbor_ids].mean(axis=1)
+        dist, neighbor_ids = self.knn.kneighbors(query)
+        if 0 in dist:  # Query is in the stored embeddings (predict)
+            adj = self.knn.kneighbors_graph(query, self.nb_neighbors + 1,
+                                            mode='distance')
+        else:  # predict_single_user
+            adj = self.knn.kneighbors_graph(query, mode='distance')
+        if self.is_weighted:
+            adj.data[adj.data > 0] = 1 / adj.data[adj.data > 0]
+        else:
+            adj.data[adj.data > 0] = np.ones_like(adj.data[adj.data > 0])
+        answer = adj @ self.user_embeddings / adj.sum(axis=1)
+        return answer
 
     def predict(self, X):
         """
@@ -121,7 +132,7 @@ class MangakiSVDKNN(RecommendationAlgorithm):
         """
         mean, U = user_parameters
         average_embedding = self.compute_average_embedding(
-            U.reshape(1, -1)).squeeze()
+            U.reshape(1, -1)).A1  # Make it a flattened embedding no matter what
         return (mean + average_embedding.dot(self.VT[:, work_ids]) +
                 self.col_means[work_ids])
 
@@ -129,4 +140,5 @@ class MangakiSVDKNN(RecommendationAlgorithm):
         """
         Short name useful for logging output.
         """
-        return f'svdknn-{self.nb_components}-{self.nb_neighbors}'
+        suffix = '-weight' if self.is_weighted else ''
+        return f'svdknn-{self.nb_components}-{self.nb_neighbors}{suffix}'
