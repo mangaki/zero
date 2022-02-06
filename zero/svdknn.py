@@ -1,6 +1,6 @@
 """
-Mangaki sparse SVD.
-Author: Jill-Jênn Vie, 2020
+Mangaki sparse SVD with KNN.
+Author: Jill-Jênn Vie, 2022
 """
 import numpy as np
 from scipy.sparse import csr_matrix, diags
@@ -37,12 +37,10 @@ def remove_mean(sp_matrix, axis=1):
 class MangakiSVDKNN(RecommendationAlgorithm):
     '''
     Implementation of SVD with sparse matrices.
-    It does not compute the whole matrix for recommendations
-    but the production must be able to do sparse matrix
-    operations effectively.
-    It is 7x faster than svd1.py, and it only relies on numpy/scipy.
+.   Then it computes the average embedding of k-nearest neighbors.
     '''
-    def __init__(self, nb_components=20, nb_neighbors=5, nb_iterations=None, *args, **kwargs):
+    def __init__(self, nb_components=20, nb_neighbors=5, nb_iterations=None,
+                 *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.U = None
         self.sigma = None
@@ -50,6 +48,7 @@ class MangakiSVDKNN(RecommendationAlgorithm):
         self.nb_components = nb_components
         self.nb_neighbors = nb_neighbors
         self.means = None
+        self.knn = NearestNeighbors(n_neighbors=self.nb_neighbors)
 
     @property
     def is_serializable(self):
@@ -83,6 +82,8 @@ class MangakiSVDKNN(RecommendationAlgorithm):
         self.chrono.save('fill and center matrix')
 
         self.U, self.sigma, self.VT = svds(matrix, k=self.nb_components)
+        self.user_embeddings = self.U * self.sigma
+        self.knn.fit(self.user_embeddings)
 
         if self.verbose_level:
             print('Shapes', self.U.shape, self.sigma.shape, self.VT.shape)
@@ -98,17 +99,19 @@ class MangakiSVDKNN(RecommendationAlgorithm):
         feat_user = ratings @ self.VT.T[rated_works]
         return mean_user, feat_user
 
+    def compute_average_embedding(self, query):
+        neighbor_ids = self.knn.kneighbors(query, return_distance=False)
+        return self.user_embeddings[neighbor_ids].mean(axis=1)
+
     def predict(self, X):
         """
         Predict ratings for user, item pairs.
         """
-        knn = NearestNeighbors(n_neighbors=self.nb_neighbors)
-        Us = self.U * self.sigma
-        knn.fit(Us)
         pred_user_ids = list(set(X[:, 0]))
-        neighbor_ids = knn.kneighbors(Us[pred_user_ids], return_distance=False)
-        averaged_embedding = np.zeros_like(Us)
-        averaged_embedding[pred_user_ids] = Us[neighbor_ids].mean(axis=1)
+        averaged_embeddings = self.compute_average_embedding(
+            self.user_embeddings[pred_user_ids])
+        averaged_embedding = np.zeros_like(self.user_embeddings)
+        averaged_embedding[pred_user_ids] = averaged_embeddings            
         return ((averaged_embedding[X[:, 0]] * self.VT.T[X[:, 1]]).sum(axis=1) +
                 self.row_means[X[:, 0]] + self.col_means[X[:, 1]])
 
@@ -117,7 +120,10 @@ class MangakiSVDKNN(RecommendationAlgorithm):
         Predict ratings for a single user.
         """
         mean, U = user_parameters
-        return mean + U.dot(self.VT[:, work_ids]) + self.col_means[work_ids]
+        average_embedding = self.compute_average_embedding(
+            U.reshape(1, -1)).squeeze()
+        return (mean + average_embedding.dot(self.VT[:, work_ids]) +
+                self.col_means[work_ids])
 
     def get_shortname(self):
         """
