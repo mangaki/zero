@@ -5,15 +5,11 @@ use std::collections::{BTreeMap, BTreeSet};
 use replace_with::*;
 use x25519_dalek;
 use sss_rs::wrapped_sharing::{Secret, reconstruct};
+use serde::{Serialize, Deserialize};
+use serde_json;
 
 use crate::helpers::*;
 use crate::types::*;
-
-pub struct Server {
-    threshold: usize,
-    grad_len: usize,
-    state: ServerState,
-}
 
 fn round_0(c: Collector<(Signed<KAPublicKey>, Signed<KAPublicKey>)>) -> Result<(ServerOutput, BTreeMap<usize, KAPublicKey>), ()> {
     let m = c.get()?;
@@ -128,9 +124,24 @@ fn round_4(
     Ok((ServerOutput::Gradient(res), ()))
 }
 
+pub struct Server {
+    threshold: usize,
+    grad_len: usize,
+    state: ServerState,
+}
+
 impl Server {
     pub fn new(threshold: usize, grad_len: usize) -> Self {
         Server { threshold, grad_len, state: ServerState::Round0(Collector::new(threshold)) }
+    }
+
+    pub fn serialize_state(&self) -> Result<String, ()> {
+        serde_json::to_string(&self.state).map_err(|_| ())
+    }
+
+    pub fn recover_state(&mut self, s: &str) -> Result<(), ()> {
+        self.state = serde_json::from_str(s).map_err(|_| ())?;
+        Ok(())
     }
 
     pub fn recv_serialized(&mut self, id: usize, msg: &[u8]) -> Result<(), ()> {

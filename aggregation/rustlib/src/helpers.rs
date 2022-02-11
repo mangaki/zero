@@ -118,6 +118,7 @@ impl BundledSignature {
     }
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Collector<T> {
     threshold: usize,
     map: BTreeMap<usize, T>,
@@ -129,7 +130,7 @@ impl<T> Collector<T> {
     }
 
     pub fn recv(&mut self, id: usize, x: T) {
-        // Receiving two inputs from the same user in't a problem
+        // Receiving two inputs from the same user isn't a problem
         // (we just overwrite)
         self.map.insert(id, x);
     }

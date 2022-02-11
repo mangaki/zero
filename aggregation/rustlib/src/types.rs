@@ -28,6 +28,7 @@ pub struct UserData {
     pub grad: Vec<Wrapping<i64>>,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct OwnKeysData {
     pub comm_pk: KAPublicKey,
     pub comm_sk: KASecretKey,
@@ -35,15 +36,13 @@ pub struct OwnKeysData {
     pub rand_sk: KASecretKey,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct OthersKeysData {
     pub comm_pks: BTreeMap<usize, KAPublicKey>,
     pub rand_pks: BTreeMap<usize, KAPublicKey>,
 }
 
-struct SharesData {
-    shares: BTreeMap<usize, (Vec<u8>, Vec<u8>)>
-}
-
+#[derive(Serialize, Deserialize)]
 pub enum UserState {
     Round0,
     Round1(OwnKeysData),
@@ -72,6 +71,7 @@ pub enum UserOutput {
     Round4(BTreeMap<usize, RevealedShare>),
 }
 
+#[derive(Serialize, Deserialize)]
 pub enum ServerState {
     Round0(Collector<(Signed<KAPublicKey>, Signed<KAPublicKey>)>),
     Round1(Collector<BTreeMap<usize, CryptoMsg>>, BTreeMap<usize, KAPublicKey>),

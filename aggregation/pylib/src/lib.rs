@@ -60,6 +60,20 @@ impl UserWrapper {
         }
     }
 
+    pub fn serialize_state(self_: PyRef<Self>) -> PyResult<String> {
+        match self_.wrapped.serialize_state() {
+            Ok(s) => Ok(s),
+            Err(_) => Err(PyErr::new::<exceptions::PyIOError, _>(()))
+        }
+    }
+
+    pub fn recover_state(mut self_: PyRefMut<Self>, s: &str) -> PyResult<()> {
+        match self_.wrapped.recover_state(s) {
+            Ok(()) => Ok(()),
+            Err(_) => Err(PyErr::new::<exceptions::PyIOError, _>(()))
+        }
+    }
+
     pub fn round<'a>(mut self_: PyRefMut<Self>, py: Python<'a>, input: &[u8]) -> PyResult<&'a PyBytes> {
         match self_.wrapped.round_serialized(input) {
             Ok(output) => Ok(PyBytes::new(py, &output)),
@@ -114,14 +128,27 @@ impl ServerOutputWrapper {
 #[pyclass]
 struct ServerWrapper {
     wrapped: Server,
-    res: Option<Vec<Wrapping<i64>>>,
 }
 
 #[pymethods]
 impl ServerWrapper {
     #[new]
     pub fn new(threshold: usize, grad_len: usize) -> Self {
-        ServerWrapper { wrapped: Server::new(threshold, grad_len), res: None }
+        ServerWrapper { wrapped: Server::new(threshold, grad_len) }
+    }
+
+    pub fn serialize_state(self_: PyRef<Self>) -> PyResult<String> {
+        match self_.wrapped.serialize_state() {
+            Ok(s) => Ok(s),
+            Err(_) => Err(PyErr::new::<exceptions::PyIOError, _>(()))
+        }
+    }
+
+    pub fn recover_state(mut self_: PyRefMut<Self>, s: &str) -> PyResult<()> {
+        match self_.wrapped.recover_state(s) {
+            Ok(()) => Ok(()),
+            Err(_) => Err(PyErr::new::<exceptions::PyIOError, _>(()))
+        }
     }
 
     pub fn recv<'a>(mut self_: PyRefMut<Self>, id: usize, input: &[u8]) -> PyResult<()> {

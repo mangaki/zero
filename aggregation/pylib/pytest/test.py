@@ -9,25 +9,27 @@ threshold = 3
 grad_len = 9
 mask = [i < active for i in range(participants)]
 random.Random(45).shuffle(mask)
+ids = [(2*i + 512) for i in range(participants)]
 
 sign_keys = [gen_keypair() for _ in range(participants)]
 
 sign_pks = PublicKeysWrapper()
 for (u, (pk, _)) in enumerate(sign_keys):
-    sign_pks.insert(u, pk)
+    sign_pks.insert(ids[u], pk)
 
-users = [ UserWrapper(u, threshold, pk, sk, [(u + 1 if i == u else 0) for i in range(grad_len)], sign_pks)
+users = [ UserWrapper(ids[u], threshold, pk, sk, [(u + 1 if i == u else 0) for i in range(grad_len)], sign_pks)
             for (u, (pk, sk)) in enumerate(sign_keys) ]
 server = ServerWrapper(threshold, grad_len)
 
-msgs = {i: round0_msg() for i in range(participants)}
+msgs = {ids[i]: round0_msg() for i in range(participants)}
 server_output = None
 round = 0
 
 while True:
     for (i, user) in enumerate(users):
         if round < 2 or mask[i]:
-            server.recv(i, user.round(msgs[i]))
+            output = user.round(msgs[ids[i]])
+            server.recv(ids[i], output)
 
     server_output = server.round()
 

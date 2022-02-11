@@ -33,14 +33,16 @@ fn main() {
     let threshold = 3;
     let grad_len = 9;
 
-    let sign_keys = (0..participants).map(|u| {
-        (u, gen_sign_keypair())
+    let ids = (0..participants).map(|u| 2 * u + 25).collect::<Vec<usize>>();
+
+    let sign_keys = ids.iter().map(|u| {
+        (*u, gen_sign_keypair())
     }).collect::<BTreeMap<usize, (SignPublicKey, SignSecretKey)>>();
     let sign_pks = Arc::new(sign_keys.iter().map(|(u, (pk, _))| (*u, pk.clone())).collect::<BTreeMap<usize, SignPublicKey>>());
 
-    let mut users = sign_keys.into_iter().map(|(u, (sign_pk, sign_sk))| {
+    let mut users = sign_keys.into_iter().enumerate().map(|(i, (u, (sign_pk, sign_sk)))| {
         let vec = (0..grad_len)
-            .map(|i| if (i % participants) == u { i as i64 + 1 } else { 0 })
+            .map(|j| if (j % participants) == i { j as i64 + 1 } else { 0 })
             .map(Wrapping).collect();
         println!("user {} : {:?}", u, vec);
         User::new(u, threshold, sign_pk, sign_sk, vec, Arc::clone(&sign_pks))
@@ -56,13 +58,13 @@ fn main() {
             .collect::<Vec<bool>>();
         let mut rng = ChaCha8Rng::seed_from_u64(45);
         mask.shuffle(&mut rng);
-        mask
+        Iterator::zip(ids.iter(), mask.into_iter()).map(|(u, b)| (*u, b)).collect::<BTreeMap<usize, bool>>()
     };
 
     let mut round = 0;
     let vec = loop {
         users.iter_mut().for_each(|u| {
-            if round < 2 || *mask.get(u.id()).unwrap() {
+            if round < 2 || *mask.get(&u.id()).unwrap() {
                 let input = msgs.remove(&u.id()).unwrap();
                 let output = u.round(input).unwrap();
                 server.recv(u.id(), output);

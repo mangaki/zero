@@ -6,6 +6,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use replace_with::*;
 use x25519_dalek;
 use sss_rs::wrapped_sharing::{Secret, share};
+use serde::{Serialize, Deserialize};
+use serde_json;
 
 use crate::sodium_bindings::*;
 use crate::helpers::*;
@@ -214,6 +216,15 @@ impl User {
             },
             state: UserState::Round0,
         }
+    }
+
+    pub fn serialize_state(&self) -> Result<String, ()> {
+        serde_json::to_string(&self.state).map_err(|_| ())
+    }
+
+    pub fn recover_state(&mut self, s: &str) -> Result<(), ()> {
+        self.state = serde_json::from_str(s).map_err(|_| ())?;
+        Ok(())
     }
 
     pub fn id(&self) -> usize {
