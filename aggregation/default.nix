@@ -15,6 +15,7 @@ rec {
       libressl
       pkg-config
       (python39.withPackages (ps: [ pythonPackage ]))
+      python39Packages.pytest
       maturin
       llvm_13 # For llvm-symbolicator
     ];
