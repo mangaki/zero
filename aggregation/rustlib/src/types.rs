@@ -72,8 +72,8 @@ pub enum ServerState {
     Round0(Collector<(Signed<KAPublicKey>, Signed<KAPublicKey>)>),
     Round1(Collector<BTreeMap<usize, CryptoMsg>>, BTreeMap<usize, KAPublicKey>),
     Round2(Collector<Vec<Wrapping<i64>>>, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>),
-    Round3(Collector<BundledSignature>, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>, Vec<Vec<Wrapping<i64>>>),
-    Round4(Collector<BTreeMap<usize, RevealedShare>>, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>, Vec<Vec<Wrapping<i64>>>),
+    Round3(Collector<BundledSignature>, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>, Vec<Vec<Wrapping<i64>>>, BTreeSet<usize>),
+    Round4(Collector<BTreeMap<usize, RevealedShare>>, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>, Vec<Vec<Wrapping<i64>>>, BTreeSet<usize>),
     Done,
     Failed,
 }

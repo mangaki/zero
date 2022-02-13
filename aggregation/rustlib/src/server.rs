@@ -45,11 +45,11 @@ fn round_2(
     c: Collector<Vec<Wrapping<i64>>>,
     rand_pks: BTreeMap<usize, KAPublicKey>,
     sharing_users: BTreeSet<usize>
-) -> Result<(ServerOutput, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>, Vec<Vec<Wrapping<i64>>>), ()> {
+) -> Result<(ServerOutput, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>, Vec<Vec<Wrapping<i64>>>, BTreeSet<usize>), ()> {
     let vecs = c.get()?;
     let users = vecs.keys().cloned().collect::<Vec<usize>>();
     let msgs = users.iter().map(|u| (*u, UserInput::Round3(users.clone()))).collect();
-    Ok((ServerOutput::Messages(msgs), rand_pks, sharing_users, vecs.into_values().collect()))
+    Ok((ServerOutput::Messages(msgs), rand_pks, sharing_users, vecs.into_values().collect(), users.into_iter().collect()))
 }
 
 // ConsistencyCheck -- See Bonawitz et. al.
@@ -57,14 +57,15 @@ fn round_3(
     c: Collector<BundledSignature>,
     rand_pks: BTreeMap<usize, KAPublicKey>,
     sharing_users: BTreeSet<usize>,
-    vecs: Vec<Vec<Wrapping<i64>>>
-) -> Result<(ServerOutput, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>, Vec<Vec<Wrapping<i64>>>), ()> {
+    vecs: Vec<Vec<Wrapping<i64>>>,
+    alive: BTreeSet<usize>,
+) -> Result<(ServerOutput, BTreeMap<usize, KAPublicKey>, BTreeSet<usize>, Vec<Vec<Wrapping<i64>>>, BTreeSet<usize>), ()> {
     let m = c.get()?;
     let users = m.keys().cloned().collect::<Vec<usize>>();
     let msg = users.into_iter().map(|id| {
             (id, UserInput::Round4(m.clone()))
         }).collect();
-    Ok((ServerOutput::Messages(msg), rand_pks, sharing_users, vecs))
+    Ok((ServerOutput::Messages(msg), rand_pks, sharing_users, vecs, alive))
 }
 
 // Unmasking -- See Bonawitz et. al.
@@ -73,10 +74,10 @@ fn round_4(
     rand_pks: BTreeMap<usize, KAPublicKey>,
     sharing_users: BTreeSet<usize>,
     vecs: Vec<Vec<Wrapping<i64>>>,
+    alive: BTreeSet<usize>,
     grad_len: usize,
 )   -> Result<(ServerOutput, ()), ()> {
     let mut m = c.get()?;
-    let alive = m.keys().cloned().collect::<BTreeSet<usize>>();
     let dropped = sharing_users.difference(&alive).cloned().collect::<BTreeSet<usize>>();
     
     let alive_shares = alive.iter().map(|u| {
@@ -177,8 +178,8 @@ impl Server {
             (ServerState::Round0(c), UserOutput::Round0(x, y)) => c.recv(id, (x, y)),
             (ServerState::Round1(c, _), UserOutput::Round1(x)) => c.recv(id, x),
             (ServerState::Round2(c, _, _), UserOutput::Round2(x)) => c.recv(id, x),
-            (ServerState::Round3(c, _, _, _), UserOutput::Round3(x)) => c.recv(id, x),
-            (ServerState::Round4(c, _, _, _), UserOutput::Round4(x)) => c.recv(id, x),
+            (ServerState::Round3(c, _, _, _, _), UserOutput::Round3(x)) => c.recv(id, x),
+            (ServerState::Round4(c, _, _, _, _), UserOutput::Round4(x)) => c.recv(id, x),
             _ => panic!()
         }
     }
@@ -201,21 +202,21 @@ impl Server {
                     }
                 },
                 ServerState::Round2(c, rand_pks, sharing_users) => {
-                    match round_2(c, rand_pks, sharing_users) {
-                        Ok((output, rand_pks, sharing_users, vecs)) =>
-                            (Ok(output), ServerState::Round3(Collector::new(self.threshold), rand_pks, sharing_users, vecs)),
+                    match round_2(c, rand_pks, sharing_users,) {
+                        Ok((output, rand_pks, sharing_users, vecs, alive)) =>
+                            (Ok(output), ServerState::Round3(Collector::new(self.threshold), rand_pks, sharing_users, vecs, alive)),
                         Err(()) => (Err(()), ServerState::Failed)
                     }
                 },
-                ServerState::Round3(c, rand_pks, sharing_users, vecs) => {
-                    match round_3(c, rand_pks, sharing_users, vecs) {
-                        Ok((output, rand_pks, sharing_users, vecs)) =>
-                            (Ok(output), ServerState::Round4(Collector::new(self.threshold), rand_pks, sharing_users, vecs)),
+                ServerState::Round3(c, rand_pks, sharing_users, vecs, alive) => {
+                    match round_3(c, rand_pks, sharing_users, vecs, alive) {
+                        Ok((output, rand_pks, sharing_users, vecs, alive)) =>
+                            (Ok(output), ServerState::Round4(Collector::new(self.threshold), rand_pks, sharing_users, vecs, alive)),
                         Err(()) => (Err(()), ServerState::Failed)
                     }
                 },
-                ServerState::Round4(c, rand_pks, sharing_users, vecs) => {
-                    match round_4(c, rand_pks, sharing_users, vecs, self.grad_len) {
+                ServerState::Round4(c, rand_pks, sharing_users, vecs, alive) => {
+                    match round_4(c, rand_pks, sharing_users, vecs, alive, self.grad_len) {
                         Ok((output, ())) =>
                             (Ok(output), ServerState::Done),
                         Err(()) => (Err(()), ServerState::Failed)
