@@ -14,19 +14,17 @@ use aggregation::server::*;
 
 #[pyclass]
 #[derive(Clone)]
-struct PublicKeysWrapper {
-    pks: Arc<BTreeMap<usize, SignPublicKey>>,
-}
+struct PublicKeysWrapper(Arc<BTreeMap<usize, SignPublicKey>>);
 
 #[pymethods]
 impl PublicKeysWrapper {
     #[new]
     pub fn new() -> Self {
-        PublicKeysWrapper { pks: Arc::new(BTreeMap::new()) }
+        PublicKeysWrapper(Arc::new(BTreeMap::new()))
     }
 
     pub fn insert(mut self_: PyRefMut<Self>, u: usize, pk: SignPublicKey) -> PyResult<()> {
-        match Arc::get_mut(&mut self_.pks) {
+        match Arc::get_mut(&mut self_.0) {
             Some(x) => { x.insert(u, pk); Ok(()) },
             None => Err(PyErr::new::<exceptions::PyTypeError, _>(
                     format!("Expected {} bytes, received {}.", SIGN_PUBLIC_KEY_BYTES, pk.len())))
@@ -36,9 +34,7 @@ impl PublicKeysWrapper {
 }
 
 #[pyclass]
-struct UserWrapper {
-    wrapped: User,
-}
+struct UserWrapper(User);
 
 #[pymethods]
 impl UserWrapper {
@@ -51,31 +47,29 @@ impl UserWrapper {
         grad: Vec<i64>,
         others_sign_pks: PublicKeysWrapper,
     ) -> Self {
-        UserWrapper {
-            wrapped: User::new(
-                id, threshold, sign_pk, sign_sk,
-                grad.into_iter().map(Wrapping).collect(),
-                others_sign_pks.pks
-            ),
-        }
+        UserWrapper(User::new(
+            id, threshold, sign_pk, sign_sk,
+            grad.into_iter().map(Wrapping).collect(),
+            others_sign_pks.0
+        ))
     }
 
     pub fn serialize_state(self_: PyRef<Self>) -> PyResult<String> {
-        match self_.wrapped.serialize_state() {
+        match self_.0.serialize_state() {
             Ok(s) => Ok(s),
             Err(_) => Err(PyErr::new::<exceptions::PyIOError, _>(()))
         }
     }
 
     pub fn recover_state(mut self_: PyRefMut<Self>, s: &str) -> PyResult<()> {
-        match self_.wrapped.recover_state(s) {
+        match self_.0.recover_state(s) {
             Ok(()) => Ok(()),
             Err(_) => Err(PyErr::new::<exceptions::PyIOError, _>(()))
         }
     }
 
     pub fn round<'a>(mut self_: PyRefMut<Self>, py: Python<'a>, input: &[u8]) -> PyResult<&'a PyBytes> {
-        match self_.wrapped.round_serialized(input) {
+        match self_.0.round_serialized(input) {
             Ok(output) => Ok(PyBytes::new(py, &output)),
             Err(_) => Err(PyErr::new::<exceptions::PyIOError, _>(()))
         }
@@ -83,28 +77,32 @@ impl UserWrapper {
 }
 
 #[pyclass]
-struct ServerOutputWrapper {
-    wrapped: ServerOutputSerialized,
+struct ServerOutputWrapper(ServerOutputSerialized);
+
+impl ServerOutputWrapper {
+    pub fn new(wrapped: ServerOutputSerialized) -> Self {
+        ServerOutputWrapper(wrapped)
+    }
 }
 
 #[pymethods]
 impl ServerOutputWrapper {
     pub fn is_messages(self_: PyRef<Self>) -> bool {
-        match &self_.wrapped {
+        match &self_.0 {
             ServerOutputSerialized::Messages(_) => true,
             _ => false,
         }
     }
     
     pub fn is_gradient(self_: PyRef<Self>) -> bool {
-        match &self_.wrapped {
+        match &self_.0 {
             ServerOutputSerialized::Gradient(_) => true,
             _ => false,
         }
     }
 
     pub fn get_messages<'a>(self_: PyRef<Self>, py: Python<'a>) -> PyResult<BTreeMap<usize, &'a PyBytes>> {
-        match &self_.wrapped {
+        match &self_.0 {
             ServerOutputSerialized::Messages(output) =>
                 Ok(output.into_iter().map(|(k, v)| (*k, PyBytes::new(py, &v))).collect()),
             _ => Err(PyErr::new::<exceptions::PyTypeError, _>(()))
@@ -112,16 +110,10 @@ impl ServerOutputWrapper {
     }
 
     pub fn get_gradient(self_: PyRef<Self>) -> PyResult<Vec<i64>> {
-        match &self_.wrapped {
+        match &self_.0 {
             ServerOutputSerialized::Gradient(v) => Ok(v.iter().map(|Wrapping(i)| *i).collect()),
             _ => Err(PyErr::new::<exceptions::PyTypeError, _>(()))
         }
-    }
-}
-
-impl ServerOutputWrapper {
-    pub fn new(wrapped: ServerOutputSerialized) -> Self {
-        ServerOutputWrapper { wrapped }
     }
 }
 
@@ -158,7 +150,7 @@ impl ServerWrapper {
         }
     }
 
-    pub fn round<'a>(mut self_: PyRefMut<Self>, py: Python<'a>) -> PyResult<ServerOutputWrapper> {
+    pub fn round<'a>(mut self_: PyRefMut<Self>) -> PyResult<ServerOutputWrapper> {
         match self_.wrapped.round_serialized() {
             Ok(output) => Ok(ServerOutputWrapper::new(output)),
             Err(_) => Err(PyErr::new::<exceptions::PyIOError, _>(()))
@@ -167,17 +159,12 @@ impl ServerWrapper {
 }
 
 #[pyfunction]
-fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
-    Ok((a + b).to_string())
-}
-
-#[pyfunction]
 fn round0_msg<'a>(py: Python<'a>) -> &'a PyBytes {
     PyBytes::new(py, &bincode::serialize(&UserInput::Round0()).unwrap())
 }
 
 #[pyfunction]
-fn gen_keypair(py: Python) -> (SignPublicKey, SignSecretKey) {
+fn gen_keypair() -> (SignPublicKey, SignSecretKey) {
     gen_sign_keypair()
 }
 
