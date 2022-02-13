@@ -78,9 +78,9 @@ pub struct CryptoMsg {
 }
 
 impl CryptoMsg {
-    pub fn new(m: &[u8], k: Key) -> Self {
+    pub fn new(m: &[u8], k: Key) -> Result<Self, ()> {
         let nonce = gen_nonce();
-        CryptoMsg { nonce, c: crypto_secret_wrap(m, nonce, k).unwrap() } //TODO
+        Ok(CryptoMsg { nonce, c: crypto_secret_wrap(m, nonce, k)? })
     }
 
     pub fn unwrap(&self, k: Key) -> Result<Vec<u8>, ()> {

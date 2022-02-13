@@ -157,7 +157,7 @@ impl Server {
 
     pub fn recv_serialized(&mut self, id: usize, msg: &[u8]) -> Result<(), ()> {
         match bincode::deserialize::<UserOutput>(msg) {
-            Ok(msg) => { self.recv(id, msg); Ok(()) },
+            Ok(msg) => { self.recv(id, msg)?; Ok(()) },
             Err(_) => Err(())
         }
     }
@@ -173,15 +173,16 @@ impl Server {
         }
     }
 
-    pub fn recv(&mut self, id: usize, msg: UserOutput) {
+    pub fn recv(&mut self, id: usize, msg: UserOutput) -> Result<(), ()> {
         match (&mut self.state, msg) {
             (ServerState::Round0(c), UserOutput::Round0(x, y)) => c.recv(id, (x, y)),
             (ServerState::Round1(c, _), UserOutput::Round1(x)) => c.recv(id, x),
             (ServerState::Round2(c, _, _), UserOutput::Round2(x)) => c.recv(id, x),
             (ServerState::Round3(c, _, _, _, _), UserOutput::Round3(x)) => c.recv(id, x),
             (ServerState::Round4(c, _, _, _, _), UserOutput::Round4(x)) => c.recv(id, x),
-            _ => panic!()
-        }
+            _ => Err(())?
+        };
+        Ok(())
     }
 
     pub fn round(&mut self) -> Result<ServerOutput, ()> {
@@ -222,7 +223,8 @@ impl Server {
                         Err(()) => (Err(()), ServerState::Failed)
                     }
                 },
-                _ => panic!()
+                ServerState::Done => (Err(()), ServerState::Done),
+                _ => (Err(()), ServerState::Failed)
             }
         })
     }

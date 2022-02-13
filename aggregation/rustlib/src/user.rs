@@ -83,7 +83,7 @@ fn round_1(
 
             let msg = CryptoMsg::new(
                 &bincode::serialize(&msg_struct).map_err(|_| ())?,
-                common_key);
+                common_key)?;
             Ok((*id, msg))
         }).collect::<Result<_, ()>>()?;
 

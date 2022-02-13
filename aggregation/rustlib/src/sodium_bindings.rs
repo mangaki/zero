@@ -18,8 +18,6 @@ pub type Signature = [u8; crypto_sign_BYTES as usize];
 
 pub const SIGN_PUBLIC_KEY_BYTES: usize = crypto_sign_PUBLICKEYBYTES as usize;
 
-//TODO: Fix memory leaks (from gen_*) !
-
 pub fn nonce() -> Nonce {
     let mut nonce = [0; crypto_box_NONCEBYTES as usize];
     unsafe {
