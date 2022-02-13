@@ -160,8 +160,7 @@ dependencies = [
 [[package]]
 name = "galois_2p8"
 version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8c6114865fc314f51f46ba06fd08e780090c3c542455e9c0b4b8854149261701"
+source = "git+https://github.com/thejohncrafter/galois_2p8.git#de46f0b333d4143ff0ef0aaf9e33d04bed729de2"
 
 [[package]]
 name = "generic-array"

@@ -24,3 +24,6 @@ serde = { version = "1.0.63", features = [ "derive" ] }
 serde-big-array = "^0.3.2"
 serde_json = "^1.0.78"
 replace_with = "^0.1.7"
+
+[patch.crates-io]
+galois_2p8 = { git = "https://github.com/thejohncrafter/galois_2p8.git" }
