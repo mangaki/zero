@@ -44,12 +44,12 @@ impl UserWrapper {
         threshold: usize,
         sign_pk: SignPublicKey,
         sign_sk: SignSecretKey,
-        grad: Vec<i64>,
+        vec: Vec<i64>,
         others_sign_pks: PublicKeysWrapper,
     ) -> Self {
         UserWrapper(User::new(
             id, threshold, sign_pk, sign_sk,
-            grad.into_iter().map(Wrapping).collect(),
+            vec.into_iter().map(Wrapping).collect(),
             others_sign_pks.0
         ))
     }
@@ -94,9 +94,9 @@ impl ServerOutputWrapper {
         }
     }
     
-    pub fn is_gradient(self_: PyRef<Self>) -> bool {
+    pub fn is_vector(self_: PyRef<Self>) -> bool {
         match &self_.0 {
-            ServerOutputSerialized::Gradient(_) => true,
+            ServerOutputSerialized::Vector(_) => true,
             _ => false,
         }
     }
@@ -109,9 +109,9 @@ impl ServerOutputWrapper {
         }
     }
 
-    pub fn get_gradient(self_: PyRef<Self>) -> PyResult<Vec<i64>> {
+    pub fn get_vector(self_: PyRef<Self>) -> PyResult<Vec<i64>> {
         match &self_.0 {
-            ServerOutputSerialized::Gradient(v) => Ok(v.iter().map(|Wrapping(i)| *i).collect()),
+            ServerOutputSerialized::Vector(v) => Ok(v.iter().map(|Wrapping(i)| *i).collect()),
             _ => Err(PyErr::new::<exceptions::PyTypeError, _>(()))
         }
     }
@@ -125,8 +125,8 @@ struct ServerWrapper {
 #[pymethods]
 impl ServerWrapper {
     #[new]
-    pub fn new(threshold: usize, grad_len: usize) -> Self {
-        ServerWrapper { wrapped: Server::new(threshold, grad_len) }
+    pub fn new(threshold: usize, vec_len: usize) -> Self {
+        ServerWrapper { wrapped: Server::new(threshold, vec_len) }
     }
 
     pub fn serialize_state(self_: PyRef<Self>) -> PyResult<String> {

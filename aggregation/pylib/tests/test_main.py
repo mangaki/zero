@@ -8,7 +8,7 @@ class TestMain:
         participants = 8
         active = 6
         threshold = 3
-        grad_len = 9
+        vec_len = 9
         mask = [i < active for i in range(participants)]
         random.Random(45).shuffle(mask)
         ids = [(2*i + 512) for i in range(participants)]
@@ -19,9 +19,9 @@ class TestMain:
         for (u, (pk, _)) in enumerate(sign_keys):
             sign_pks.insert(ids[u], pk)
 
-        users = [ UserWrapper(ids[u], threshold, pk, sk, [(u + 1 if i == u else 0) for i in range(grad_len)], sign_pks)
+        users = [ UserWrapper(ids[u], threshold, pk, sk, [(u + 1 if i == u else 0) for i in range(vec_len)], sign_pks)
                     for (u, (pk, sk)) in enumerate(sign_keys) ]
-        server = ServerWrapper(threshold, grad_len)
+        server = ServerWrapper(threshold, vec_len)
 
         msgs = {ids[i]: round0_msg() for i in range(participants)}
         server_output = None
@@ -41,5 +41,5 @@ class TestMain:
             else:
                 break
 
-        print(server_output.get_gradient())
+        print(server_output.get_vector())
 

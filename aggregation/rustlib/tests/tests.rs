@@ -32,7 +32,7 @@ fn general_test(
     participants: usize,
     active_per_round: [usize; 5],
     threshold: usize,
-    grad_len: usize
+    vec_len: usize
 )
 {
     let ids = (0..participants).map(|u| 2 * u + 25).collect::<Vec<usize>>();
@@ -43,14 +43,14 @@ fn general_test(
     let sign_pks = Arc::new(sign_keys.iter().map(|(u, (pk, _))| (*u, pk.clone())).collect::<BTreeMap<usize, SignPublicKey>>());
 
     let mut users = sign_keys.into_iter().enumerate().map(|(i, (u, (sign_pk, sign_sk)))| {
-        let vec = (0..grad_len)
+        let vec = (0..vec_len)
             .map(|j| if (j % participants) == i { j as i64 + 1 } else { 0 })
             .map(Wrapping).collect();
         println!("user {} : {:?}", u, vec);
         User::new(u, threshold, sign_pk, sign_sk, vec, Arc::clone(&sign_pks))
     }).collect::<Vec<User>>();
     
-    let mut server = Server::new(threshold, grad_len);
+    let mut server = Server::new(threshold, vec_len);
 
     let mut msgs: BTreeMap<usize, UserInput> = users.iter().map(|u| (u.id(), UserInput::Round0())).collect();
 
@@ -78,7 +78,7 @@ fn general_test(
             ServerOutput::Messages(m) => {
                 msgs = m
             },
-            ServerOutput::Gradient(vec) => {
+            ServerOutput::Vector(vec) => {
                 break vec
             },
         }
@@ -97,8 +97,8 @@ fn simple_case() {
     let participants = 9;
     let active_per_round = [9, 9, 9, 9, 9];
     let threshold = 5;
-    let grad_len = 9;
-    general_test(participants, active_per_round, threshold, grad_len);
+    let vec_len = 9;
+    general_test(participants, active_per_round, threshold, vec_len);
 }
 
 #[test]
@@ -108,8 +108,8 @@ fn with_dropping_users() {
     let participants = 13;
     let active_per_round = [12, 11, 10, 9, 8];
     let threshold = 5;
-    let grad_len = 15;
-    general_test(participants, active_per_round, threshold, grad_len);
+    let vec_len = 15;
+    general_test(participants, active_per_round, threshold, vec_len);
 }
 
 #[test]
@@ -120,7 +120,7 @@ fn below_threshold() {
     let participants = 9;
     let active_per_round = [9, 9, 9, 9, 4];
     let threshold = 7;
-    let grad_len = 9;
-    general_test(participants, active_per_round, threshold, grad_len);
+    let vec_len = 9;
+    general_test(participants, active_per_round, threshold, vec_len);
 }
 

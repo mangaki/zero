@@ -119,12 +119,12 @@ fn round_2(
             Ordering::Equal => 0,
             Ordering::Greater => -1,
         };
-        Ok(scalar_mul(Wrapping(l), vector_from_seed(common_seed, data.grad.len())))
+        Ok(scalar_mul(Wrapping(l), vector_from_seed(common_seed, data.vec.len())))
     }).collect::<Result<_, ()>>()?;
-    let own_mask = vector_from_seed(own_seed.clone(), data.grad.len());
+    let own_mask = vector_from_seed(own_seed.clone(), data.vec.len());
     let sum: Vec<Wrapping<i64>> = sum_components(
-        Iterator::chain(std::iter::once(data.grad.clone()), std::iter::once(own_mask))
-            .chain(other_masks), data.grad.len());
+        Iterator::chain(std::iter::once(data.vec.clone()), std::iter::once(own_mask))
+            .chain(other_masks), data.vec.len());
 
     Ok(((own_keys, others_keys, own_seed, crypted_keys), sum))
 }
@@ -214,14 +214,14 @@ impl User {
         threshold: usize,
         sign_pk: SignPublicKey,
         sign_sk: SignSecretKey,
-        grad: Vec<Wrapping<i64>>,
+        vec: Vec<Wrapping<i64>>,
         others_sign_pks: Arc<BTreeMap<usize, SignPublicKey>>
     ) -> User {
         User {
             data: UserData {
                 id, threshold,
                 sign_pk, sign_sk,
-                grad,
+                vec,
                 others_sign_pks,
             },
             state: UserState::Round0,

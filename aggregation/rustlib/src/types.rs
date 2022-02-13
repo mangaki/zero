@@ -17,7 +17,7 @@ pub struct UserData {
     pub sign_pk: SignPublicKey,
     pub sign_sk: SignSecretKey,
     pub others_sign_pks: Arc<BTreeMap<usize, SignPublicKey>>,
-    pub grad: Vec<Wrapping<i64>>,
+    pub vec: Vec<Wrapping<i64>>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -81,11 +81,11 @@ pub enum ServerState {
 #[derive(Serialize, Deserialize)]
 pub enum ServerOutput {
     Messages(BTreeMap<usize, UserInput>),
-    Gradient(Vec<Wrapping<i64>>),
+    Vector(Vec<Wrapping<i64>>),
 }
 
 pub enum ServerOutputSerialized {
     Messages(BTreeMap<usize, Vec<u8>>),
-    Gradient(Vec<Wrapping<i64>>),
+    Vector(Vec<Wrapping<i64>>),
 }
 

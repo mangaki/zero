@@ -75,7 +75,7 @@ fn round_4(
     sharing_users: BTreeSet<usize>,
     vecs: Vec<Vec<Wrapping<i64>>>,
     alive: BTreeSet<usize>,
-    grad_len: usize,
+    vec_len: usize,
 )   -> Result<(ServerOutput, ()), ()> {
     let mut m = c.get()?;
     let dropped = sharing_users.difference(&alive).cloned().collect::<BTreeSet<usize>>();
@@ -94,7 +94,7 @@ fn round_4(
             Ok((u, s.try_unwrap_vec().ok_or(())?))
         }).collect::<Result<_, ()>>()?;
     let alive_contribution: Vec<Vec<Wrapping<i64>>> = alive_secrets.into_iter().map(|(_, seed)| {
-        Ok(scalar_mul(Wrapping(-1), vector_from_seed(seed.try_into().map_err(|_| ())?, grad_len)))
+        Ok(scalar_mul(Wrapping(-1), vector_from_seed(seed.try_into().map_err(|_| ())?, vec_len)))
     }).collect::<Result<_, ()>>()?;
     
     let dropped_shares = dropped.iter().map(|u| {
@@ -122,28 +122,28 @@ fn round_4(
                 Ordering::Equal => 0,
                 Ordering::Greater => -1,
             };
-            Ok(scalar_mul(Wrapping(l), vector_from_seed(common_seed, grad_len)))
+            Ok(scalar_mul(Wrapping(l), vector_from_seed(common_seed, vec_len)))
         }).collect::<Result<_, ()>>()?;
-        Ok(sum_components(masks.into_iter(), grad_len))
+        Ok(sum_components(masks.into_iter(), vec_len))
     }).collect::<Result<_, ()>>()?;
 
     let res = sum_components(
         Iterator::chain(alive_contribution.into_iter(), dropped_contribution.into_iter()).chain(vecs.into_iter()),
-        grad_len
+        vec_len
     );
 
-    Ok((ServerOutput::Gradient(res), ()))
+    Ok((ServerOutput::Vector(res), ()))
 }
 
 pub struct Server {
     threshold: usize,
-    grad_len: usize,
+    vec_len: usize,
     state: ServerState,
 }
 
 impl Server {
-    pub fn new(threshold: usize, grad_len: usize) -> Self {
-        Server { threshold, grad_len, state: ServerState::Round0(Collector::new(threshold)) }
+    pub fn new(threshold: usize, vec_len: usize) -> Self {
+        Server { threshold, vec_len, state: ServerState::Round0(Collector::new(threshold)) }
     }
 
     pub fn serialize_state(&self) -> Result<String, ()> {
@@ -168,7 +168,7 @@ impl Server {
                 Ok(ServerOutputSerialized::Messages(
                         res.into_iter()
                         .map(|(k, v)| Ok((k, bincode::serialize(&v).map_err(|_| ())?))).collect::<Result<_, ()>>()?)),
-            Ok(ServerOutput::Gradient(v)) => Ok(ServerOutputSerialized::Gradient(v)),
+            Ok(ServerOutput::Vector(v)) => Ok(ServerOutputSerialized::Vector(v)),
             Err(()) => Err(())
         }
     }
@@ -216,7 +216,7 @@ impl Server {
                     }
                 },
                 ServerState::Round4(c, rand_pks, sharing_users, vecs, alive) => {
-                    match round_4(c, rand_pks, sharing_users, vecs, alive, self.grad_len) {
+                    match round_4(c, rand_pks, sharing_users, vecs, alive, self.vec_len) {
                         Ok((output, ())) =>
                             (Ok(output), ServerState::Done),
                         Err(()) => (Err(()), ServerState::Failed)
