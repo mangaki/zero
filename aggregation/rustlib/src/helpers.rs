@@ -1,11 +1,10 @@
 
 use std::num::Wrapping;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 
 use rand::{Rng, SeedableRng};
 use rand_chacha::ChaCha8Rng;
 use serde::{Serialize, Deserialize};
-#[macro_use]
 use serde_big_array::big_array;
 
 serde_big_array::big_array! { BigArray; }

@@ -6,13 +6,19 @@ use std::collections::{BTreeMap, BTreeSet};
 use replace_with::*;
 use x25519_dalek;
 use sss_rs::wrapped_sharing::{Secret, share};
-use serde::{Serialize, Deserialize};
 use serde_json;
 
 use crate::sodium_bindings::*;
 use crate::helpers::*;
 use crate::types::*;
 
+// Implements the client side of *Practical Secure Aggregation
+// for Privacy-Preserving Machine Learning*, Bonowitz et. al.
+// https://eprint.iacr.org/2017/281.pdf
+//
+// See this paper for the reference on what each round does.
+
+// AdvertiseKeys -- See Bonawitz et. al.
 fn round_0(data: &UserData) -> (OwnKeysData, (Signed<KAPublicKey>, Signed<KAPublicKey>)) {
     let (comm_pk, comm_sk) = {
         let secret = x25519_dalek::StaticSecret::new(rand_core::OsRng);
@@ -32,6 +38,7 @@ fn round_0(data: &UserData) -> (OwnKeysData, (Signed<KAPublicKey>, Signed<KAPubl
     (own_keys, (Signed::wrap(comm_pk, &data.sign_sk), Signed::wrap(rand_pk, &data.sign_sk)))
 }
 
+// ShareKeys -- See Bonawitz et. al.
 fn round_1(
     data: &UserData,
     own_keys: OwnKeysData,
@@ -85,6 +92,7 @@ fn round_1(
     Ok(((own_keys, others_keys, seed), msgs))
 }
 
+// MaskedInputCollection -- See Bonawitz et. al.
 fn round_2(
     data: &UserData,
     own_keys: OwnKeysData,
@@ -121,6 +129,7 @@ fn round_2(
     Ok(((own_keys, others_keys, own_seed, crypted_keys), sum))
 }
 
+// ConsistencyCheck -- See Bonawitz et. al.
 fn round_3(
     data: &UserData,
     own_keys: OwnKeysData,
@@ -139,11 +148,12 @@ fn round_3(
     Ok(((own_keys, others_keys, own_seed, crypted_keys, alive.clone()), sign(&bincode::serialize(&alive).map_err(|_| ())?, &data.sign_sk)))
 }
 
+// Unmasking -- See Bonawitz et. al.
 fn round_4(
     data: &UserData,
     own_keys: OwnKeysData,
     others_keys: OthersKeysData,
-    own_seed: [u8; 32],
+    _own_seed: [u8; 32],
     crypted_keys: BTreeMap<usize, CryptoMsg>,
     alive: BTreeSet<usize>,
     signatures: BTreeMap<usize, BundledSignature>

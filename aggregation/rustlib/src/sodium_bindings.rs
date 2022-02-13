@@ -1,7 +1,6 @@
 
 use core::ffi::c_void;
 use libsodium_sys::*;
-#[macro_use]
 use serde_big_array::big_array;
 
 serde_big_array::big_array! { BigArray; }

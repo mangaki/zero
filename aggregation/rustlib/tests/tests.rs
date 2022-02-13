@@ -1,10 +1,4 @@
 
-mod sodium_bindings;
-mod helpers;
-mod types;
-mod user;
-mod server;
-
 use std::sync::Arc;
 use std::num::Wrapping;
 use std::collections::BTreeMap;
@@ -14,11 +8,12 @@ use rand::SeedableRng;
 use rand_chacha::ChaCha8Rng;
 use rand::seq::SliceRandom;
 
-use sodium_bindings::*;
-use types::*;
-use user::*;
-use server::*;
+use aggregation::sodium_bindings::*;
+use aggregation::types::*;
+use aggregation::user::*;
+use aggregation::server::*;
 
+#[test]
 fn main() {
     let ret = unsafe {
         sodium_init()

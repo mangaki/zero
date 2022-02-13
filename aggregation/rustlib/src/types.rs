@@ -3,15 +3,7 @@ use std::sync::Arc;
 use std::num::Wrapping;
 use std::collections::{BTreeMap, BTreeSet};
 
-use replace_with::*;
-use rand::rngs::OsRng;
-use libsodium_sys::*;
-use x25519_dalek;
-use rand::{Rng, SeedableRng};
-use rand_chacha::ChaCha8Rng;
-use sss_rs::wrapped_sharing::{Secret, share, reconstruct};
 use serde::{Serialize, Deserialize};
-#[macro_use]
 use serde_big_array::big_array;
 
 use crate::sodium_bindings::*;
@@ -41,6 +33,10 @@ pub struct OthersKeysData {
     pub comm_pks: BTreeMap<usize, KAPublicKey>,
     pub rand_pks: BTreeMap<usize, KAPublicKey>,
 }
+
+// For reference on what each "round" is, see
+// *Practical Secure Aggregation for Privacy-Preserving Machine Learning*,
+// Bonowitz et. al. https://eprint.iacr.org/2017/281.pdf
 
 #[derive(Serialize, Deserialize)]
 pub enum UserState {

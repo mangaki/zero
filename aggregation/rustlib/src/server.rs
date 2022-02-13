@@ -5,12 +5,18 @@ use std::collections::{BTreeMap, BTreeSet};
 use replace_with::*;
 use x25519_dalek;
 use sss_rs::wrapped_sharing::{Secret, reconstruct};
-use serde::{Serialize, Deserialize};
 use serde_json;
 
 use crate::helpers::*;
 use crate::types::*;
 
+// Implements the client server of *Practical Secure Aggregation
+// for Privacy-Preserving Machine Learning*, Bonowitz et. al.
+// https://eprint.iacr.org/2017/281.pdf
+//
+// See this paper for the reference on what each round does.
+
+// AdvertiseKeys -- See Bonawitz et. al.
 fn round_0(c: Collector<(Signed<KAPublicKey>, Signed<KAPublicKey>)>) -> Result<(ServerOutput, BTreeMap<usize, KAPublicKey>), ()> {
     let m = c.get()?;
     let users = m.keys().cloned().collect::<Vec<usize>>();
@@ -21,6 +27,7 @@ fn round_0(c: Collector<(Signed<KAPublicKey>, Signed<KAPublicKey>)>) -> Result<(
     Ok((ServerOutput::Messages(msg), rand_pks))
 }
 
+// ShareKeys -- See Bonawitz et. al.
 fn round_1(
     c: Collector<BTreeMap<usize, CryptoMsg>>,
     rand_pks: BTreeMap<usize, KAPublicKey>
@@ -33,6 +40,7 @@ fn round_1(
     Ok((ServerOutput::Messages(msgs), rand_pks, users.into_iter().collect()))
 }
 
+// MaskedInputCollection -- See Bonawitz et. al.
 fn round_2(
     c: Collector<Vec<Wrapping<i64>>>,
     rand_pks: BTreeMap<usize, KAPublicKey>,
@@ -44,6 +52,7 @@ fn round_2(
     Ok((ServerOutput::Messages(msgs), rand_pks, sharing_users, vecs.into_values().collect()))
 }
 
+// ConsistencyCheck -- See Bonawitz et. al.
 fn round_3(
     c: Collector<BundledSignature>,
     rand_pks: BTreeMap<usize, KAPublicKey>,
@@ -58,6 +67,7 @@ fn round_3(
     Ok((ServerOutput::Messages(msg), rand_pks, sharing_users, vecs))
 }
 
+// Unmasking -- See Bonawitz et. al.
 fn round_4(
     c: Collector<BTreeMap<usize, RevealedShare>>,
     rand_pks: BTreeMap<usize, KAPublicKey>,
@@ -70,9 +80,9 @@ fn round_4(
     let dropped = sharing_users.difference(&alive).cloned().collect::<BTreeSet<usize>>();
     
     let alive_shares = alive.iter().map(|u| {
-        let shares = m.iter_mut().map(|(v, m)| match m.remove(u).ok_or(())? {
+        let shares = m.iter_mut().map(|(_, m)| match m.remove(u).ok_or(())? {
             RevealedShare::Seed(s) => Ok(s),
-            RevealedShare::RandSk(s) => Err(()),
+            RevealedShare::RandSk(_) => Err(()),
         }).collect::<Result<_, ()>>()?;
         Ok((*u, shares))
     }).collect::<Result<BTreeMap<usize, Vec<Vec<u8>>>, ()>>()?;
@@ -82,13 +92,13 @@ fn round_4(
             reconstruct(&mut s, shares, true).map_err(|_| ())?;
             Ok((u, s.try_unwrap_vec().ok_or(())?))
         }).collect::<Result<_, ()>>()?;
-    let alive_contribution: Vec<Vec<Wrapping<i64>>> = alive_secrets.into_iter().map(|(v, seed)| {
+    let alive_contribution: Vec<Vec<Wrapping<i64>>> = alive_secrets.into_iter().map(|(_, seed)| {
         Ok(scalar_mul(Wrapping(-1), vector_from_seed(seed.try_into().map_err(|_| ())?, grad_len)))
     }).collect::<Result<_, ()>>()?;
     
     let dropped_shares = dropped.iter().map(|u| {
-        let shares = m.iter_mut().map(|(v, m)| match m.remove(u).ok_or(())? {
-            RevealedShare::Seed(s) => Err(()),
+        let shares = m.iter_mut().map(|(_, m)| match m.remove(u).ok_or(())? {
+            RevealedShare::Seed(_) => Err(()),
             RevealedShare::RandSk(s) => Ok(s),
         }).collect::<Result<_, ()>>()?;
         Ok((*u, shares))

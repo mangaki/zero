@@ -7,10 +7,6 @@ edition = "2021"
 name = "aggregation"
 path = "src/lib.rs"
 
-[[bin]]
-name = "aggregation-cli"
-path = "src/main.rs"
-
 [dependencies]
 libsodium-sys-stable = "^1.19.19"
 sss-rs = "^0.9.0"
