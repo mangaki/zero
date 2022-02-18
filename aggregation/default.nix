@@ -18,6 +18,7 @@ rec {
       (python39.withPackages (ps: [ pythonPackage ]))
       python39Packages.pytest
       maturin
+      mypy
       llvm_13 # For llvm-symbolicator
     ];
   };
@@ -51,7 +52,7 @@ rec {
 
     cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
       inherit src sourceRoot;
-      hash = "sha256-YGpVeeRkRzR4anriV6f0kfO2acryWwBaL2m7Qshh82A=";
+      hash = "sha256-1OmGICRTpsZlUiGYWk+lGhlYnJswOJCKZos5nF97CCo=";
     };
 
     dontUseWheelUnpack = true;

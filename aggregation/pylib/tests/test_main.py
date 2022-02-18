@@ -1,7 +1,7 @@
 
 import random
 
-from aggregation import *
+from mangaki_zero_aggregation import *
 
 class TestMain:
     def test_main(self):

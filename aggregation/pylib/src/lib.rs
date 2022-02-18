@@ -169,7 +169,7 @@ fn gen_keypair() -> (SignPublicKey, SignSecretKey) {
 }
 
 #[pymodule]
-fn aggregation(_py: Python, m: &PyModule) -> PyResult<()> {
+fn mangaki_zero_aggregation(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(gen_keypair, m)?)?;
     m.add_function(wrap_pyfunction!(round0_msg, m)?)?;
     m.add_class::<PublicKeysWrapper>()?;

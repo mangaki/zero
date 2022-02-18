@@ -4,3 +4,4 @@ fastFM
 pywFM
 surprise
 matplotlib
+mangaki-zero-aggregation
