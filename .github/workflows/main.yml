@@ -18,30 +18,30 @@ jobs:
       matrix:
         pythonVersion: [ "python38", "python39", "python310" ]
 
-      env:
-        PYTHON_PACKAGE_NAME: ${{ matrix.pythonVersion }}
+    env:
+      PYTHON_PACKAGE_NAME: ${{ matrix.pythonVersion }}
 
-      steps:
-      - uses: actions/checkout@v2
+    steps:
+    - uses: actions/checkout@v2
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v14.1
+    - name: Install Nix
+      uses: cachix/install-nix-action@v14.1
 
-      - name: Get the magic cache (Cachix)
-        uses: cachix/cachix-action@v10
-        with:
-          name: mangaki
-          signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+    - name: Get the magic cache (Cachix)
+      uses: cachix/cachix-action@v10
+      with:
+        name: mangaki
+        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
 
-      - name: Run tests
-        run: |
-          nix-shell aggregation/default.nix \
-          -A shell \
-          --argstr pythonPackageName "$PYTHON_PACKAGE_NAME" \
-          --command "py.test --cov-report=xml --cov=aggregation"
-      
-      - name: Report coverage results to CodeCov
-        run: bash <(curl -s https://codecov.io/bash)
+    - name: Run tests
+      run: |
+        nix-shell aggregation/default.nix \
+        -A shell \
+        --argstr pythonPackageName "$PYTHON_PACKAGE_NAME" \
+        --command "py.test --cov-report=xml --cov=aggregation"
+    
+    - name: Report coverage results to CodeCov
+      run: bash <(curl -s https://codecov.io/bash)
 
   firaga-test:
     # The type of runner that the job will run on
