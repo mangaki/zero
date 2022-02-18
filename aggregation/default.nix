@@ -10,7 +10,8 @@ in
 rec {
   shell = pkgs.mkShell {
     buildInputs = with pkgs; [
-      (pkgs.rust-bin.selectLatestNightlyWith (toolchain: toolchain.default))
+      pkgs.rust-bin.stable.latest.default
+      # (pkgs.rust-bin.selectLatestNightlyWith (toolchain: toolchain.default))
       wasm-pack
       libressl
       pkg-config
@@ -50,7 +51,7 @@ rec {
 
     cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
       inherit src sourceRoot;
-      hash = "sha256-xAy4OCP4AL8uMGoDkTNeFXdMvnFb9INjtRPOnJwT5r4=";
+      hash = "sha256-YGpVeeRkRzR4anriV6f0kfO2acryWwBaL2m7Qshh82A=";
     };
 
     dontUseWheelUnpack = true;
