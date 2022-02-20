@@ -13,7 +13,7 @@ and computes the sum, following a scheme that guarantees data privacy (see the p
 more precisions, in particular on the matter of privacy).
 The protocol is divided in `rounds`, where the server sends a message to each participant,
 and the participants each respond with their own message.
-At each round, the server awaits messages from participants, performs a computation and
+At each round, the server awaits at list ``threshold`` messages from participants, performs a computation and
 then sends new messages to each participant.
 There are 5 rounds (see the paper for reference); at the final round the server outputs
 not messages but the securely aggregated sum of each user's vector.
@@ -28,7 +28,7 @@ not messages but the securely aggregated sum of each user's vector.
 
    Alias for bytes.
 
-.. py:class:: SignPrivateKey
+.. py:class:: SignSecretKey
 
    A private key that is used internally to sign messages.
 
@@ -72,6 +72,7 @@ not messages but the securely aggregated sum of each user's vector.
 
        :param bytes input: The message that the server sent
        :rtype: bytes
+       :raises IOError: If the input is invalid, or a tamper is detected -- the client is then put in an error state
 
     .. py:method:: serialize_state()
 
@@ -111,7 +112,7 @@ not messages but the securely aggregated sum of each user's vector.
 
    .. py:method:: get_messages()
 
-      If the server did output messages, returns a dictionnary that maps each user identifier
+      If the server did output messages, returns a dictionary that maps each user identifier
       to the message that must be sent to that user.
 
       :rtype: Dict[int, bytes]
@@ -122,7 +123,7 @@ not messages but the securely aggregated sum of each user's vector.
       If the server did output a vector, returns that vector.
 
       :rtype: list[int]
-      :raises IOError: If th eserver actually outputted messages.
+      :raises IOError: If the server actually outputted messages.
 
 .. py:class:: ServerWrapper
     
@@ -139,6 +140,7 @@ not messages but the securely aggregated sum of each user's vector.
 
       :param int id: The user's identifier
       :param bytes input: The message
+      :raises IOError: If the input is invalid -- but the server isn't in an error state after that
 
    .. py:method:: round()
 
@@ -146,6 +148,7 @@ not messages but the securely aggregated sum of each user's vector.
       the result of the current round (either new messages for the users, or the computed sum).
 
       :rtype: ServerOutputWrapper
+      :raises IOError: If less than ``threshold`` messages have been received, or if the received data is incoherent -- the server is put in an error state after that
 
    .. py:method:: serialize_state()
 

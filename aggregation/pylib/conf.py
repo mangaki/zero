@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'aggregation-python'
+project = 'mangaki_zero_aggregation'
 copyright = '2022, Mangaki Contributors'
 author = 'Mangaki Contributors'
 
