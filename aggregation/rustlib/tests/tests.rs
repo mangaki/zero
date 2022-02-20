@@ -70,7 +70,7 @@ fn general_test(
             if *masks[round].get(&u.id()).unwrap() {
                 let input = msgs.remove(&u.id()).unwrap();
                 let output = u.round(input).unwrap();
-                server.recv(u.id(), output);
+                server.recv(u.id(), output).unwrap();
             }
         });
 
