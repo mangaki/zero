@@ -34,6 +34,3 @@ class ServerWrapper:
 
 def round0_msg(msg: Any) -> bytes: ...
 def gen_keypair() -> Tuple[SignPublicKey, SignSecretKey]:
-    """
-    Generate a keypair (public key, secret key).
-    """
