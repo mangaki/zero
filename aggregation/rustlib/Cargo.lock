@@ -15,25 +15,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "aae1277d39aeec15cb388266ecc24b11c80469deae6067e17a1a7aa9e5c1f234"
 
 [[package]]
-name = "aggregation"
-version = "0.1.0"
-dependencies = [
- "bincode",
- "galois_2p8",
- "getrandom 0.2.4",
- "libsodium-sys-stable",
- "rand 0.8.5",
- "rand_chacha 0.3.1",
- "rand_core 0.5.1",
- "replace_with",
- "serde",
- "serde-big-array",
- "serde_json",
- "sss-rs",
- "x25519-dalek",
-]
-
-[[package]]
 name = "aho-corasick"
 version = "0.7.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -354,6 +335,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "51b9bbe6c47d51fc3e1a9b945965946b4c44142ab8792c50835a980d362c2710"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "mangaki-zero-aggregation"
+version = "0.1.0"
+dependencies = [
+ "bincode",
+ "galois_2p8",
+ "getrandom 0.2.4",
+ "libsodium-sys-stable",
+ "rand 0.8.5",
+ "rand_chacha 0.3.1",
+ "rand_core 0.5.1",
+ "replace_with",
+ "serde",
+ "serde-big-array",
+ "serde_json",
+ "sss-rs",
+ "x25519-dalek",
 ]
 
 [[package]]
