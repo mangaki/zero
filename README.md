@@ -54,7 +54,7 @@ See [zero.py](zero/zero.py) as an example of dumb baseline (only predicts zeroes
 
 ## Secure aggregation module usage
 
-Install this module with the extra `secure-aggregation`, i.e. `pip install mangaki-zero[secure-aggregation]` or compile the module in `aggregation/`, this only requires a stable Rust compiler (1.59 is tested in the CI) and [maturin](https://github.com/PyO3/maturin/).
+Install this module with the extra `secure-aggregation`, i.e. `pip install mangaki-zero[secure-aggregation]` or compile the module in `aggregation/`, this only requires a stable Rust compiler (CI tests are performed against Rust stable, beta and nightlies.) and [maturin](https://github.com/PyO3/maturin/).
 
 Then, you can follow the docs there: <https://mangaki.github.io/zero/>
 
