@@ -40,7 +40,7 @@ jobs:
         nix-shell aggregation/default.nix \
         -A shell \
         --argstr pythonPackageName "$PYTHON_PACKAGE_NAME" \
-        --command "py.test --cov-report=xml --cov=aggregation"
+        --command "py.test aggregation/ --cov-report=xml --cov=aggregation"
     
     - name: Report coverage results to CodeCov
       run: bash <(curl -s https://codecov.io/bash)
