@@ -35,7 +35,7 @@ in
 
     cargoDeps = rustPlatform.fetchCargoTarball {
       inherit src sourceRoot;
-      hash = "sha256-1OmGICRTpsZlUiGYWk+lGhlYnJswOJCKZos5nF97CCo=";
+      hash = "sha256-vy3kN+9Kf3GALKQEtdcXdxHe9M+XcWndcUt/iVIHAr0=";
     };
 
     dontUseWheelUnpack = true;
