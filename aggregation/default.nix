@@ -25,7 +25,7 @@ rec {
       # wasm-pack
       libressl
       pkg-config
-      # (python39.withPackages (ps: [ pythonPackage ps.pytest ps.pytestcov ]))
+      (python39.withPackages (ps: [ pythonPackage ps.pytest ps.pytestcov ]))
       newNixpkgs.auditwheel
       newNixpkgs.maturin
       python
