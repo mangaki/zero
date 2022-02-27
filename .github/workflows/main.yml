@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        pythonVersion: [ "python38", "python39", "python310" ]
+        pythonVersion: [ "python37", "python38", "python39" ]
 
     env:
       PYTHON_PACKAGE_NAME: ${{ matrix.pythonVersion }}
