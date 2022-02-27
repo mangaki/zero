@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    zero.tests
+   zero.aggregation
 
 Submodules
 ----------
