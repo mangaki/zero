@@ -9,9 +9,14 @@ let
   }) { inherit overlays; };
   newNixpkgs = import <nixpkgs> { inherit overlays; };
 in
-{ pythonPackageName ? "python39", ... }:
+{ pythonPackageName ? "python39", rustChannelName ? "stable", ... }:
 rec {
   selectPython = pkgs: pkgs.${pythonPackageName};
+  selectRustToolchain = name:
+  if name == "stable" then newNixpkgs.rust-bin.stable.latest.default
+  else if name == "beta" then newNixpkgs.rust-bin.beta.latest.default
+  else if name == "nightly" then newNixpkgs.rust-bin.selectLatestNightlyWith (toolchain: toolchain.default)
+  else throw "Unknown Rust channel: ${name}";
 
   shell = newNixpkgs.mkShell {
     buildInputs = with newNixpkgs; [
@@ -37,7 +42,7 @@ rec {
   };
 
   packages = newNixpkgs.callPackage ./packages.nix {
-    rustToolchain = newNixpkgs.rust-bin.stable.latest.default;
+    rustToolchain = selectRustToolchain rustChannelName;
     python = selectPython newNixpkgs;
   };
 }

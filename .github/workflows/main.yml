@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rustChannel: [ "stable" "unstable" ]
+        rustChannel: [ "stable" "beta" "nightly" ]
 
     env:
       RUST_CHANNEL_NAME: ${{ matrix.rustChannel }}
