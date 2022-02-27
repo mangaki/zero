@@ -2,6 +2,7 @@
 
 [![Mangaki Zero's CI status](https://github.com/mangaki/zero/workflows/CI/badge.svg)](https://github.com/mangaki/zero/actions)
 [![Mangaki Zero's code coverage](https://codecov.io/gh/mangaki/zero/branch/master/graph/badge.svg)](https://codecov.io/gh/mangaki/zero)
+[API documentation](https://mangaki.github.io/zero/)
 
 Mangaki's recommendation algorithms.
 
@@ -50,6 +51,12 @@ where:
 There are a couple of other methods that can be used for online fit, say `model.predict_single_user(work_ids, user_parameters)`.
 
 See [zero.py](zero/zero.py) as an example of dumb baseline (only predicts zeroes) to start from.
+
+## Secure aggregation module usage
+
+Install this module with the extra `secure-aggregation`, i.e. `pip install mangaki-zero[secure-aggregation]` or compile the module in `aggregation/`, this only requires a stable Rust compiler (CI tests are performed against Rust stable, beta and nightlies.) and [maturin](https://github.com/PyO3/maturin/).
+
+Then, you can follow the docs there: <https://mangaki.github.io/zero/>
 
 ## Results
 

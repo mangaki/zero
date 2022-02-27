@@ -26,10 +26,13 @@ pywFM = { version="*", optional = true }
 surprise = { version="*", optional = true }
 scipy = "^1.4"
 
+mangaki-zero-aggregation = { version="^0.1", optional = true }
+
 [tool.poetry.extras]
 deep = ["tensorflow"]
 external = ["surprise"]
 fm = ["fastFM", "pywFM"]
+secure-aggregation = [ "mangaki-zero-aggregation" ]
 
 [tool.poetry.dev-dependencies]
 matplotlib = "^3.1"

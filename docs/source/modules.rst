@@ -5,3 +5,4 @@ zero
    :maxdepth: 4
 
    zero
+   zero.aggregation
