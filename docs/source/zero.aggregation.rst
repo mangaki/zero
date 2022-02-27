@@ -5,7 +5,7 @@ zero.aggregation package: secure aggregation
    :toctree: generated
 
 Bindings to our Rust implementation of `Practical Secure Aggregation for Privacy-Preserving Machine Learning <https://eprint.iacr.org/2017/281.pdf>`_.
-We give an overview of this in our `blog post <TODO>`_.
+We give an overview of this in our `blog post <https://research.mangaki.fr/2022/02/12/how-to-securely-share-information/>`_.
 
 In this protocol, a central server collects vectors from a certain number of clients
 and computes the sum, following a scheme that guarantees data privacy (see the paper for
