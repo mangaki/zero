@@ -17,7 +17,7 @@ in
 
     src = filterLocalArtifacts ./.;
     sourceRoot = "source/rustlib";
-    cargoSha256 = "sha256-W51ZHUdFYarzZThT6W9M5jszVjIQLjxpMdQCrflD0S4=";
+    cargoSha256 = "sha256-IN0Iz2Dsi3W76N4sSOn52hvfGgNGqUweQ7vFtAHrZdE=";
   };
 
   pythonPackage = python.pkgs.buildPythonPackage rec {

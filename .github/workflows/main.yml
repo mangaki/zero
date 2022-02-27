@@ -12,7 +12,36 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  secure-aggregation-test:
+  secure-aggregation-rust-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rustChannel: [ "stable" "unstable" ]
+
+    env:
+      RUST_CHANNEL_NAME: ${{ matrix.rustChannel }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v15
+      with:
+        nix_path: nixpkgs=channel:nixos-21.11
+
+    - name: Get the magic cache (Cachix)
+      uses: cachix/cachix-action@v10
+      with:
+        name: mangaki
+        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+
+    - name: Build Rust library
+      run: |
+        nix-build aggregation/default.nix \
+        -A packages.rustPackage \
+        --argstr rustChannelName "$RUST_CHANNEL_NAME" \
+   
+  secure-aggregation-python-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
