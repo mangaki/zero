@@ -18,8 +18,8 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'Mangaki Zero'
-copyright = '2020, Jill-Jênn Vie, Ryan Lahfa, Basile Clément'
-author = 'Jill-Jênn Vie, Ryan Lahfa, Basile Clément'
+copyright = '2022, Jill-Jênn Vie, Julien Marquet, Ryan Lahfa, Basile Clément'
+author = 'Jill-Jênn Vie, Julien Marquet, Ryan Lahfa, Basile Clément'
 
 
 # -- General configuration ---------------------------------------------------
