@@ -15,8 +15,8 @@ rec {
       wasm-pack
       libressl
       pkg-config
-      (python39.withPackages (ps: [ pythonPackage ]))
-      python39Packages.pytest
+      (python39.withPackages (ps: [ pythonPackage ps.pytest ps.pytestcov ]))
+      auditwheel
       maturin
       mypy
       llvm_13 # For llvm-symbolicator
