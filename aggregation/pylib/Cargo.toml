@@ -1,5 +1,5 @@
 [package]
-name = "mangaki-zero-aggregation-python"
+name = "mangaki-zero-aggregation"
 version = "0.1.0"
 edition = "2021"
 
@@ -22,5 +22,4 @@ serde-big-array = "^0.3.2"
 replace_with = "^0.1.7"
 pyo3 = { version = "0.15.1", features = [ "extension-module" ] }
 
-mangaki-zero-aggregation = { path = "../rustlib" }
-
+r-mangaki-zero-aggregation = { path = "../rustlib" }

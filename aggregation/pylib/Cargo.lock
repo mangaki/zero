@@ -383,29 +383,10 @@ name = "mangaki-zero-aggregation"
 version = "0.1.0"
 dependencies = [
  "bincode",
- "galois_2p8",
  "getrandom 0.2.4",
  "libsodium-sys-stable",
- "rand 0.8.5",
- "rand_chacha 0.3.1",
- "rand_core 0.5.1",
- "replace_with",
- "serde",
- "serde-big-array",
- "serde_json",
- "sss-rs",
- "x25519-dalek",
-]
-
-[[package]]
-name = "mangaki-zero-aggregation-python"
-version = "0.1.0"
-dependencies = [
- "bincode",
- "getrandom 0.2.4",
- "libsodium-sys-stable",
- "mangaki-zero-aggregation",
  "pyo3",
+ "r-mangaki-zero-aggregation",
  "rand 0.8.5",
  "rand_chacha 0.3.1",
  "rand_core 0.5.1",
@@ -622,6 +603,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "864d3e96a899863136fc6e99f3d7cae289dafe43bf2c5ac19b70df7210c0a145"
 dependencies = [
  "proc-macro2",
+]
+
+[[package]]
+name = "r-mangaki-zero-aggregation"
+version = "0.1.0"
+dependencies = [
+ "bincode",
+ "galois_2p8",
+ "getrandom 0.2.4",
+ "libsodium-sys-stable",
+ "rand 0.8.5",
+ "rand_chacha 0.3.1",
+ "rand_core 0.5.1",
+ "replace_with",
+ "serde",
+ "serde-big-array",
+ "serde_json",
+ "sss-rs",
+ "x25519-dalek",
 ]
 
 [[package]]
