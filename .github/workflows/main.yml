@@ -25,7 +25,9 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install Nix
-      uses: cachix/install-nix-action@v14.1
+      uses: cachix/install-nix-action@v15
+      with:
+        nix_path: nixpkgs=channel:nixos-21.11
 
     - name: Get the magic cache (Cachix)
       uses: cachix/cachix-action@v10
@@ -77,7 +79,7 @@ jobs:
         -A shell \
         --argstr blasProvider "$BLAS_PROVIDER" \
         --argstr pythonPackageName "$PYTHON_PACKAGE_NAME" \
-        --command "py.test --cov-report=xml --cov=zero"
+        --command "py.test zero/ --cov-report=xml --cov=zero"
     
     - name: Report coverage results to CodeCov
       run: bash <(curl -s https://codecov.io/bash)
