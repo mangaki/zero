@@ -16,7 +16,7 @@ in
 
     src = filterLocalArtifacts ./.;
     sourceRoot = "source/rustlib";
-    cargoSha256 = "sha256-IN0Iz2Dsi3W76N4sSOn52hvfGgNGqUweQ7vFtAHrZdE=";
+    cargoSha256 = "sha256-RMBw3qbrvrUREgisioUnwAWpcF2pEGY6rGBUjbzoDcs=";
   };
 
   pythonPackage = python.pkgs.buildPythonPackage rec {
@@ -34,7 +34,7 @@ in
 
     cargoDeps = rustPlatform.fetchCargoTarball {
       inherit src sourceRoot;
-      hash = "sha256-vy3kN+9Kf3GALKQEtdcXdxHe9M+XcWndcUt/iVIHAr0=";
+      hash = "sha256-co4YhZEsyOcLowcR0yYrAKdIyO7fRzZ0MvY2V3lDhzo=";
     };
 
     dontUseWheelUnpack = true;
