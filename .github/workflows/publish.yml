@@ -23,7 +23,7 @@ jobs:
 
         - name: Publish to PyPI
           run: nix-shell aggregation/default.nix \
-            -A shell \
+            -A publishShell \
             --run 'cd pylib && maturin publish --compatibility manylinux_2_28 --username "__token__" --password="${{ secrets.PYPI_SECURE_AGGREGATION_TOKEN }}"'
 
   publish-zero:
