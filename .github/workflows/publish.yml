@@ -5,15 +5,36 @@ on:
     types: [ published ]
 
 jobs:
-  publish:
+  publish-secure-aggregation-zero:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v2
+
+        - name: Install Nix
+          uses: cachix/install-nix-action@v15
+          with:
+            nix_path: nixpkgs=channel:nixos-21.11
+
+        - name: Get the magic cache (Cachix)
+          uses: cachix/cachix-action@v10
+          with:
+            name: mangaki
+            signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+
+        - name: Publish to PyPI
+          run: nix-shell aggregation/default.nix \
+            -A shell \
+            --run 'cd pylib && maturin publish --compatibility manylinux_2_28 --username "__token__" --password="${{ secrets.PYPI_SECURE_AGGREGATION_TOKEN }}"'
+
+  publish-zero:
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v2
           
         - name: Install Nix
-          uses: cachix/install-nix-action@v14.1
+          uses: cachix/install-nix-action@v15
           with:
-            nix_path: nixpkgs=channel:nixos-21.05
+            nix_path: nixpkgs=channel:nixos-21.11
           
         - name: Get the magic cache (Cachix)
           uses: cachix/cachix-action@v10
@@ -28,7 +49,7 @@ jobs:
           run: poetry install
 
         - name: Configure Poetry to publish
-          run: poetry config pypi-token.pypi '${{ secrets.PYPI_API_TOKEN }}'
+          run: poetry config pypi-token.pypi '${{ secrets.PYPI_MANGAKI_ZERO_TOKEN }}'
 
         - name: Publish to PyPI
           run: poetry publish --build
