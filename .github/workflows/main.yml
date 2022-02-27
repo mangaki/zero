@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Build and test
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rustChannel: [ "stable" "beta" "nightly" ]
+        rustChannel: [ "stable", "beta", "nightly" ]
 
     env:
       RUST_CHANNEL_NAME: ${{ matrix.rustChannel }}
