@@ -12,7 +12,6 @@ in
 
     nativeBuildInputs = [
       rustToolchain
-      rustPlatform.maturinBuildHook
     ];
 
     src = filterLocalArtifacts ./.;
