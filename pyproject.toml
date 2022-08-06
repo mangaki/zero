@@ -40,4 +40,4 @@ pytest = "^5.4.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.masonry.api"
+build-backend = "poetry.core.masonry.api"
