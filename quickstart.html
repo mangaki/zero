@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>Quick start &#8212; Mangaki Zero  documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -32,17 +33,17 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="quick-start">
+  <section id="quick-start">
 <h1>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="install">
+<section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="n">venv</span>
 <span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="usage">
+</section>
+<section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>To run cross-validation:</p>
 <ol class="arabic simple">
@@ -50,11 +51,6 @@
 <li><p>Ensure the columns are named <code class="code docutils literal notranslate"><span class="pre">user,item,rating</span></code>:</p></li>
 </ol>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 29%" />
-<col style="width: 29%" />
-<col style="width: 43%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>user</p></th>
 <th class="head"><p>item</p></th>
@@ -77,8 +73,8 @@
 </li>
 </ol>
 <p>You can tweak the <code class="code docutils literal notranslate"><span class="pre">experiments/default.json</span></code> file to compare other models.</p>
-</div>
-<div class="section" id="custom-usage">
+</section>
+<section id="custom-usage">
 <h2>Custom usage<a class="headerlink" href="#custom-usage" title="Permalink to this headline">¶</a></h2>
 <p>Most models have the following routines:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">zero.als</span> <span class="kn">import</span> <span class="n">MangakiALS</span>
@@ -94,20 +90,20 @@
 </ul>
 <p>There are a couple of other methods that can be used for online fit, say <code class="code docutils literal notranslate"><span class="pre">model.predict_single_user(work_ids,</span> <span class="pre">user_parameters)</span></code>.</p>
 <p>See <a class="reference external" href="_modules/zero/zero.html#MangakiZero">zero.py</a> as an example of dumb baseline (only predicts zeroes) to start from. See <a class="reference external" href="_modules/zero/svd2.html#MangakiSVD2">svd2.py</a> for a more advanced example.</p>
-</div>
-<div class="section" id="results">
+</section>
+<section id="results">
 <h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="mangaki-data">
+<section id="mangaki-data">
 <h3>Mangaki data<a class="headerlink" href="#mangaki-data" title="Permalink to this headline">¶</a></h3>
 <img alt="Comparing on Mangaki" src="_images/mangaki.png" />
-</div>
-<div class="section" id="movielens-data">
+</section>
+<section id="movielens-data">
 <h3>Movielens data<a class="headerlink" href="#movielens-data" title="Permalink to this headline">¶</a></h3>
 <img alt="Comparing on Movielens" src="_images/movielens.png" />
 <p>Feel free to use. Under MIT license.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>
@@ -150,7 +146,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -172,7 +168,7 @@
       &copy;1980, Jill-Jênn Vie, Julien Marquet, Ryan Lahfa, Basile Clément.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
