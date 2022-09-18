@@ -9,7 +9,7 @@ let
   }) { inherit overlays; };
   newNixpkgs = import <nixpkgs> { inherit overlays; };
 in
-{ pythonPackageName ? "python39", rustChannelName ? "stable", ... }:
+{ pythonPackageName ? "python310", rustChannelName ? "stable", ... }:
 rec {
   selectPython = pkgs: pkgs.${pythonPackageName};
   selectRustToolchain = name:
