@@ -1,12 +1,11 @@
 let ourNixpkgs =
   builtins.fetchGit {
   # Descriptive name to make the store path easier to identify
-  name = "nixos-21.05";
+  name = "nixos-22.05";
   url = "https://github.com/nixos/nixpkgs";
-  # Commit hash for nixos-unstable as of 2021-10-17
-  # `git ls-remote https://github.com/nixos/nixpkgs-channels nixos-unstable`
-  ref = "refs/heads/nixos-21.05";
-  rev = "83667ff60a88e22b76ef4b0bdf5334670b39c2b6";
+  # `git ls-remote https://github.com/nixos/nixpkgs nixos-22.05`
+  ref = "refs/heads/nixos-22.05";
+  rev = "f21492b413295ab60f538d5e1812ab908e3e3292";
 };
 in
 { blasProvider ? "openblasCompat"
@@ -21,7 +20,7 @@ in
           blasProvider = super.${blasProvider};
         };
       })]; }
-, pythonPackageName ? "python3"
+, pythonPackageName ? "python310"
 , python ? pkgs.${pythonPackageName}}:
 
 rec {

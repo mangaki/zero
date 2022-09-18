@@ -6,7 +6,7 @@
 
 Mangaki's recommendation algorithms.
 
-They are tested on Python 3.7, 3.8, 3.9 over OpenBLAS LP64. Intel MKL is broken for now, see <https://github.com/mangaki/zero/issues/25>.
+They are tested on Python 3.8, 3.9, 3.10 over OpenBLAS LP64. Intel MKL is broken for now, see <https://github.com/mangaki/zero/issues/25>.
 
 ## Install
 
@@ -32,6 +32,13 @@ For example, here, user 3 gave 4.5 stars to item 5.
     python compare.py <path/to/dataset>
 
 You can tweak the `experiments/default.json` file to compare other models.
+
+## Tests
+
+This assumes you installed the dependencies of the project.
+
+- To run tests for the Python Zero module: `py.test zero`
+- To run tests for the Aggregation module: `py.test aggregation`
 
 ## Custom usage
 
