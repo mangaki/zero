@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "mangaki-zero"
-version = "1.1.0"
+version = "1.2.0"
 description = "Mangaki's recommandation algorithms"
 authors = ["Jill-Jênn Vie <vie@jill-jenn.net>"]
-license = "GPL-3.0"
+license = "MIT"
 readme = "README.md"
-homepage = "http://research.mangaki.fr"
+homepage = "https://research.mangaki.fr"
 documentation = "https://github.com/mangaki/zero"
 keywords = ["machine learning", "recommandation", "mangaki", "recommender systems", "algorithms"]
 

@@ -10,9 +10,7 @@ They are tested on Python 3.8, 3.9, 3.10 over OpenBLAS LP64. Intel MKL is broken
 
 ## Install
 
-    python -m venv venv
-	source venv/bin/activate
-	pip install -r requirements.txt
+	poetry install
 
 ## Usage
 
