@@ -6,9 +6,13 @@
 
 Mangaki's recommendation algorithms.
 
-They are tested on Python 3.8, 3.9, 3.10 over OpenBLAS LP64. Intel MKL is broken for now, see <https://github.com/mangaki/zero/issues/25>.
+They are tested on Python 3.9, 3.10 over OpenBLAS LP64. Intel MKL is broken for now, see <https://github.com/mangaki/zero/issues/25>.
 
 ## Install
+
+    uv sync
+
+Or
 
 	poetry install
 
